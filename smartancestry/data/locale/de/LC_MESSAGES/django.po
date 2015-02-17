@@ -26,7 +26,7 @@ msgstr "Stammbäume"
 
 #: forms.py:104
 msgid "Family - Father"
-msgstr ""
+msgstr "Familie - Vater"
 
 #: models.py:432
 #, python-format
@@ -68,7 +68,7 @@ msgstr "Scheidung von %s %s und %s %s"
 
 #: templates/base.html:20
 msgid "Home"
-msgstr ""
+msgstr "Start"
 
 #: templates/base.html:21 templates/data/person.html:8
 #: templates/data/persons.html:7
@@ -82,15 +82,15 @@ msgstr "Stammbäume"
 
 #: templates/base.html:23 templates/data/distributions.html:7
 msgid "Distributions"
-msgstr ""
+msgstr "Verteilung"
 
 #: templates/data/ancestry.html:163
 msgid "Members"
-msgstr ""
+msgstr "Mitglieder"
 
 #: templates/data/ancestry.html:169
 msgid "Years"
-msgstr ""
+msgstr "Jahre"
 
 #: templates/data/ancestry.html:174
 #, fuzzy
@@ -100,83 +100,83 @@ msgstr "Keine Stammbäume vorhanden"
 
 #: templates/data/ancestry.html:181
 msgid "Timeline"
-msgstr ""
+msgstr "Zeitstrahl"
 
 #: templates/data/ancestry.html:203
 msgid "Specials"
-msgstr ""
+msgstr "Besonderheiten"
 
 #: templates/data/ancestry.html:213
 msgid "Locations"
-msgstr ""
+msgstr "Orte"
 
 #: templates/data/ancestry.html:219
 msgid "Births and Deaths per month"
-msgstr ""
+msgstr "Geburten und Todesfälle pro Monat"
 
 #: templates/data/ancestry.html:227
 msgid "January"
-msgstr ""
+msgstr "Januar"
 
 #: templates/data/ancestry.html:227
 msgid "February"
-msgstr ""
+msgstr "Februar"
 
 #: templates/data/ancestry.html:227
 msgid "March"
-msgstr ""
+msgstr "März"
 
 #: templates/data/ancestry.html:228
 msgid "April"
-msgstr ""
+msgstr "April"
 
 #: templates/data/ancestry.html:228
 msgid "May"
-msgstr ""
+msgstr "Mai"
 
 #: templates/data/ancestry.html:228
 msgid "June"
-msgstr ""
+msgstr "Juni"
 
 #: templates/data/ancestry.html:229
 msgid "July"
-msgstr ""
+msgstr "Juli"
 
 #: templates/data/ancestry.html:229
 msgid "August"
-msgstr ""
+msgstr "August"
 
 #: templates/data/ancestry.html:229
 msgid "September"
-msgstr ""
+msgstr "September"
 
 #: templates/data/ancestry.html:230
 msgid "October"
-msgstr ""
+msgstr "Oktober"
 
 #: templates/data/ancestry.html:230
 msgid "November"
-msgstr ""
+msgstr "November"
 
 #: templates/data/ancestry.html:230
 msgid "December"
-msgstr ""
+msgstr "Dezember"
 
 #: templates/data/ancestry.html:233
 msgid "Births per month"
-msgstr ""
+msgstr "Geburten pro Monat"
 
 #: templates/data/ancestry.html:241
 msgid "Deaths per month"
-msgstr ""
+msgstr "Todesfälle pro Monat"
 
 #: templates/data/ancestry.html:262
 msgid "Gender"
-msgstr ""
+msgstr "Geschlecht"
 
 #: templates/data/ancestry.html:292
 msgid "Birth locations"
-msgstr ""
+msgstr "Geburtsorte"
 
 #: templates/data/person.html:68
 msgid "Age"
@@ -222,27 +222,27 @@ msgstr "Keine Stammbäume vorhanden"
 
 #: templates/data/person.html:188
 msgid "Number of persons"
-msgstr ""
+msgstr "Anzahl der Personen"
 
 #: templates/data/person.html:191
 msgid "Number of women"
-msgstr ""
+msgstr "Anzahl der Frauen"
 
 #: templates/data/person.html:194
 msgid "Number of men"
-msgstr ""
+msgstr "Anzahl der Männer"
 
 #: templates/data/person.html:201
 msgid "Family tree"
-msgstr ""
+msgstr "Stammbaum"
 
 #: templates/data/person.html:221
 msgid "Born"
-msgstr ""
+msgstr "Geb."
 
 #: templates/data/person.html:222
 msgid "Died"
-msgstr ""
+msgstr "Gest."
 
 #~ msgid "Married to"
 #~ msgstr "Verheirated mit"

@@ -90,6 +90,22 @@ class RelationsInfo(object):
 		self.source = source
 		self.destination = destination
 
+class PersonInfo(object):
+	def __init__(self, id, name, gender):
+		self.id = id
+		self.full_name = name
+		self.sex = gender
+		self.birth_date = None
+		self.birth_location = None
+		self.death_date = None
+		self.death_location = None
+		
+	def gender_sign(self):
+		if self.sex == 'M':
+			return "♂"
+		else:
+			return "♀"
+
 def name_of_ancestry(x):
 	return mark_safe(x.ancestry.name)
 
@@ -270,9 +286,13 @@ class Person(models.Model):
     		
     	return None
     
+    """ 
+    	provides a list of relative as well as links between them
+    """ 
     def relatives(self):
     	relatives_list = []
     	relations_list = []
+    	external_id = 1000
     	
     	if self.father is not None:
     		if self.father.father is not None:
@@ -296,10 +316,24 @@ class Person(models.Model):
     		relatives_list.append(TreeInfo(1, self.mother, 0))
     		relations_list.append(RelationsInfo(self.mother.id, self.id))
     	
+    	if self.mother_extern is not None:
+    		
+    		relatives_list.append(TreeInfo(1, PersonInfo(external_id, self.mother_extern, 'F'), 0))
+    		relations_list.append(RelationsInfo(external_id, self.id))
+    		external_id = external_id + 1
+    	
     	relatives_list.append(TreeInfo(2, self, 1))
     	
     	for partner in self.partner_relations():
     		relatives_list.append(TreeInfo(2, partner.partner, 0))
+    		
+    		""" 
+    			check if partner is mother / father of childs of current person 
+    		"""
+    		for partner_child in partner.partner.children():
+    			for child in self.children():
+    				if partner_child.id == child.id:
+    					relations_list.append(RelationsInfo(partner.partner.id, child.id))
     		
     		if partner.partner.mother is not None:
     			if partner.partner.mother.father is not None:
