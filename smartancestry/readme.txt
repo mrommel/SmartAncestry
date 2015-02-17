@@ -1,7 +1,7 @@
 
 # goto web app root
 
-cd /Users/mrommel/Prog/SmartAncestry/smartancestry
+cd ~/Prog/SmartAncestry/smartancestry
 
 # run web server
 
@@ -15,7 +15,7 @@ python manage.py migrate
 
 # translations
 
-cd /Users/mrommel/Prog/SmartAncestry/smartancestry/data/
+cd ~/Prog/SmartAncestry/smartancestry/data/
 python ../manage.py makemessages -l de -e html,txt -e xml
 python ../manage.py compilemessages
 
