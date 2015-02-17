@@ -1,0 +1,379 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}Ancestry{% endblock %}
+
+{% block scripts %}
+
+<style>
+  	#map-canvas {
+		height: 300px;
+  	}
+  	
+  	.chartContainer {
+  		
+  	}
+  	
+  	.chartSeparator {
+  		clear: left;
+  	}
+  	
+  	#birthsPerMonthChart {
+  		float: left;
+  	}
+  	
+  	#birthsPerMonthChartLegend {
+  		float: left;
+  		width: 150px;
+  		height:350px;
+  		padding-left: 30px;
+  		padding-top: 80px;
+  	}
+  	
+  	#genderChart {
+  		float: left;
+  	}
+  	
+  	#genderLegend {
+  		float: left;
+  		width: 150px;
+  		height:350px;
+  		padding-left: 30px;
+  		padding-top: 80px;
+  	}
+  	
+  	#birthLocationsChart {
+  		float: left;
+  	}
+  	
+  	#birthLocationsLegend {
+  		float: left;
+  		width: 150px;
+  		height:350px;
+  		padding-left: 30px;
+  		padding-top: 80px;
+  	}
+  	
+  	.pie-legend {
+    	width: 10em;
+    }
+
+	.pie-legend .title {
+    	display: block;
+    	margin-bottom: 0.5em;
+    	line-height: 1.2em;
+    	padding: 0 0.3em;
+	}
+
+	.pie-legend .color {
+    	display: block;
+    	float: left;
+    	width: 1em;
+    	height: 1em;
+    	border: 1px solid sdf; /* Comment out if you don't want to show the fillColor */
+    	border-radius: 0.5em; /* Comment out if you prefer squarish samples */
+    	margin-right: 0.5em;
+	}
+  
+  	.bar-legend {
+    	width: 10em;
+    }
+
+	.bar-legend .title {
+    	display: block;
+    	margin-bottom: 0.5em;
+    	line-height: 1.2em;
+    	padding: 0 0.3em;
+	}
+
+	.bar-legend .color {
+    	display: block;
+    	float: left;
+    	width: 1em;
+    	height: 1em;
+    	border: 1px solid sdf; /* Comment out if you don't want to show the fillColor */
+    	border-radius: 0.5em; /* Comment out if you prefer squarish samples */
+    	margin-right: 0.5em;
+	}
+</style>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=visualization"></script>
+<script>
+	var map, pointarray, heatmap;
+
+		var locationData = [
+			{% for location in locations %}
+				new google.maps.LatLng({{ location.lon_lat }}),
+			{% endfor %}
+		];
+
+		function initialize() {
+		  	var mapOptions = {
+				zoom: 5,
+				center: new google.maps.LatLng(52.518611, 13.408333),
+				mapTypeId: google.maps.MapTypeId.SATELLITE
+		  	};
+
+		  	map = new google.maps.Map(document.getElementById('map-canvas'),
+			  	mapOptions);
+
+		  	var pointArray = new google.maps.MVCArray(locationData);
+
+		  	heatmap = new google.maps.visualization.HeatmapLayer({
+				data: pointArray
+		  	});
+
+		  	heatmap.setMap(map);
+		}
+
+		function toggleHeatmap() {
+		  	heatmap.setMap(heatmap.getMap() ? null : map);
+		}
+
+		function changeGradient() {
+		  	var gradient = [
+				'rgba(0, 255, 255, 0)',
+				'rgba(0, 255, 255, 1)',
+				'rgba(0, 191, 255, 1)',
+				'rgba(0, 127, 255, 1)',
+				'rgba(0, 63, 255, 1)',
+				'rgba(0, 0, 255, 1)',
+				'rgba(0, 0, 223, 1)',
+				'rgba(0, 0, 191, 1)',
+				'rgba(0, 0, 159, 1)',
+				'rgba(0, 0, 127, 1)',
+				'rgba(63, 0, 91, 1)',
+				'rgba(127, 0, 63, 1)',
+				'rgba(191, 0, 31, 1)',
+				'rgba(255, 0, 0, 1)'
+		  	]
+		  	heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
+		}
+
+		function changeRadius() {
+		  	heatmap.set('radius', heatmap.get('radius') ? null : 20);
+		}
+
+		function changeOpacity() {
+		  	heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
+		}
+
+		google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+    
+    <script src="/static/data/Chart.js"></script>
+{% endblock %}
+
+{% block nav-ancestries %}<li class="active"><a href="/data/ancestries">{% trans "Ancestries" %}</a></li>{% endblock %}	
+
+{% block content %}
+
+<div class="highlight">
+	<div class="clearfix">
+		<div class="sidebar" style="width:400px;">
+			<div class="images">
+				{% if ancestry.image %}
+					<img src="{{ MEDIA_URL }}..{{ ancestry.image.url }}" alt="Img" width="205">
+				{% else %}
+					<img src="" alt="Img" height="237" width="205">
+				{% endif %}
+			</div>
+			<div class="details">
+				<h1>{{ ancestry.name }}</h1>
+				
+				<h2>{% trans "Members" %}</h2>
+
+				{% if member_list %}
+					<p>
+						<ul>
+							{% for member in member_list %}
+							<li><a href="/data/person/{{ member.person.id }}" class="link">{{ member.person }}</a> ({{ member.person.age }} {% trans "Years" %})</li>
+							{% endfor %}
+						</ul>
+					</p>
+				{% else %}
+					<p>{% trans "No members are available." %}</p>
+				{% endif %}
+			</div>
+		</div>
+		<div class="main" style="width:400px;">
+			<div>
+				<br />
+				<h2>{% trans "Timeline" %}</h2>
+
+				<p>
+					<ul>
+						{% for timeline_entry in ancestry.timeline %}
+	
+							<li><strong>{{ timeline_entry.year }}</strong>
+								<ul>
+									{% for timeline_entry_inner in timeline_entry.list %}
+										<li>{{ timeline_entry_inner.date }} {{ timeline_entry_inner.title }}</li>
+									{% endfor %}
+								</ul>
+							</li>
+
+						{% endfor %}
+					</ul>	
+				</p>	
+			</div>
+		</div>
+		
+		<div class="featured">
+		
+			<h2>{% trans "Specials" %}</h2>
+			
+			<table>
+			{% for special in statistics.specials.list %}
+				<tr><td>{{ special.name }}</td><td>{{ special.value }}</td></tr>
+			{% endfor %}
+			</table>
+			
+			<br /><br />
+		
+			<h2>{% trans "Locations" %}</h2>
+		
+    		<div id="map-canvas"></div>
+    		
+    		<br /><br />
+    		<!-- http://www.chartjs.org/docs/ -->
+    		<h2>{% trans "Births and Deaths per month" %}</h2>
+
+			<div class="chartContainer">
+    			<canvas id="birthsPerMonthChart" width="600" height="350"></canvas>
+    			<div id="birthsPerMonthChartLegend"></div>
+    		</div>
+    		<script>
+				var birthsPerMonthData = {
+					labels: ['{% trans "January" %}', '{% trans "February" %}', '{% trans "March" %}', 
+						'{% trans "April" %}', '{% trans "May" %}', '{% trans "June" %}', 
+						'{% trans "July" %}', '{% trans "August" %}', '{% trans "September" %}', 
+						'{% trans "October" %}', '{% trans "November" %}', '{% trans "December" %}'],
+					datasets: [
+						{
+							label: '{% trans "Births per month" %}',
+							fillColor: "rgba(151,187,205,0.5)",
+							strokeColor: "rgba(151,187,205,0.8)",
+							highlightFill: "rgba(151,187,205,0.75)",
+							highlightStroke: "rgba(151,187,205,1)",
+							data: {{ statistics.birthPerMonth }}
+						},
+						{
+							label: '{% trans "Deaths per month" %}',
+							fillColor: "rgba(220,220,220,0.5)",
+							strokeColor: "rgba(220,220,220,0.8)",
+							highlightFill: "rgba(220,220,220,0.75)",
+							highlightStroke: "rgba(220,220,220,1)",							
+							data: {{ statistics.deathPerMonth }}
+						}
+					]
+				};
+	
+				// Get the context of the canvas element we want to select
+				var birthsPerMonthChartCtx = document.getElementById("birthsPerMonthChart").getContext("2d");
+				var birthsPerMonthChart = new Chart(birthsPerMonthChartCtx).Bar(birthsPerMonthData, {
+					barShowStroke: false,
+    				legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){ %><li><span class=\"color\" style=\"background-color:<%=datasets[i].fillColor%>\"></span><span class=\"title\"><%if(datasets[i].label){ %><%=datasets[i].label%><%}%></span></li><%}%></ul>"
+				});
+				document.getElementById("birthsPerMonthChartLegend").innerHTML = birthsPerMonthChart.generateLegend();
+			</script>
+			
+			<div class="chartSeparator"></div>
+			
+			<h2>{% trans "Gender" %}</h2>
+
+			<div class="chartContainer">
+    			<canvas id="genderChart" width="600" height="350"></canvas>
+    			<div id="genderLegend"></div>
+    		</div>
+    		
+    		<script>
+				var genderData = [
+					{% for gender in statistics.gender.list %}
+					{
+						value: {{ gender.value }},
+						color: "{{ gender.color }}",
+						highlight: "#FF5A5E",
+						label: "{{ gender.name }}"
+					},
+					{% endfor %}
+				];
+	
+				// Get the context of the canvas element we want to select
+				var genderChartCtx = document.getElementById("genderChart").getContext("2d");
+				var genderChart = new Chart(genderChartCtx).Pie(genderData, {
+        			labelAlign: 'center',
+    				legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<genderData.length; i++){ %><li><span class=\"color\" style=\"background-color:<%=genderData[i].color%>\"></span><span class=\"title\"><%if(genderData[i].label){ %><%=genderData[i].label%><%}%></span></li><%}%></ul>"
+				});
+				document.getElementById("genderLegend").innerHTML = genderChart.generateLegend();
+			</script>
+			
+			<div class="chartSeparator"></div>
+			
+			<h2>{% trans "Birth locations" %}</h2>
+			
+			<div class="chartContainer">
+    			<canvas id="birthLocationsChart" width="600" height="350"></canvas>
+    			<div id="birthLocationsLegend"></div>
+    		</div>
+    		
+    		<script>
+    			var birthLocationsData = [
+					{% for birthLocations in statistics.birthLocations.list %}
+					{
+						value: {{ birthLocations.value }},
+						color: "{{ birthLocations.color }}",
+						highlight: "#FF5A5E",
+						label: "{{ birthLocations.name }}"
+					},
+					{% endfor %}
+				];
+	
+				// Get the context of the canvas element we want to select
+				var birthLocationsChartCtx = document.getElementById("birthLocationsChart").getContext("2d");
+				var birthLocationsChart = new Chart(birthLocationsChartCtx).Pie(birthLocationsData, {
+        			labelAlign: 'center',
+    				legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<birthLocationsData.length; i++){ %><li><span class=\"color\" style=\"background-color:<%=birthLocationsData[i].color%>\"></span><span class=\"title\"><%if(birthLocationsData[i].label){ %><%=birthLocationsData[i].label%><%}%></span></li><%}%></ul>"
+				});
+				document.getElementById("birthLocationsLegend").innerHTML = birthLocationsChart.generateLegend();
+			</script>
+			
+			<div class="chartSeparator"></div>
+
+    		<h2>{% trans "Children" %}</h2>
+
+			<div class="chartContainer">
+    			<canvas id="childrenChart" width="600" height="350"></canvas>
+    			<div id="childrenLegend"></div>
+    		</div>
+    		<script>
+				var childrenData = {
+					labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+					datasets: [
+						{
+							label: '{% trans "Children" %}',
+							fillColor: "rgba(151,187,205,0.5)",
+							strokeColor: "rgba(151,187,205,0.8)",
+							highlightFill: "rgba(151,187,205,0.75)",
+							highlightStroke: "rgba(151,187,205,1)",
+							data: {{ statistics.children.values }}
+						}
+					]
+				};
+	
+				// Get the context of the canvas element we want to select
+				var childrenChartCtx = document.getElementById("childrenChart").getContext("2d");
+				var childrenChart = new Chart(childrenChartCtx).Bar(childrenData, {
+					barShowStroke: false,
+    				legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){ %><li><span class=\"color\" style=\"background-color:<%=datasets[i].fillColor%>\"></span><span class=\"title\"><%if(datasets[i].label){ %><%=datasets[i].label%><%}%></span></li><%}%></ul>"
+				});
+				document.getElementById("childrenChartLegend").innerHTML = birthsPerMonthChart.generateLegend();
+			</script>
+			
+			
+			
+		</div>
+	</div>
+</div>
+
+{% endblock %}

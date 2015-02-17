@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load app_filters %}
+
+{% block title %}Person{% endblock %}
+
+{% block nav-persons %}<li class="active"><a href="/data/persons">{% trans "Persons" %}</a></li>{% endblock %}
+
+{% block scripts %}
+
+<style>
+  	#familyTreeContainer {
+		height: 600px;
+		
+		background-color: #FFFFFF;
+		width: 940px;
+		margin: 0 auto 24px;
+		padding: 0 10px;
+  	}
+  	
+  	.person {
+  		float: left;
+  		background-color: #FFFFFF;
+  		border: 1px solid black;
+  		width: 100px;
+  		height: 40px;
+  	}
+  	
+  	.parent {
+  		margin-left: 10px;
+  	}
+  	
+  	.current {
+  		margin-left: 150px;
+  	}
+</style>
+
+<script src="/static/data/ancestryTree.js"></script>
+
+{% endblock %}
+
+{% block content %}
+	<div class="highlight">
+		<div class="clearfix">
+			<div class="sidebar" style="width:600px;">
+				<div class="images">
+					{% if person.image %}
+						<img src="{{ MEDIA_URL }}..{{ person.image.url }}" alt="Img" width="205">
+					{% else %}
+						<img src="" alt="Img" height="237" width="205">
+					{% endif %}
+				</div>
+				<div class="details">
+					<p class="info">
+						* {{ person.birth_date }} 
+						{% if person.birth_location %}
+							<a href="/data/location/{{ person.birth_location.id }}/" class="link">{{ person.birth_location }}</a> <br />
+						{% endif %}
+						
+						{% if person.death_date %}
+							+ {{ person.death_date }}
+							{% if person.death_location %}
+								<a href="/data/location/{{ person.death_location.id }}/" class="link">{{ person.death_location }}</a>
+							{% endif %}
+						{% endif %}	
+					</p>
+					<h2>{{ person }}</h2>
+					
+					<p>{% trans "Age" %}: {{ person.age }}</p>
+					
+					{% if person.partner_relations %}
+						<ul>
+						{% for partner_relation in person.partner_relations %}
+							{% if partner_relation.partner %}
+								<li>{{ partner_relation.status }}: <a href="/data/person/{{ partner_relation.partner.id }}/" class="link">{{ partner_relation.partner }}</a> 
+								{% if partner_relation.location %}
+									@ {{ partner_relation.location }} {{ partner_relation.date }}
+								{% endif %}
+								</li>
+							{% else %}
+								<li>{{ partner_relation.status }}: {{ partner_relation.partner_name }} @ {{ partner_relation.location }} {{ partner_relation.date }}</li>
+							{% endif %}
+						{% endfor %}
+						</ul>
+					{% else %}
+						<p>{% trans "Not married" %}</p>
+					{% endif %}
+					
+					<p>
+						{% if person.father %}
+							{% trans "Father" %}: <a href="/data/person/{{ person.father.id }}/" class="link">{{ person.father }}</a><br />
+						{% else %}
+							{% trans "Father" %}: {{ person.father_extern }}<br />
+						{% endif %}
+						
+						{% if person.mother %}
+							{% trans "Mother" %}: <a href="/data/person/{{ person.mother.id }}/" class="link">{{ person.mother }}</a>
+						{% else %}
+							{% trans "Mother" %}: {{ person.mother_extern }}<br />
+						{% endif %}
+					</p>
+					
+					{% if person.profession %}
+						<p>{% trans "Profession" %}: {{ person.profession }}</p>
+					{% endif %}
+					
+					<h3>{% trans "Children" %}:</h3>
+					<p>
+						<ul>
+						{% if person.children %}
+    						{% for child in person.children %}
+        						<li><a href="/data/person/{{ child.id }}/" class="link">{{ child }}</a></li>
+    						{% endfor %}
+						{% else %}
+							{% if person.children_extern_list %}
+								{% for child in person.children_extern_list %}
+        							<li>{{ child }}</li>
+    							{% endfor %}
+							{% else %}
+    							<li>{% trans "No child are available." %}</li>
+    						{% endif %}
+						{% endif %}
+						</ul>
+					</p>
+					<h3>{% trans "Siblings" %}:</h3>
+					<p>
+						<ul>
+						{% if person.siblings %}
+    						{% for child in person.siblings %}
+        						<li><a href="/data/person/{{ child.id }}/" class="link">{{ child }}</a></li>
+    						{% endfor %}
+						{% else %}
+							{% if person.siblings_extern_list %}
+								{% for child in person.siblings_extern_list %}
+        							<li>{{ child }}</li>
+    							{% endfor %}
+							{% else %}
+    							<li>{% trans "No sibling are available." %}</li>
+    						{% endif %}
+						{% endif %}
+						</ul>
+					</p>
+					
+					<h3>{% trans "Ancestries" %}:</h3>
+					<p>
+						{% if person.ancestries %}
+    						<ul>
+    						{% for ancestry in person.ancestries %}
+        						<li><a href="/data/ancestry/{{ ancestry.ancestry.id }}/{{ ancestry.ancestry.name }}" class="link">{{ ancestry.ancestry.name }}</a></li>
+    						{% endfor %}
+    						</ul>
+						{% else %}
+    						<strong>{% trans "No ancestries are available." %}</strong>
+						{% endif %}
+					</p>
+					<p>
+						{{ person.notes }}
+					</p>
+				</div>
+			</div>
+			<div class="main" style="width:200px;">
+				<div>
+					<h2>Random person</h2>
+					<p>
+						{{ random }}
+					</p>
+					<div class="images">
+						{% if random.image %}
+							<img src="{{ MEDIA_URL }}..{{ random.image.url }}" alt="Img" width="205">
+						{% endif %}
+					</div>
+					<p>
+						{% if random.father %}
+							{% trans "Father" %}: <a href="/data/person/{{ random.father.id }}/" class="link">{{ random.father }}</a><br />
+						{% else %}
+							{% trans "Father" %}: {{ random.father_extern }}<br />
+						{% endif %}
+						
+						{% if random.mother %}
+							{% trans "Mother" %}: <a href="/data/person/{{ random.mother.id }}/" class="link">{{ random.mother }}</a>
+						{% else %}
+							{% trans "Mother" %}: {{ random.mother_extern }}<br />
+						{% endif %}
+					</p>
+				</div>
+				<div>
+					<h2>Interesting</h2>
+					<p>
+						{% trans "Number of persons" %}: {{ number_of_persons }}
+					</p>
+					<p>
+						{% trans "Number of women" %}: {{ number_of_female_persons }}
+					</p>
+					<p>
+						{% trans "Number of men" %}: {{ number_of_male_persons }}
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="featured">
+		
+			<h2><a name="tree">{% trans "Family tree" %}</a></h2>
+			
+			<div id="familyTreeContainer">
+				<canvas id="familyTreeCanvas" width="940" height="600"></canvas>
+			</div>
+			
+			<script>
+				var familyTreeCanvasCtx = document.getElementById("familyTreeCanvas").getContext("2d");
+				
+				var personData = [
+					{% for item in person.relatives.relatives %}
+						{% if item.person %}
+						{
+							id: {{ item.person.id }},
+							level: {{ item.level }},
+							selected: {{ item.selected }},
+							name: "{{ item.person.gender_sign }} {{ item.person.full_name|trim }}",
+							birth: '{% trans "Born" %}: {{ item.person.birth_date|date:"d.m.Y" }} {{ item.person.birth_location|location_without_country }}', 
+							death: '{% trans "Died" %}: {{ item.person.death_date|date:"d.m.Y" }} {{ item.person.death_location|location_without_country }}',
+						},
+						{% endif %}
+					{% endfor %}
+				];
+				
+				var relationsData = [
+					{% for item in person.relatives.relations %}
+					new Relation({{ item.source }}, {{ item.destination }}),
+					{% endfor %}
+				];
+				
+				var ancestryTree = new AncestryTree(familyTreeCanvasCtx, personData, relationsData);
+				ancestryTree.draw();
+				
+				familyTreeCanvasCtx.canvas.addEventListener("click", contextOnClick, false);
+				
+				function contextOnClick(e) {
+    				var cell = ancestryTree.getCursorPosition(e);
+    				if (cell != undefined) {
+    					var win = window.open('/data/person/' + cell.getPerson(ancestryTree.persons).id + '/#tree', '_self');
+  						win.focus();
+    				}
+    			}
+			</script>
+		</div>
+	</div>
+
+{% endblock %}

@@ -1,0 +1,87 @@
+{% load i18n %}
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{% block title %}Startpage{% endblock %} - SmartAncestry</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'data/style.css' %}" />
+    {% block scripts %}
+    {% endblock %}
+</head>
+<body>
+	<div id="header">
+		<div class="clearfix">
+			<div class="logo">
+				<a href="/data/index"><img src="{% static 'data/images/logo.png' %}" alt="LOGO" height="52" width="362"></a>
+			</div>
+			{% block nav %}
+			<ul class="navigation">
+				{% block nav-home %}<li><a href="/data/index">{% trans "Home" %}</a></li>{% endblock %}
+            	{% block nav-persons %}<li><a href="/data/persons">{% trans "Persons" %}</a></li>{% endblock %}
+            	{% block nav-ancestries %}<li><a href="/data/ancestries">{% trans "Ancestries" %}</a></li>{% endblock %}
+            	{% block nav-distributions %}<li><a href="/data/distributions">{% trans "Distributions" %}</a></li>{% endblock %}
+            	{% block nav-admin %}<li><a href="/admin" target="_blank">Admin</a></li>{% endblock %}
+        	</ul>
+        	{% endblock %}
+		</div>
+	</div>
+	<div id="contents">
+		{% block content %}{% endblock %}
+	</div>
+	<div id="footer">
+		<div class="clearfix">
+			<div class="section">
+				<h4>Latest News</h4>
+				<p>
+					<form action="{% url 'set_language' %}" method="post">
+{% csrf_token %}
+<input name="next" type="hidden" value="{{ redirect_to }}" />
+<select name="language">
+{% get_language_info_list for LANGUAGES as languages %}
+{% for language in languages %}
+<option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}>
+    {{ language.name_local }} ({{ language.code }})
+</option>
+{% endfor %}
+</select>
+<input type="submit" value="Go" />
+</form>
+				</p>
+			</div>
+			<div class="section contact">
+				<h4>Contact Us</h4>
+				<p>
+					<span>Address:</span> the address city, state 1111
+				</p>
+				<p>
+					<span>Phone:</span> (+20) 000 222 999
+				</p>
+				<p>
+					<span>Email:</span> info@freewebsitetemplates.com
+				</p>
+			</div>
+			<div class="section">
+				<h4>SEND US A MESSAGE</h4>
+				<p>
+					If you're having problems editing this website template, then don't hesitate to ask for help on the Forums.
+				</p>
+				<a href="http://www.freewebsitetemplates.com/misc/contact/" class="subscribe">Click to send us an email</a>
+			</div>
+		</div>
+		<div id="footnote">
+			<div class="clearfix">
+				<div class="connect">
+					<a href="http://freewebsitetemplates.com/go/facebook/" class="facebook"></a>
+					<a href="http://freewebsitetemplates.com/go/twitter/" class="twitter"></a>
+					<a href="http://freewebsitetemplates.com/go/googleplus/" class="googleplus"></a>
+					<a href="http://pinterest.com/fwtemplates/" class="pinterest"></a>
+				</div>
+				<p>
+					© Copyright 2023 Manes Winchester. All Rights Reserved.
+				</p>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

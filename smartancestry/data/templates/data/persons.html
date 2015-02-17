@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}Persons{% endblock %}
+
+{% block nav-persons %}<li class="active"><a href="/data/persons">{% trans "Persons" %}</a></li>{% endblock %}
+
+{% block content %}
+
+<div class="highlight">
+	<div class="clearfix">
+	
+	<h1>{% load i18n %}</h1>
+	
+	{% if persons_list %}
+		<p>
+		<ul>
+		{% for person in persons_list %}
+			<li><a href="/data/person/{{ person.id }}/" class="link">{{ person }}</a></li>
+		{% endfor %}
+		</ul>
+		</p>
+	{% else %}
+		<p>No persons are available.</p>
+	{% endif %}
+	</div>
+</div>
+
+{% endblock %}

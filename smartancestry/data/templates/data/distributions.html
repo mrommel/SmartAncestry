@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}Person{% endblock %}
+
+{% block nav-distributions %}<li class="active"><a href="/data/distributions">{% trans "Distributions" %}</a></li>{% endblock %}
+
+{% block scripts %}
+<script src="/static/data/lightbox/js/jquery-1.11.0.min.js"></script>
+<script src="/static/data/lightbox/js/lightbox.min.js"></script>
+
+<link rel="stylesheet" href="/static/data/lightbox/css/lightbox.css" type="text/css" media="screen" />
+{% endblock %}
+
+{% block content %}
+
+		<div class="clearfix">
+			<div class="sidebar" style="width:600px;">
+				<h1>Distributions</h1>
+				
+				<table>
+					<tr>
+						<td>
+							<h2>Findeisen</h2>
+							<a href="{{ MEDIA_URL }}/media/distributions/findeisen_absolute.png" data-title="Distribution Findeisen" data-lightbox="roadtrip">
+								<img src="{{ MEDIA_URL }}/media/distributions/findeisen_absolute.png" height="200" />
+							</a>
+						</td><td>
+							<h2>Glossmann</h2>
+							<a href="{{ MEDIA_URL }}/media/distributions/glossmann_absolute.png" data-title="Distribution Glossmann" data-lightbox="roadtrip">
+								<img src="{{ MEDIA_URL }}/media/distributions/glossmann_absolute.png" height="200" />
+							</a>
+						</td><td>
+							<h2>Rommel</h2>
+							<a href="{{ MEDIA_URL }}/media/distributions/rommel_absolute.png" data-title="Distribution Rommel" data-lightbox="roadtrip">
+								<img src="{{ MEDIA_URL }}/media/distributions/rommel_absolute.png" height="200" />
+							</a>
+						</td><td>
+							<h2>Kliemank</h2>
+							<a href="{{ MEDIA_URL }}/media/distributions/kliemank_absolute.png" data-title="Distribution Kliemank" data-lightbox="roadtrip">
+								<img src="{{ MEDIA_URL }}/media/distributions/kliemank_absolute.png" height="200" />
+							</a>
+						</td><td>
+							<h2>Kr&auml;he</h2>
+							<a href="{{ MEDIA_URL }}/media/distributions/kraehe_absolute.png" data-title="Distribution Kr&auml;he" data-lightbox="roadtrip">
+								<img src="{{ MEDIA_URL }}/media/distributions/kraehe_absolute.png" height="200" />
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h2>Reschke</h2>
+							<a href="{{ MEDIA_URL }}/media/distributions/reschke_absolute.png" data-title="Distribution Reschke" data-lightbox="roadtrip">
+								<img src="{{ MEDIA_URL }}/media/distributions/reschke_absolute.png" height="200" />
+							</a>
+						</td><td>
+							<h2>Rommel</h2>
+							<a href="{{ MEDIA_URL }}/media/distributions/rommel_absolute.png" data-title="Distribution Rommel" data-lightbox="roadtrip">
+								<img src="{{ MEDIA_URL }}/media/distributions/rommel_absolute.png" height="200" />
+							</a>
+						</td><td>
+							<h2>Schossig</h2>
+							<a href="{{ MEDIA_URL }}/media/distributions/schossig_absolute.png" data-title="Distribution Schossig" data-lightbox="roadtrip">
+								<img src="{{ MEDIA_URL }}/media/distributions/schossig_absolute.png" height="200" />
+							</a>
+						</td><td>
+							<h2>Stavenhagen</h2>
+							<a href="{{ MEDIA_URL }}/media/distributions/stavenhagen_absolute.png" data-title="Distribution Stavenhagen" data-lightbox="roadtrip">
+								<img src="{{ MEDIA_URL }}/media/distributions/stavenhagen_absolute.png" height="200" />
+							</a>
+						</td><td>
+
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+{% endblock %}

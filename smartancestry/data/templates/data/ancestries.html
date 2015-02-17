@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}Ancestries{% endblock %}
+
+{% block nav-ancestries %}<li class="active"><a href="/data/ancestries">{% trans "Ancestries" %}</a></li>{% endblock %}	
+
+{% block content %}
+
+<div class="highlight">
+	<div class="clearfix">
+	
+	<h1>Ancestries</h1>
+	
+		{% if ancestries_list %}
+			<p>
+				<ul>
+					{% for ancestry in ancestries_list %}
+						<li><a href="/data/ancestry/{{ ancestry.id }}/{{ ancestry.name }}" class="link">{{ ancestry.name }}</a></li>
+					{% endfor %}
+				</ul>
+			</p>
+		{% else %}
+			<p>No ancestry are available.</p>
+		{% endif %}
+	</div>
+</div>
+	
+{% endblock %}
