@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-16 12:51+0000\n"
+"POT-Creation-Date: 2015-02-19 17:18+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,54 +19,77 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: forms.py:14
-#, fuzzy
-#| msgid "Ancestries"
 msgid "Ancestry"
-msgstr "Stammbäume"
+msgstr "Stammbaum"
 
 #: forms.py:104
 msgid "Family - Father"
 msgstr "Familie - Vater"
 
-#: models.py:432
+#: models.py:438
+msgid "Rest"
+msgstr "Rest"
+
+#: models.py:517
+msgid "Women"
+msgstr "Frauen"
+
+#: models.py:519
+msgid "Men"
+msgstr "Männer"
+
+#: models.py:542
+msgid "Youngest person"
+msgstr "Jüngste Person"
+
+#: models.py:543
+msgid "Oldest person"
+msgstr "Älteste Person"
+
+#: models.py:544
+msgid "Lastest marriage"
+msgstr "Späteste Heirat"
+
+#: models.py:545
+msgid "Youngest marriage"
+msgstr "Jüngste Heirat"
+
+#: models.py:559
 #, python-format
 msgid "%s %s was born in %s"
 msgstr "%s %s wurde in %s geboren"
 
-#: models.py:434
+#: models.py:561
 #, python-format
 msgid "%s %s was born"
 msgstr "%s %s wurde geboren"
 
-#: models.py:438
+#: models.py:565
 #, python-format
 msgid "%s %s has died in %s"
 msgstr "%s %s starb in %s"
 
-#: models.py:440
+#: models.py:567
 #, python-format
 msgid "%s %s has died"
 msgstr "%s %s starb"
 
-#: models.py:446
-#, fuzzy, python-format
-#| msgid "marriage of %s %s and %s %s in %s"
+#: models.py:573
+#, python-format
 msgid "marriage of %s and %s in %s"
-msgstr "Hochzeit von %s %s und %s %s in %s"
+msgstr "Hochzeit von %s und %s in %s"
 
-#: models.py:448
-#, fuzzy, python-format
-#| msgid "marriage of %s %s and %s %s"
+#: models.py:575
+#, python-format
 msgid "marriage of %s and %s"
-msgstr "Hochzeit von %s %s und %s %s"
+msgstr "Hochzeit von %s und %s"
 
-#: models.py:450
-#, fuzzy, python-format
-#| msgid "divorce of %s %s and %s %s "
+#: models.py:577
+#, python-format
 msgid "divorce of %s and %s"
-msgstr "Scheidung von %s %s und %s %s"
+msgstr "Scheidung von %s und %s"
 
-#: templates/base.html:20
+#: templates/base.html:20 templates/data/index.html:6
 msgid "Home"
 msgstr "Start"
 
@@ -76,7 +99,8 @@ msgid "Persons"
 msgstr "Personen"
 
 #: templates/base.html:22 templates/data/ancestries.html:7
-#: templates/data/ancestry.html:146 templates/data/person.html:143
+#: templates/data/ancestry.html:167 templates/data/index.html:37
+#: templates/data/person.html:153
 msgid "Ancestries"
 msgstr "Stammbäume"
 
@@ -84,165 +108,161 @@ msgstr "Stammbäume"
 msgid "Distributions"
 msgstr "Verteilung"
 
-#: templates/data/ancestry.html:163
+#: templates/data/ancestry.html:184
 msgid "Members"
 msgstr "Mitglieder"
 
-#: templates/data/ancestry.html:169
+#: templates/data/ancestry.html:190
 msgid "Years"
 msgstr "Jahre"
 
-#: templates/data/ancestry.html:174
-#, fuzzy
-#| msgid "No ancestries are available."
+#: templates/data/ancestry.html:195
 msgid "No members are available."
 msgstr "Keine Stammbäume vorhanden"
 
-#: templates/data/ancestry.html:181
+#: templates/data/ancestry.html:202
 msgid "Timeline"
 msgstr "Zeitstrahl"
 
-#: templates/data/ancestry.html:203
+#: templates/data/ancestry.html:224
 msgid "Specials"
 msgstr "Besonderheiten"
 
-#: templates/data/ancestry.html:213
+#: templates/data/ancestry.html:234
 msgid "Locations"
 msgstr "Orte"
 
-#: templates/data/ancestry.html:219
+#: templates/data/ancestry.html:240
 msgid "Births and Deaths per month"
 msgstr "Geburten und Todesfälle pro Monat"
 
-#: templates/data/ancestry.html:227
+#: templates/data/ancestry.html:248
 msgid "January"
 msgstr "Januar"
 
-#: templates/data/ancestry.html:227
+#: templates/data/ancestry.html:248
 msgid "February"
 msgstr "Februar"
 
-#: templates/data/ancestry.html:227
+#: templates/data/ancestry.html:248
 msgid "March"
 msgstr "März"
 
-#: templates/data/ancestry.html:228
+#: templates/data/ancestry.html:249
 msgid "April"
 msgstr "April"
 
-#: templates/data/ancestry.html:228
+#: templates/data/ancestry.html:249
 msgid "May"
 msgstr "Mai"
 
-#: templates/data/ancestry.html:228
+#: templates/data/ancestry.html:249
 msgid "June"
 msgstr "Juni"
 
-#: templates/data/ancestry.html:229
+#: templates/data/ancestry.html:250
 msgid "July"
 msgstr "Juli"
 
-#: templates/data/ancestry.html:229
+#: templates/data/ancestry.html:250
 msgid "August"
 msgstr "August"
 
-#: templates/data/ancestry.html:229
+#: templates/data/ancestry.html:250
 msgid "September"
 msgstr "September"
 
-#: templates/data/ancestry.html:230
+#: templates/data/ancestry.html:251
 msgid "October"
 msgstr "Oktober"
 
-#: templates/data/ancestry.html:230
+#: templates/data/ancestry.html:251
 msgid "November"
 msgstr "November"
 
-#: templates/data/ancestry.html:230
+#: templates/data/ancestry.html:251
 msgid "December"
 msgstr "Dezember"
 
-#: templates/data/ancestry.html:233
+#: templates/data/ancestry.html:254
 msgid "Births per month"
 msgstr "Geburten pro Monat"
 
-#: templates/data/ancestry.html:241
+#: templates/data/ancestry.html:262
 msgid "Deaths per month"
 msgstr "Todesfälle pro Monat"
 
-#: templates/data/ancestry.html:262
+#: templates/data/ancestry.html:283
 msgid "Gender"
 msgstr "Geschlecht"
 
-#: templates/data/ancestry.html:292
+#: templates/data/ancestry.html:313
 msgid "Birth locations"
 msgstr "Geburtsorte"
 
-#: templates/data/person.html:68
-msgid "Age"
-msgstr "Alter"
-
-#: templates/data/person.html:85
-msgid "Not married"
-msgstr "Nicht verheirated"
-
-#: templates/data/person.html:90 templates/data/person.html.py:92
-#: templates/data/person.html:173 templates/data/person.html.py:175
-msgid "Father"
-msgstr "Vater"
-
-#: templates/data/person.html:96 templates/data/person.html.py:98
-#: templates/data/person.html:179 templates/data/person.html.py:181
-msgid "Mother"
-msgstr "Mutter"
-
-#: templates/data/person.html:103
-msgid "Profession"
-msgstr "Beruf"
-
-#: templates/data/person.html:106
+#: templates/data/ancestry.html:343 templates/data/ancestry.html.py:354
+#: templates/data/person.html:116
 msgid "Children"
 msgstr "Kinder"
 
-#: templates/data/person.html:119
+#: templates/data/person.html:78
+msgid "Age"
+msgstr "Alter"
+
+#: templates/data/person.html:95
+msgid "Not married"
+msgstr "Nicht verheirated"
+
+#: templates/data/person.html:100 templates/data/person.html.py:102
+#: templates/data/person.html:183 templates/data/person.html.py:185
+msgid "Father"
+msgstr "Vater"
+
+#: templates/data/person.html:106 templates/data/person.html.py:108
+#: templates/data/person.html:189 templates/data/person.html.py:191
+msgid "Mother"
+msgstr "Mutter"
+
+#: templates/data/person.html:113
+msgid "Profession"
+msgstr "Beruf"
+
+#: templates/data/person.html:129
 msgid "No child are available."
 msgstr "Keine Kinder vorhanden."
 
-#: templates/data/person.html:124
+#: templates/data/person.html:134
 msgid "Siblings"
 msgstr "Geschwister"
 
-#: templates/data/person.html:137
+#: templates/data/person.html:147
 msgid "No sibling are available."
 msgstr "Keine Geschwister vorhanden."
 
-#: templates/data/person.html:152
+#: templates/data/person.html:162
 msgid "No ancestries are available."
 msgstr "Keine Stammbäume vorhanden"
 
-#: templates/data/person.html:188
+#: templates/data/person.html:198
 msgid "Number of persons"
 msgstr "Anzahl der Personen"
 
-#: templates/data/person.html:191
+#: templates/data/person.html:201
 msgid "Number of women"
 msgstr "Anzahl der Frauen"
 
-#: templates/data/person.html:194
+#: templates/data/person.html:204
 msgid "Number of men"
 msgstr "Anzahl der Männer"
 
-#: templates/data/person.html:201
+#: templates/data/person.html:211
 msgid "Family tree"
 msgstr "Stammbaum"
 
-#: templates/data/person.html:221
+#: templates/data/person.html:229
 msgid "Born"
 msgstr "Geb."
 
-#: templates/data/person.html:222
+#: templates/data/person.html:230
 msgid "Died"
 msgstr "Gest."
-
-#~ msgid "Married to"
-#~ msgstr "Verheirated mit"

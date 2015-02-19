@@ -1,7 +1,15 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*- 
+
 from django import template
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 from django.template.defaultfilters import stringfilter
+
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger('data.models')
 
 register = template.Library()
 
@@ -21,6 +29,36 @@ def location_without_country(value):
 @register.filter(name='trim')
 def trim(value):
 	return value.strip()
+	
+@stringfilter
+@register.filter(name='trimAndUnescape')
+def trimAndUnescape(value):
+	val = value.strip()
+	val = val.replace('<u>', '')
+	val = val.replace('</u>', '')
+	val = val.replace('&auml;', 'ae')
+	val = val.replace('  ', ' ')
+	val = val.replace('  ', ' ')
+	return val
+	
+@stringfilter
+@register.filter(name='underlineIndices')
+def underlineIndices(value):
+	val = value.strip()
+	val = val.replace('&auml;', 'ae')
+	val = val.replace('  ', ' ')
+	val = val.replace('  ', ' ')
+	
+	u_start = val.find('<u>')
+	u_end = val.find('</u>')
+	
+	if u_start <> -1:
+		u_start = u_start + 2
+	
+	if u_end <> -1:
+		u_end = u_end - 1
+	
+	return '{start: %d, end: %d}' % (u_start, u_end)
     
 @register.filter(needs_autoescape=True)
 def initial_letter_filter(text, autoescape=None):

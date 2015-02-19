@@ -1,20 +1,20 @@
 {% extends "base.html" %}
 
 {% load staticfiles %}
+{% load i18n %}
 
-{% block nav-home %}<li class="active"><a href="/data/index">Home</a></li>{% endblock %}
+{% block nav-home %}<li class="active"><a href="/data/index">{% trans "Home" %}</a></li>{% endblock %}
 
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<div id="adbox" style="min-height:200px">
+<div id="highlight">
 	<div class="clearfix">
-		<img src="{% static 'data/images/family-large.jpg' %}" alt="Img" height="382" width="594">
-		<div class="detail">
-			<h1>It’s never easy...<br> When it comes to family.</h1>
-			<p>
-				But we can set<br> everything straight.
-			</p>
+		<br />
+		<div class="frame2">
+			<div class="box">
+				<img src="{% static 'data/images/thumb-up.jpg' %}" alt="Img" height="298" width="924">
+			</div>
 		</div>
 	</div>
 </div>
@@ -34,7 +34,7 @@
 	</div>
 </div>
 <div class="featured">
-	<h2>Why Choose Us?</h2>
+	<h2>{% trans "Ancestries" %}</h2>
 	<ul class="clearfix">
 		<li>
 			<div class="frame1">

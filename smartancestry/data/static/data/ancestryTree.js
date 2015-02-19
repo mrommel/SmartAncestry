@@ -71,7 +71,6 @@ Person.prototype = {
 	},
 	
 	draw: function(context) {
-		console.log('Person.draw(' + this.id + ', ' + context + ');');
 		context.fillStyle = '#EEEEEE';
 		context.fillRect(this.x, this.y, this.width, this.height);
 		if (this.selected) {
@@ -85,6 +84,19 @@ Person.prototype = {
 		context.font = "bold 9px sans-serif";
 		context.textBaseline = "top";
 		context.fillText(this.name, this.x + 5, this.y + 5);
+		
+		// underline name if needed
+		if (this.underline.start != -1) {
+			var offsetText = this.name.substring(0, this.underline.start);
+			var subText = this.name.substring(this.underline.start, this.underline.end);
+			var textOffset = context.measureText(offsetText).width;
+			var textWidth = context.measureText(subText).width;
+			context.beginPath();
+			context.moveTo(this.x + 5 + textOffset, this.y + 5 + 10);
+			context.lineTo(this.x + 5 + textOffset + textWidth, this.y + 5 + 10);
+			context.strokeStyle = "#000";
+			context.stroke();
+		}
 		
 		context.font = "9px sans-serif";
 		context.textBaseline = "top";
@@ -155,8 +167,16 @@ AncestryTree.prototype.initialize = function() {
 	var intend = [0, 0, 0, 0, 0];
 	
 	this.personData.forEach(function(entry) {
-		var person = new Person(entry.id, entry.name.replace('&lt;u&gt;', '').replace('&lt;/u&gt;', '').replace('  ', ' ').replace('  ', ' '), entry.birth, entry.death);
+		/*var name = entry.name;
+		name = name.replace('&lt;u&gt;', '');
+		name = name.replace('&lt;/u&gt;', '');
+		name = name.replace('&amp;auml;', 'ä');
+		name = name.replace('  ', ' ');
+		name = name.replace('  ', ' ');*/
 		
+		var person = new Person(entry.id, entry.name, entry.birth, entry.death);
+		
+		person.underline = entry.underline;
 		person.x = entry.level * (personWidth + 44) + 7;
 		person.y = (this.height - itemsInLevel[entry.level] * (personHeight+10)) / 2 + intend[entry.level] * (personHeight+10);
 		person.width = personWidth;

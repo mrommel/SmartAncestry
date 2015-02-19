@@ -107,7 +107,7 @@ class PersonAncestryListFilter(admin.SimpleListFilter):
 	parameter_name = 'ancestry'
 
 class PersonAdmin(admin.ModelAdmin):
-	list_display = ('user_name', 'birth_date', 'birth_location', 'death_date', 'death_location', 'father_name', 'mother_name', 'ancestry_names')
+	list_display = ('user_name', 'thumbnail', 'birth_date', 'birth_location', 'death_date', 'death_location', 'father_name', 'mother_name', 'ancestry_names')
 	list_filter = ('birth_date', ) #PersonAncestryListFilter,
 	ordering = ('-birth_date',)
 	inlines = [
@@ -115,6 +115,12 @@ class PersonAdmin(admin.ModelAdmin):
 		HusbandFamilyStatusRelationInline,
 		WifeFamilyStatusRelationInline,
 	]
+	actions_on_top = True
+	actions_on_bottom = True
+
+class LocationAdmin(admin.ModelAdmin):
+	list_display = ('city', 'state', 'country', 'thumbnail', 'lon', 'lat')
+	ordering = ('city',)
 	actions_on_top = True
 	actions_on_bottom = True
     

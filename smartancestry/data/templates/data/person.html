@@ -55,13 +55,21 @@
 					<p class="info">
 						* {{ person.birth_date }} 
 						{% if person.birth_location %}
-							<a href="/data/location/{{ person.birth_location.id }}/" class="link">{{ person.birth_location }}</a> <br />
+							- <a href="/data/location/{{ person.birth_location.id }}/" class="link" style="display: inline-flex;">
+							{% if person.birth_location.image %}
+								<img src="{{ MEDIA_URL }}..{{ person.birth_location.image.url }}" height="16" />
+							{% endif %}
+							&nbsp;{{ person.birth_location }}</a> <br />
 						{% endif %}
 						
 						{% if person.death_date %}
 							+ {{ person.death_date }}
 							{% if person.death_location %}
-								<a href="/data/location/{{ person.death_location.id }}/" class="link">{{ person.death_location }}</a>
+								- <a href="/data/location/{{ person.death_location.id }}/" class="link" style="display: inline-flex;">
+								{% if person.death_location.image %}
+									<img src="{{ MEDIA_URL }}..{{ person.death_location.image.url }}" height="16" />
+								{% endif %}
+								&nbsp;{{ person.death_location }}</a>
 							{% endif %}
 						{% endif %}	
 					</p>
@@ -216,7 +224,8 @@
 							id: {{ item.person.id }},
 							level: {{ item.level }},
 							selected: {{ item.selected }},
-							name: "{{ item.person.gender_sign }} {{ item.person.full_name|trim }}",
+							name: "{{ item.person.gender_sign }} {{ item.person.full_name|trimAndUnescape }}",
+							underline: {{ item.person.full_name|underlineIndices }}, 
 							birth: '{% trans "Born" %}: {{ item.person.birth_date|date:"d.m.Y" }} {{ item.person.birth_location|location_without_country }}', 
 							death: '{% trans "Died" %}: {{ item.person.death_date|date:"d.m.Y" }} {{ item.person.death_location|location_without_country }}',
 						},
