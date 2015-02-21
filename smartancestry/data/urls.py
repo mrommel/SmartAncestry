@@ -12,4 +12,5 @@ urlpatterns = patterns('',
     url(r'^ancestry/(?P<ancestry_id>\d+)/', views.ancestry, name='data.views.ancestry'),
     url(r'^location/(?P<location_id>\d+)/', views.location, name='data.views.location'),
     url(r'^distributions/', views.distributions, name='data.views.distributions'),
+    url(r'^export/ancestry/(?P<ancestry_id>\d+)/', views.export, name='data.views.export'),
 )

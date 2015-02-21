@@ -4,6 +4,8 @@ from django.forms import CheckboxSelectMultiple
 from django.db import models
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.contenttypes.models import ContentType
+from django.http import HttpResponseRedirect
 
 import logging
 
@@ -117,6 +119,19 @@ class PersonAdmin(admin.ModelAdmin):
 	]
 	actions_on_top = True
 	actions_on_bottom = True
+
+def export_pdf(modeladmin, request, queryset):
+    selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+    ct = ContentType.objects.get_for_model(queryset.model)
+    return HttpResponseRedirect("/data/export/ancestry/%s/" % (",".join(selected)))
+    
+export_pdf.short_description = "create pdf"
+
+class AncestryAdmin(admin.ModelAdmin):
+    list_display = ['name', 'thumbnail', 'export']
+    ordering = ['name']
+    
+    actions = [export_pdf]
 
 class LocationAdmin(admin.ModelAdmin):
 	list_display = ('city', 'state', 'country', 'thumbnail', 'lon', 'lat')

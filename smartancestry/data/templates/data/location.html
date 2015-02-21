@@ -7,7 +7,7 @@
 {% block content %}
 
 		<div class="clearfix">
-			<div class="sidebar" style="width:600px;">
+			<div class="sidebar" style="width:550px;">
 				<div class="images">
 					{% if location.image %}
 						<img src="{{ MEDIA_URL }}..{{ location.image.url }}" alt="Img" width="205">
@@ -15,7 +15,7 @@
 						<img src="" alt="Img" height="237" width="205">
 					{% endif %}
 				</div>
-				<div class="details">
+				<div class="details" style="width: 310px;">
 					<h2>{{ location }}</h2>
 					
 					<p>
@@ -31,24 +31,24 @@
 					</p>
 				</div>
 			</div>
-			<div class="main" style="width:200px;">
+			<div class="main" style="width:250px;">
 				<div>
 					<h2>Locations</h2>
 					{% if locations %}
     					<ul>
     					{% for location in locations %}
-        					<li><a href="/data/location/{{ location.id }}/" class="link">{{ location }}</a></li>
+        					<li><a href="/data/location/{{ location.id }}/" class="link" style="display: inline-flex;">
+        						{% if location.image %}
+									<img src="{{ MEDIA_URL }}..{{ location.image.url }}" height="16" />
+								{% endif %}
+        						{{ location }}
+        						</a>
+        					</li>
     					{% endfor %}
     					</ul>
 					{% else %}
     					No Locations are available.
 					{% endif %}
-				</div>
-				<div>
-					<h2>Client Testimonials</h2>
-					<p>
-						&ldquo;The best family lawyers in the city so far. Me and my ex-wife didn’t have any<br> problems settling the terms and agreement. Everything went so smoothly. We’re both very happy.&rdquo; <span>- Jared Greene</span>
-					</p>
 				</div>
 			</div>
 		</div>

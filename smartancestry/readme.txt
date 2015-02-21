@@ -22,3 +22,8 @@ python ../manage.py compilemessages
 
 
 http://www.verwandt.de/karten/absolut/schossig.html
+
+
+
+
+prince --no-author-style -s http://127.0.0.1:8000/static/data/style_print.css http://127.0.0.1:8000/data/ancestry/1/Kliemank -o Kliemank.pdf

@@ -46,7 +46,7 @@ Relation.prototype = {
 
 var Person = function(id, name, birth, death) {
 	this.id = id;
-	this.name = name;
+	this.name = name.replace('&amp;auml;', 'ä').replace('&amp;ouml;', 'ö');
 	this.birth = birth;
 	this.death = death;
 	
@@ -166,14 +166,7 @@ AncestryTree.prototype.initialize = function() {
 	// create Person objects
 	var intend = [0, 0, 0, 0, 0];
 	
-	this.personData.forEach(function(entry) {
-		/*var name = entry.name;
-		name = name.replace('&lt;u&gt;', '');
-		name = name.replace('&lt;/u&gt;', '');
-		name = name.replace('&amp;auml;', 'ä');
-		name = name.replace('  ', ' ');
-		name = name.replace('  ', ' ');*/
-		
+	this.personData.forEach(function(entry) {		
 		var person = new Person(entry.id, entry.name, entry.birth, entry.death);
 		
 		person.underline = entry.underline;

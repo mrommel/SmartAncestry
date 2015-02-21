@@ -36,7 +36,7 @@ def trimAndUnescape(value):
 	val = value.strip()
 	val = val.replace('<u>', '')
 	val = val.replace('</u>', '')
-	val = val.replace('&auml;', 'ae')
+	#val = val.replace('&auml;', 'ae')
 	val = val.replace('  ', ' ')
 	val = val.replace('  ', ' ')
 	return val
@@ -45,7 +45,7 @@ def trimAndUnescape(value):
 @register.filter(name='underlineIndices')
 def underlineIndices(value):
 	val = value.strip()
-	val = val.replace('&auml;', 'ae')
+	#val = val.replace('&auml;', 'ae')
 	val = val.replace('  ', ' ')
 	val = val.replace('  ', ' ')
 	
@@ -79,4 +79,4 @@ def ellipses(value, arg):
     if len(original_string) <= max_length:
         return original_string
     else:
-        return original_string[:max_length] + " ..."
+        return original_string[:max_length-4] + " ..."

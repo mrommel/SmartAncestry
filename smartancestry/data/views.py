@@ -80,4 +80,17 @@ def location(request, location_id):
 		'locations': Location.objects.all(),
 	})
 	return HttpResponse(template.render(context))
+	
+def export(request, ancestry_id):
+	try:
+		ancestry = Ancestry.objects.get(pk=ancestry_id)
+	except Ancestry.DoesNotExist:
+		raise Http404("Ancestry does not exist")
+		
+	import os
+	os.system('prince --no-author-style -s http://127.0.0.1:8000/static/data/style_print.css http://127.0.0.1:8000/data/ancestry/1/Kliemank -o Kliemank.pdf')
+		
+	image_data = open('Kliemank.pdf', "rb").read()
+	return HttpResponse(image_data, content_type='application/pdf')
+	
 		

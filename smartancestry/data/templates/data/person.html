@@ -11,7 +11,7 @@
 
 <style>
   	#familyTreeContainer {
-		height: 600px;
+		height: 1160px;
 		
 		background-color: #FFFFFF;
 		width: 940px;
@@ -59,9 +59,9 @@
 							{% if person.birth_location.image %}
 								<img src="{{ MEDIA_URL }}..{{ person.birth_location.image.url }}" height="16" />
 							{% endif %}
-							&nbsp;{{ person.birth_location }}</a> <br />
+							&nbsp;{{ person.birth_location }}</a>
 						{% endif %}
-						
+						<br />
 						{% if person.death_date %}
 							+ {{ person.death_date }}
 							{% if person.death_location %}
@@ -211,7 +211,7 @@
 			<h2><a name="tree">{% trans "Family tree" %}</a></h2>
 			
 			<div id="familyTreeContainer">
-				<canvas id="familyTreeCanvas" width="940" height="600"></canvas>
+				<canvas id="familyTreeCanvas" width="940" height="1160"></canvas>
 			</div>
 			
 			<script>
@@ -226,8 +226,8 @@
 							selected: {{ item.selected }},
 							name: "{{ item.person.gender_sign }} {{ item.person.full_name|trimAndUnescape }}",
 							underline: {{ item.person.full_name|underlineIndices }}, 
-							birth: '{% trans "Born" %}: {{ item.person.birth_date|date:"d.m.Y" }} {{ item.person.birth_location|location_without_country }}', 
-							death: '{% trans "Died" %}: {{ item.person.death_date|date:"d.m.Y" }} {{ item.person.death_location|location_without_country }}',
+							birth: '{% trans "Born" %}: {{ item.person.birth_date|date:"d.m.Y" }} {{ item.person.birth_location|location_without_country|ellipses:16 }}', 
+							death: '{% trans "Died" %}: {{ item.person.death_date|date:"d.m.Y" }} {{ item.person.death_location|location_without_country|ellipses:16 }}',
 						},
 						{% endif %}
 					{% endfor %}

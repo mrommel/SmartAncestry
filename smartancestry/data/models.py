@@ -394,6 +394,12 @@ class Person(models.Model):
 	def get_absolute_url(self):
 		return ('data.views.person', [str(self.id)])
 	
+	"""
+		todo: return a pdf of the persons cv
+	"""
+	def export_pdf(self):
+		pass
+	
 	def __unicode__(self):			  
 		return mark_safe('%s %s' % ((' ' + str(self.first_name) + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip(), self.last_name))
 
@@ -475,6 +481,14 @@ class StatisticsInfo(object):
 class Ancestry(models.Model):
 	name = models.CharField(max_length=50)
 	image = models.ImageField(upload_to='media/ancestries', blank=True, null=True)
+	
+	def thumbnail(self):
+		return '<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % ((self.image.name, self.image.name))
+	thumbnail.allow_tags = True
+	
+	def export(self):
+		return '<a href="/data/export/ancestry/%d/" target="_blank">export</a>' % (self.id)
+	export.allow_tags = True
 	
 	def members(self):
 		result_list = AncestryRelation.objects.filter(ancestry = self)
