@@ -24,6 +24,14 @@ def location_without_country(value):
 		pass
 		
 	return ''
+	
+@stringfilter
+@register.filter(name='underline')
+def underline(value):
+	val = ' %s ' % value
+	val = val.replace(' _', ' <u>')
+	val = val.replace('_ ', '</u> ')
+	return mark_safe(val.strip())
     
 @stringfilter
 @register.filter(name='trim')

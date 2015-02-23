@@ -1,5 +1,3 @@
-/*  */
-
 @page {
   size: a4 portrait;
   margin: 1.5cm;
@@ -98,6 +96,11 @@ acknowledge, toc {
   page: clean;
 }
 
+toc list {
+	columns: 2;
+  	column-gap: 1.5em;
+}
+
 toc title, chapter chapheader {
   display: block;
   font-size: 1.4em;
@@ -111,10 +114,12 @@ toc item:after {
 
 para {
   text-indent: 1em;
+  padding-bottom: 2em;
 }
 
 chapheader title {
   string-set: story-title content();
+  display: block;
 }
 
 chapheader + para {
@@ -129,7 +134,35 @@ chapnum:after {
   content: " ";
 }
 
-/*********************/
+/* custom */
+
 .location {
 	height: 16px;
 }
+
+.sub-chapter {
+	text-indent: 20px;
+}
+
+.portait {
+	width: 100px;
+	height: 100px;
+}
+
+/* tables */
+
+table { 
+	float: top; 
+	width: 100%; 
+	border-collapse: collapse; 
+	border-bottom: thin solid black; 
+	margin-bottom: 0em;
+	page-break-inside: avoid;
+}
+table, table td, table th { border: thin solid black; padding: 0.0em; text-align: left }
+
+table { float: none; width: 100%; margin: 0em 0 }
+table td { padding: 0.0em 0.0em }
+table th { padding: 0.0em 0.0em; text-align: center; font-weight: bold }
+
+table.collapsible { display: none }

@@ -127,6 +127,7 @@ class Person(models.Model):
 	birth_location = models.ForeignKey(Location, blank=True, null=True, related_name="birth_location") 
 	death_date = models.DateField('date of death', null=True, blank=True)
 	death_location = models.ForeignKey(Location, blank=True, null=True, related_name="death_location") 
+	already_died = models.NullBooleanField(default=False, blank=True, null=True)
 	profession = models.CharField(max_length=50, blank=True, null=True)
 	father = models.ForeignKey('self', blank=True, null=True, related_name="children_father")
 	father_extern = models.CharField(max_length=50, blank=True, null=True)
@@ -168,8 +169,11 @@ class Person(models.Model):
 	thumbnail.allow_tags = True
 		
 	def age(self):
-		if self.death_date is None:
+		if self.death_date is None and self.already_died == False:
 			return calculate_age(self.birth_date, date.today())
+		
+		if self.death_date is None and self.already_died == True:
+			return None
 		
 		return calculate_age(self.birth_date, self.death_date)
 	
