@@ -22,7 +22,7 @@ BY
 <item href="#chapter1">1. {% trans "Members" %}</item>
 {% if sorted_members %}
 	{% for member in sorted_members %}
-		<item href="#chapter1-{{ member.person.id }}" class="sub-chapter">{{ member.person.last_name }}, {{ member.person.first_name|underline }}</item>
+		<item href="#chapter1-{{ member.person.id }}" class="sub-chapter">{{ member.person.last_name|underline }}, {{ member.person.first_name|underline }}</item>
 	{% endfor %}
 {% endif %}
 <item href="#chapter2">2. {% trans "Timeline" %}</item>
@@ -41,11 +41,14 @@ BY
 <title>{% trans "Members" %}</title>
 </chapheader>
 
+<!-- fake table -->
+<para><table><tr><td></td></tr></table></para>
+
 {% if member_list %}
 	{% for member in member_list %}
 		<para>
 			<table>
-				<tr>
+				<tr class="row">
 					<td width="20%" rowspan="5">
 						{% if member.person.image %}
 							<img src="{{ MEDIA_URL }}..{{ member.person.image.url }}" alt="Img" class="portait">
@@ -53,25 +56,20 @@ BY
 							<img src="" alt="Img" class="portait">
 						{% endif %}
 					</td>
-					<td width="20%">
-						{% trans "Last name" %}:
-					</td>
-					<td width="20%" colspan="3">
-						{{ member.person.last_name }}<a id="chapter1-{{ member.person.id }}">&nbsp;</a>
-						{% if member.person.age %}
-							({{ member.person.age }} {% trans "Years" %})
-						{% endif %}
-					</td>
+					<td width="20%">{% trans "Last name" %}:</td>
+					<td width="20%">{{ member.person.last_name }}<a id="chapter1-{{ member.person.id }}">&nbsp;</a></td>
+					<td width="20%">{% trans "Age" %}:</td>
+					<td width="20%">{% if member.person.age %}{{ member.person.age }} {% trans "Years" %}{% endif %}</td>
 				</tr>
-				<tr>
+				<tr class="alternating">
 					<td width="20%">{% trans "First name" %}:</td>
 					<td colspan="3">{{ member.person.first_name|underline }}</td>
 				</tr>
-				<tr>
+				<tr class="row">
 					<td width="20%">{% trans "Birth name" %}:</td>
 					<td colspan="3">{{ member.person.birth_name }}</td>
 				</tr>
-				<tr>
+				<tr class="alternating">
 					<td width="20%">{% trans "Birth date" %}:</td>
 					<td width="20%">{{ member.person.birth_date }}</td>
 					<td width="20%">{% trans "Birth place" %}:</td>
@@ -84,13 +82,9 @@ BY
 						{% endif %}
 					</td>
 				</tr>
-				<tr>
+				<tr class="row">
 					<td width="20%">{% trans "Death date" %}:</td>
-					<td width="20%">
-						{% if member.person.death_date %}
-							{{ member.person.death_date }}
-						{% endif %}
-					</td>
+					<td width="20%">{% if member.person.death_date %}{{ member.person.death_date }}{% endif %}</td>
 					<td width="20%">{% trans "Death place" %}:</td>
 					<td width="20%">
 						{% if member.person.death_location %}
@@ -103,27 +97,27 @@ BY
 				</tr>
 			</table>
 			<table>
-				<tr>
+				<tr class="alternating">
 					<td width="25%">{% trans "Profession" %}:</td>
 					<td width="25%" colspan="3">{% if member.person.profession %}{{ member.person.profession }}{% endif %}</td>
 				</tr>
-				<tr>
+				<tr class="row">
 					<td width="25%">{% trans "Wife" %}:</td>
 					<td width="25%"></td>
 					<td width="25%">{% trans "Marriage" %}:</td>
 					<td width="25%"></td>
 				</tr>
-				<tr>
+				<tr class="alternating">
 					<td width="25%">{% trans "Father" %}:</td>
 					<td width="25%"></td>
 					<td width="25%">{% trans "Mother" %}:</td>
 					<td width="25%"></td>
 				</tr>
-				<tr>
+				<tr class="row">
 					<td width="25%">{% trans "Children" %}:</td>
 					<td width="25%" colspan="3"></td>
 				</tr>
-				<tr>
+				<tr class="alternating">
 					<td width="25%">{% trans "Siblings" %}:</td>
 					<td width="25%" colspan="3"></td>
 				</tr>
@@ -178,6 +172,48 @@ BY
 		<tr><td>{{ special.name_prefix }}</td><td>{{ special.name_suffix }}</td><td>{{ special.value }}</td></tr>
 	{% endfor %}
 </table>
+
+<h2>{% trans "Births and Deaths per month" %}</h2>
+<!--<img src="" width="600" height="350" />-->
+<script src="/static/data/Chart.js"></script>
+<div class="chartContainer">
+    <canvas id="birthsPerMonthChart" width="600" height="350"></canvas>
+    <div id="birthsPerMonthChartLegend"></div>
+</div>
+<script>
+	var birthsPerMonthData = {
+		labels: ['{% trans "January" %}', '{% trans "February" %}', '{% trans "March" %}', 
+			'{% trans "April" %}', '{% trans "May" %}', '{% trans "June" %}', 
+			'{% trans "July" %}', '{% trans "August" %}', '{% trans "September" %}', 
+			'{% trans "October" %}', '{% trans "November" %}', '{% trans "December" %}'],
+		datasets: [
+			{
+				label: '{% trans "Births per month" %}',
+				fillColor: "rgba(151,187,205,0.5)",
+				strokeColor: "rgba(151,187,205,0.8)",
+				highlightFill: "rgba(151,187,205,0.75)",
+				highlightStroke: "rgba(151,187,205,1)",
+				data: {{ statistics.birthPerMonth }}
+			},
+			{
+				label: '{% trans "Deaths per month" %}',
+				fillColor: "rgba(220,220,220,0.5)",
+				strokeColor: "rgba(220,220,220,0.8)",
+				highlightFill: "rgba(220,220,220,0.75)",
+				highlightStroke: "rgba(220,220,220,1)",							
+				data: {{ statistics.deathPerMonth }}
+			}
+		]
+	};
+
+	// Get the context of the canvas element we want to select
+	var birthsPerMonthChartCtx = document.getElementById("birthsPerMonthChart").getContext("2d");
+	var birthsPerMonthChart = new Chart(birthsPerMonthChartCtx).Bar(birthsPerMonthData, {
+		barShowStroke: false,
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){ %><li><span class=\"color\" style=\"background-color:<%=datasets[i].fillColor%>\"></span><span class=\"title\"><%if(datasets[i].label){ %><%=datasets[i].label%><%}%></span></li><%}%></ul>"
+	});
+	document.getElementById("birthsPerMonthChartLegend").innerHTML = birthsPerMonthChart.generateLegend();
+</script>
 
 </para>
 

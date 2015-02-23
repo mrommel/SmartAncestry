@@ -551,7 +551,7 @@ class Ancestry(models.Model):
 			else:
 				gender.increment(_("Men"))
 				
-			if person.age() < youngestAge:
+			if person.age() is not None and person.age() < youngestAge:
 				youngestAge = person.age()
 				youngestPerson = person
 			
