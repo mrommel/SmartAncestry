@@ -1,0 +1,145 @@
+{% load i18n %}
+<book>
+<frontmatter>
+<titlepage>
+<title>{{ ancestry.name }}</title>
+BY
+<author>I. & M. Rommel</author>
+
+{% if ancestry.image %}
+	<img src="{{ MEDIA_URL }}..{{ ancestry.image.url }}" alt="Img" width="205">
+{% else %}
+	<img src="" alt="Img" height="237" width="205">
+{% endif %}
+
+</titlepage>
+
+<acknowledge>A project of the HTML Writers Guild and Project Gutenberg.</acknowledge>
+
+<toc>
+<title>Contents</title>
+<list>
+<item href="#chapter1">1.  {% trans "Members" %}</item>
+<item>
+	{% if sorted_members %}
+	<list>
+		{% for member in sorted_members %}
+			<item href="#chapter1-{{ member.person.id }}">{{ member.person.last_name }}, {{ member.person.first_name }}</item>
+		{% endfor %}
+	</list>
+	{% endif %}
+</item>
+<item href="#chapter2">2.  {% trans "Timeline" %}</item>
+<item href="#chapter3">3.  {% trans "Statistics" %}</item>
+</list>
+</toc>
+
+</frontmatter>
+<bookbody>
+<part>
+
+<chapter id="chapter1">
+
+<chapheader>
+<chapnum>1. </chapnum>
+<title>{% trans "Members" %}</title>
+</chapheader>
+
+
+{% if member_list %}
+	{% for member in member_list %}
+		<para>
+			<a id="chapter1-{{ member.person.id }}">&nbsp;</a>
+			<table>
+				<tr>
+					<td>{{ member.person }}</td>
+					<td>({{ member.person.age }} {% trans "Years" %})</td>
+				</tr>
+				<tr>
+					<td>* {{ member.person.birth_date }}</td>
+					<td>{% if member.person.birth_location %}
+							{% if member.person.birth_location.image %}
+								<img src="{{ MEDIA_URL }}..{{ member.person.birth_location.image.url }}" class="location" />
+							{% endif %}
+							&nbsp;{{ member.person.birth_location }}
+						{% endif %}
+					</td>
+				</tr>
+				<tr>
+					<td>+ 
+						{% if member.person.death_date %}
+							{{ member.person.death_date }}
+						{% endif %}
+					</td>
+					<td>{% if member.person.death_location %}
+							{% if member.person.death_location.image %}
+								<img src="{{ MEDIA_URL }}..{{ member.person.death_location.image.url }}" class="location" />
+							{% endif %}
+							&nbsp;{{ member.person.death_location }}
+						{% endif %}
+					</td>
+				</tr>
+			</table>			
+		</para>
+	{% endfor %}
+{% else %}
+	<para>{% trans "No members are available." %}</para>
+{% endif %}
+
+</chapter>
+
+<!-- Chapter 2 -->
+
+<chapter id="chapter2">
+
+<chapheader>
+<chapnum>2. </chapnum>
+<title>{% trans "Timeline" %}</title>
+</chapheader>
+
+<para>
+Chapter 2 - Timeline
+
+{% for timeline_entry in ancestry.timeline %}
+	<li><strong>{{ timeline_entry.year }}</strong>
+		<ul>
+			{% for timeline_entry_inner in timeline_entry.list %}
+				<li>{{ timeline_entry_inner.date }} {{ timeline_entry_inner.title }}</li>
+			{% endfor %}
+		</ul>
+	</li>
+{% endfor %}
+
+</para>
+
+</chapter>
+
+<!-- Chapter 3 -->
+
+<chapter id="chapter3">
+
+<chapheader>
+<chapnum>3. </chapnum>
+<title>{% trans "Statistics" %}</title>
+</chapheader>
+
+<para>
+Chapter 3 - Statistics
+
+<h2>{% trans "Specials" %}</h2>
+<table>
+	{% for special in statistics.specials.list %}
+		<tr><td>{{ special.name_prefix }}</td><td>{{ special.name_suffix }}</td><td>{{ special.value }}</td></tr>
+	{% endfor %}
+</table>
+
+</para>
+
+</chapter>
+
+<!-- Chapter ... -->
+
+</part>
+</bookbody>
+</book>
+</gutbook>

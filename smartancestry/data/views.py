@@ -5,6 +5,7 @@ from data.models import Person, Ancestry, Location
 from django.template import RequestContext, loader
 from django.utils import translation
 from random import randint
+from operator import attrgetter
 
 def index(request):
     template = loader.get_template('data/index.html')
@@ -62,6 +63,26 @@ def ancestry(request, ancestry_id):
 	})
 	return HttpResponse(template.render(context))
 
+def ancestry_export(request, ancestry_id):
+	try:
+		ancestry = Ancestry.objects.get(pk=ancestry_id)
+	except Ancestry.DoesNotExist:
+		raise Http404("Ancestry does not exist")
+		
+	sorted_members = ancestry.members()
+	sorted_members = sorted(sorted_members, key=attrgetter('person.first_name'))
+	sorted_members = sorted(sorted_members, key=attrgetter('person.last_name'))
+		
+	template = loader.get_template('data/ancestry_export.html')
+	context = RequestContext(request, {
+		'ancestry': ancestry,
+		'sorted_members': sorted_members,
+		'member_list': ancestry.members(),
+		'locations' : ancestry.locations,
+		'statistics' : ancestry.statistics,
+	})
+	return HttpResponse(template.render(context))
+
 def distributions(request):
 	template = loader.get_template('data/distributions.html')
 	context = RequestContext(request, { })
@@ -88,9 +109,9 @@ def export(request, ancestry_id):
 		raise Http404("Ancestry does not exist")
 		
 	import os
-	os.system('prince --no-author-style -s http://127.0.0.1:8000/static/data/style_print.css http://127.0.0.1:8000/data/ancestry/1/Kliemank -o Kliemank.pdf')
+	os.system('prince --no-author-style -s http://127.0.0.1:8000/static/data/style_print.css http://127.0.0.1:8000/data/ancestry_export/%s/Kliemank -o tmp.pdf' % ancestry_id)
 		
-	image_data = open('Kliemank.pdf', "rb").read()
+	image_data = open('tmp.pdf', "rb").read()
 	return HttpResponse(image_data, content_type='application/pdf')
 	
 		
