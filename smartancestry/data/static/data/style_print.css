@@ -1,3 +1,7 @@
+@import url(http://www.princexml.com/fonts/gentium/index.css);
+
+/* set headers and footers */
+
 @page {
   size: a4 portrait;
   margin: 1.5cm;
@@ -161,10 +165,6 @@ chapnum:after {
 .chartContainer {
   		
 }
-  	
-.chartSeparator {
-	clear: left;
-}
 
 #birthsPerMonthChart {
 	float: left;
@@ -172,10 +172,114 @@ chapnum:after {
 
 #birthsPerMonthChartLegend {
 	float: left;
-	width: 150px;
-	height:350px;
+	width: 6em;
+	height: 350px;
 	padding-left: 30px;
 	padding-top: 80px;
+}
+
+#genderChart {
+	float: left;
+}
+
+#genderLegend {
+	float: left;
+	width: 6em;
+	height: 350px;
+	padding-left: 30px;
+	padding-top: 80px;
+}
+
+#birthLocationsChart {
+	float: left;
+}
+
+#birthLocationsLegend {
+	float: left;
+	/*width: 8em;*/
+	height: 350px;
+	padding: 0px;
+	margin: 0px;
+	background-color: black;
+}
+
+/* bar */
+.bar-legend {
+    width: 6em;
+}
+
+.bar-legend li {
+	display: inline;
+}
+
+.bar-legend .title {
+	display: block;
+	margin-bottom: 0.5em;
+	line-height: 1.2em;
+	padding: 0 0.3em;
+	font: 8pt/1.3 "Verdana", serif;
+}
+
+.bar-legend .color1 {
+	display: block;
+	float: left;
+	width: 1em;
+	height: 1em;
+	border: 1px solid sdf; /* Comment out if you don't want to show the fillColor */
+	border-radius: 0.5em; /* Comment out if you prefer squarish samples */
+	background-color:rgba(151,187,205,0.5);
+	margin-right: 0.5em;
+}
+
+.bar-legend .color2 {
+	display: block;
+	float: left;
+	width: 1em;
+	height: 1em;
+	border: 1px solid sdf; /* Comment out if you don't want to show the fillColor */
+	border-radius: 0.5em; /* Comment out if you prefer squarish samples */
+	background-color:rgba(220,220,220,0.5);
+	margin-right: 0.5em;
+}
+
+/* pie */
+.pie-legend {
+	width: 8em;
+}
+
+.pie-legend li {
+	display: block;
+	background-color: red;
+}
+
+.pie-legend .title {
+	display: block;
+	margin-bottom: 0.5em;
+	line-height: 1.2em;
+	padding: 0 0em;
+	font: 8pt/1.3 "Verdana", serif;
+}
+
+.pie-legend .color1 {
+	display: block;
+	float: left;
+	width: 1em;
+	height: 1em;
+	border: 1px solid sdf; /* Comment out if you don't want to show the fillColor */
+	border-radius: 0.5em; /* Comment out if you prefer squarish samples */
+	margin-right: 0.5em;
+	background-color:rgba(151,187,205,0.5);
+}
+
+.pie-legend .color2 {
+	display: block;
+	float: left;
+	width: 1em;
+	height: 1em;
+	border: 1px solid sdf; /* Comment out if you don't want to show the fillColor */
+	border-radius: 0.5em; /* Comment out if you prefer squarish samples */
+	margin-right: 0.5em;
+	background-color:rgba(220,220,220,0.5);
 }
 
 /* tables */

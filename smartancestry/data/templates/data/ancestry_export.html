@@ -25,8 +25,14 @@ BY
 		<item href="#chapter1-{{ member.person.id }}" class="sub-chapter">{{ member.person.last_name|underline }}, {{ member.person.first_name|underline }}</item>
 	{% endfor %}
 {% endif %}
+
 <item href="#chapter2">2. {% trans "Timeline" %}</item>
+
 <item href="#chapter3">3. {% trans "Statistics" %}</item>
+<item href="#chapter3-1" class="sub-chapter">{% trans "Specials" %}</item>
+<item href="#chapter3-2" class="sub-chapter">{% trans "Births and Deaths per month" %}</item>
+<item href="#chapter3-3" class="sub-chapter">{% trans "Gender distribution" %}</item>
+<item href="#chapter3-4" class="sub-chapter">{% trans "Birth locations" %}</item>
 </list>
 </toc>
 
@@ -167,53 +173,119 @@ BY
 <para>
 
 <h2>{% trans "Specials" %}</h2>
+<a id="chapter3-1">&nbsp;</a>
 <table>
 	{% for special in statistics.specials.list %}
 		<tr><td>{{ special.name_prefix }}</td><td>{{ special.name_suffix }}</td><td>{{ special.value }}</td></tr>
 	{% endfor %}
 </table>
 
-<h2>{% trans "Births and Deaths per month" %}</h2>
-<!--<img src="" width="600" height="350" />-->
-<script src="/static/data/Chart.js"></script>
-<div class="chartContainer">
-    <canvas id="birthsPerMonthChart" width="600" height="350"></canvas>
-    <div id="birthsPerMonthChartLegend"></div>
-</div>
-<script>
-	var birthsPerMonthData = {
-		labels: ['{% trans "January" %}', '{% trans "February" %}', '{% trans "March" %}', 
-			'{% trans "April" %}', '{% trans "May" %}', '{% trans "June" %}', 
-			'{% trans "July" %}', '{% trans "August" %}', '{% trans "September" %}', 
-			'{% trans "October" %}', '{% trans "November" %}', '{% trans "December" %}'],
-		datasets: [
-			{
-				label: '{% trans "Births per month" %}',
-				fillColor: "rgba(151,187,205,0.5)",
-				strokeColor: "rgba(151,187,205,0.8)",
-				highlightFill: "rgba(151,187,205,0.75)",
-				highlightStroke: "rgba(151,187,205,1)",
-				data: {{ statistics.birthPerMonth }}
-			},
-			{
-				label: '{% trans "Deaths per month" %}',
-				fillColor: "rgba(220,220,220,0.5)",
-				strokeColor: "rgba(220,220,220,0.8)",
-				highlightFill: "rgba(220,220,220,0.75)",
-				highlightStroke: "rgba(220,220,220,1)",							
-				data: {{ statistics.deathPerMonth }}
-			}
-		]
-	};
+</para>
 
-	// Get the context of the canvas element we want to select
-	var birthsPerMonthChartCtx = document.getElementById("birthsPerMonthChart").getContext("2d");
-	var birthsPerMonthChart = new Chart(birthsPerMonthChartCtx).Bar(birthsPerMonthData, {
-		barShowStroke: false,
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){ %><li><span class=\"color\" style=\"background-color:<%=datasets[i].fillColor%>\"></span><span class=\"title\"><%if(datasets[i].label){ %><%=datasets[i].label%><%}%></span></li><%}%></ul>"
-	});
-	document.getElementById("birthsPerMonthChartLegend").innerHTML = birthsPerMonthChart.generateLegend();
-</script>
+<para>
+<h2>{% trans "Births and Deaths per month" %}</h2>
+
+<div class="chartContainer">
+	<a id="chapter3-2">&nbsp;</a>
+	<img src="http://127.0.0.1:4444/bar.png?data1={{ statistics.birthPerMonthStr|encodeSpaces }}&data2={{ statistics.deathPerMonthStr|encodeSpaces }}&axis={% trans "January" %},{% trans "February" %},{% trans "March" %},{% trans "April" %},{% trans "May" %},{% trans "June" %},{% trans "July" %},{% trans "August" %},{% trans "September" %},{% trans "October" %},{% trans "November" %},{% trans "December" %}" id="birthsPerMonthChart" width="450" />
+	
+	<div id="birthsPerMonthChartLegend">
+		<ul class="bar-legend">
+			<li>
+				<span class="color1"></span>
+				<span class="title">Geburten pro Monat</span>
+			</li>
+			<li>
+				<span class="color2"></span>
+				<span class="title">Todesfälle pro Monat</span>
+			</li>
+		</ul>
+	</div>
+</div>
+
+</para>
+
+<para>
+<h2>{% trans "Gender distribution" %}</h2>
+			
+<div class="chartContainer">
+	<a id="chapter3-3">&nbsp;</a>
+	<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.genderValuesStr|encodeSpaces }}" id="genderChart" width="450" />
+	
+	<div id="genderLegend">
+		<ul class="pie-legend">
+			<li>
+				<span class="color1"></span>
+				<span class="title">M&auml;nner</span>
+			</li>
+			<li>
+				<span class="color2"></span>
+				<span class="title">Frauen</span>
+			</li>
+		</ul>
+	</div>
+</div>
+    		
+</para>
+
+<para>
+<h2>{% trans "Birth locations" %}</h2>
+			
+<div class="chartContainer">
+	<a id="chapter3-4">&nbsp;</a>
+    <img src="http://127.0.0.1:4444/pie.png?data={{ statistics.birthLocationsValuesStr|encodeSpaces }}&colors=[81D8D0,FEECCF,9ACD32,EDDA74,C85A17,F7464A,DDDDDC,E18B6B,7931DF,737CA1]" id="birthLocationsChart" width="450" />
+	
+    <div id="birthLocationsLegend">
+		<ul class="pie-legend">
+			{% for birthLocations in statistics.birthLocations.list %}
+			<li>
+				<span class="color1"></span>
+				<span class="title">{{ birthLocations.name }}</span>
+			</li>
+			{% endfor %}
+			<!--<li>
+				<span class="color1" style="background-color:#81D8D0"></span>
+				<span class="title">Berlin</span>
+			</li>
+			<li>
+				<span class="color2" style="background-color:#FEECCF"></span>
+				<span class="title">Beuthen</span>
+			</li>
+			<li>
+				<span class="color3" style="background-color:#9ACD32"></span>
+				<span class="title">Gotha</span>
+			</li>
+			<li>
+				<span class="color4" style="background-color:#EDDA74"></span>
+				<span class="title">Luckau</span>
+			</li>
+			<li>
+				<span class="color5" style="background-color:#C85A17"></span>
+				<span class="title">Washington</span>
+			</li>
+			<li>
+				<span class="color6" style="background-color:#F7464A"></span>
+				<span class="title">Posen</span>
+			</li>
+			<li>
+				<span class="color7" style="background-color:#DDDDDC"></span>
+				<span class="title">Rothenburg (Wettin-Löbejün)</span>
+			</li>
+			<li>
+				<span class="color8" style="background-color:#E18B6B"></span>
+				<span class="title">Wilkau</span>
+			</li>
+			<li>
+				<span class="color9" style="background-color:#7931DF"></span>
+				<span class="title">Konstanz</span>
+			</li>
+			<li>	
+				<span class="color10" style="background-color:#737CA1"></span>
+				<span class="title">Rest</span>
+			</li>-->
+    	</ul>
+    </div>
+</div>
 
 </para>
 

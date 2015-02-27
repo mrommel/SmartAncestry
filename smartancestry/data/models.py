@@ -470,6 +470,14 @@ class StatisticsListInfo(object):
 		
 		return result_list
 	
+	def names(self):
+		result_list = []
+		
+		for item in self.list:
+			result_list.append(item.name)
+		
+		return result_list
+	
 	def __unicode__(self):
 		return 'StatisticsListInfo: %s' % len(self.list)
 	 
@@ -481,6 +489,21 @@ class StatisticsInfo(object):
 		self.birthLocations = birthLocations
 		self.children = children
 		self.specials = specials
+		
+	def birthPerMonthStr(self):
+		return str(self.birthPerMonth)
+		
+	def deathPerMonthStr(self):
+		return str(self.deathPerMonth)
+		
+	def genderValuesStr(self):			
+		return str(self.gender.values())
+		
+	def genderNamesStr(self):
+		return str(self.gender.names())
+		
+	def birthLocationsValuesStr(self):
+		return str(self.birthLocations.values())
 
 class Ancestry(models.Model):
 	name = models.CharField(max_length=50)

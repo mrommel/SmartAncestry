@@ -26,6 +26,11 @@ def location_without_country(value):
 	return ''
 	
 @stringfilter
+@register.filter(name='encodeSpaces')
+def encodeSpaces(value):
+	return value.replace(' ', '')
+	
+@stringfilter
 @register.filter(name='underline')
 def underline(value):
 	val = ' %s ' % value
@@ -49,6 +54,12 @@ def trimAndUnescape(value):
 	val = val.replace('  ', ' ')
 	return val
 	
+@stringfilter
+@register.filter(name='htmlEncode')
+def htmlEncode(value):	
+	val = value.replace('\xe4', '&auml;')
+	return val
+
 @stringfilter
 @register.filter(name='underlineIndices')
 def underlineIndices(value):

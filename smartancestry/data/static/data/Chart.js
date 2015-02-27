@@ -8,7 +8,6 @@
  * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
  */
 
-
 (function(){
 
 	"use strict";
@@ -33,7 +32,8 @@
 			}
 			else
 			{
-				return document.defaultView.getComputedStyle(element).getPropertyValue(dimension);
+				//return document.defaultView.getComputedStyle(element).getPropertyValue(dimension);
+        return element[dimension.toLowerCase()];
 			}
 		}
 
@@ -54,7 +54,8 @@
 	Chart.defaults = {
 		global: {
 			// Boolean - Whether to animate the chart
-			animation: true,
+			//animation: true,
+			animation: false,
 
 			// Number - Number of animation steps
 			animationSteps: 60,
@@ -776,8 +777,8 @@
 				height = chart.canvas.height;
 
 			if (window.devicePixelRatio) {
-				ctx.canvas.style.width = width + "px";
-				ctx.canvas.style.height = height + "px";
+				//ctx.canvas.style.width = width + "px";
+				//ctx.canvas.style.height = height + "px";
 				ctx.canvas.height = height * window.devicePixelRatio;
 				ctx.canvas.width = width * window.devicePixelRatio;
 				ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
