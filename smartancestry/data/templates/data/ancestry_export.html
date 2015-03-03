@@ -33,6 +33,7 @@ BY
 <item href="#chapter3-2" class="sub-chapter">{% trans "Births and Deaths per month" %}</item>
 <item href="#chapter3-3" class="sub-chapter">{% trans "Gender distribution" %}</item>
 <item href="#chapter3-4" class="sub-chapter">{% trans "Birth locations" %}</item>
+<item href="#chapter3-5" class="sub-chapter">{% trans "Children" %}</item>
 </list>
 </toc>
 
@@ -224,8 +225,7 @@ BY
 			</li>
 		</ul>
 	</div>
-</div>
-    		
+</div>		
 </para>
 
 <para>
@@ -233,60 +233,31 @@ BY
 			
 <div class="chartContainer">
 	<a id="chapter3-4">&nbsp;</a>
-    <img src="http://127.0.0.1:4444/pie.png?data={{ statistics.birthLocationsValuesStr|encodeSpaces }}&colors=[81D8D0,FEECCF,9ACD32,EDDA74,C85A17,F7464A,DDDDDC,E18B6B,7931DF,737CA1]" id="birthLocationsChart" width="450" />
+    <img src="http://127.0.0.1:4444/pie.png?data={{ statistics.birthLocationsValuesStr|encodeSpaces }}&colors={{ statistics.birthLocationsColorsStr|trimHash|encodeSpaces }}" id="birthLocationsChart" width="450" />
 	
     <div id="birthLocationsLegend">
 		<ul class="pie-legend">
 			{% for birthLocations in statistics.birthLocations.list %}
 			<li>
-				<span class="color1"></span>
+				<span class="color color-{{ birthLocations.color|trimHash }}"></span>
 				<span class="title">{{ birthLocations.name }}</span>
 			</li>
 			{% endfor %}
-			<!--<li>
-				<span class="color1" style="background-color:#81D8D0"></span>
-				<span class="title">Berlin</span>
-			</li>
-			<li>
-				<span class="color2" style="background-color:#FEECCF"></span>
-				<span class="title">Beuthen</span>
-			</li>
-			<li>
-				<span class="color3" style="background-color:#9ACD32"></span>
-				<span class="title">Gotha</span>
-			</li>
-			<li>
-				<span class="color4" style="background-color:#EDDA74"></span>
-				<span class="title">Luckau</span>
-			</li>
-			<li>
-				<span class="color5" style="background-color:#C85A17"></span>
-				<span class="title">Washington</span>
-			</li>
-			<li>
-				<span class="color6" style="background-color:#F7464A"></span>
-				<span class="title">Posen</span>
-			</li>
-			<li>
-				<span class="color7" style="background-color:#DDDDDC"></span>
-				<span class="title">Rothenburg (Wettin-Löbejün)</span>
-			</li>
-			<li>
-				<span class="color8" style="background-color:#E18B6B"></span>
-				<span class="title">Wilkau</span>
-			</li>
-			<li>
-				<span class="color9" style="background-color:#7931DF"></span>
-				<span class="title">Konstanz</span>
-			</li>
-			<li>	
-				<span class="color10" style="background-color:#737CA1"></span>
-				<span class="title">Rest</span>
-			</li>-->
     	</ul>
     </div>
 </div>
+</para>
 
+<para>
+<h2>{% trans "Children" %}</h2>
+
+<div class="chartContainer">
+	<a id="chapter3-5">&nbsp;</a>
+	<img src="http://127.0.0.1:4444/bar.png?data={{ statistics.childrenValuesStr|encodeSpaces }}&axis=0,1,2,3,4,5,6,7,8,9,10" id="childrenChart" width="450" />
+	
+    <div id="childrenLegend">
+    </div>
+</div>
 </para>
 
 </chapter>

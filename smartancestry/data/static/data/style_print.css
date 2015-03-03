@@ -1,11 +1,11 @@
-@import url(http://www.princexml.com/fonts/gentium/index.css);
+/* @import url(http://www.princexml.com/fonts/gentium/index.css); */
 
 /* set headers and footers */
 
 @page {
   size: a4 portrait;
   margin: 1.5cm;
-  font: 11pt/1.3 "Gentium", serif;
+  font: 11pt/1.3 "Verdana", serif;
 }
 
 @page {
@@ -59,7 +59,7 @@
 }
 
 :root {
-  font: 10pt/1.3 "Gentium", serif;
+  font: 10pt/1.3 "Verdana", serif;
 }
 
 gutblurb, markupblurb, endblurb {
@@ -163,7 +163,7 @@ chapnum:after {
 
 /* chartjs */
 .chartContainer {
-  		
+	display: block;
 }
 
 #birthsPerMonthChart {
@@ -174,8 +174,8 @@ chapnum:after {
 	float: left;
 	width: 6em;
 	height: 350px;
-	padding-left: 30px;
-	padding-top: 80px;
+	padding-left: 0px;
+	padding-top: 0px;
 }
 
 #genderChart {
@@ -186,21 +186,26 @@ chapnum:after {
 	float: left;
 	width: 6em;
 	height: 350px;
-	padding-left: 30px;
-	padding-top: 80px;
 }
 
 #birthLocationsChart {
 	float: left;
 }
 
-#birthLocationsLegend {
+#birthLocationsLegend ul {
 	float: left;
-	/*width: 8em;*/
+	width: 10em;
 	height: 350px;
-	padding: 0px;
-	margin: 0px;
-	background-color: black;
+}
+
+#childrenChart {
+	float: left;
+}
+
+#childrenLegend {
+	float: left;
+	width: 6em;
+	height: 350px;
 }
 
 /* bar */
@@ -216,7 +221,7 @@ chapnum:after {
 	display: block;
 	margin-bottom: 0.5em;
 	line-height: 1.2em;
-	padding: 0 0.3em;
+	padding: 0 0em;
 	font: 8pt/1.3 "Verdana", serif;
 }
 
@@ -245,18 +250,18 @@ chapnum:after {
 /* pie */
 .pie-legend {
 	width: 8em;
+	text-indent: 0em;
 }
 
 .pie-legend li {
-	display: block;
-	background-color: red;
+	display: inline;
 }
 
 .pie-legend .title {
 	display: block;
 	margin-bottom: 0.5em;
 	line-height: 1.2em;
-	padding: 0 0em;
+	padding: 0;
 	font: 8pt/1.3 "Verdana", serif;
 }
 
@@ -280,6 +285,60 @@ chapnum:after {
 	border-radius: 0.5em; /* Comment out if you prefer squarish samples */
 	margin-right: 0.5em;
 	background-color:rgba(220,220,220,0.5);
+}
+
+.pie-legend .color {
+	display: block;
+	float: left;
+	width: 1em;
+	height: 1em;
+	border: 1px solid sdf; /* Comment out if you don't want to show the fillColor */
+	border-radius: 0.5em; /* Comment out if you prefer squarish samples */
+	margin-right: 0.5em;
+}
+
+.pie-legend .color-e28955 {
+	background-color:#e28955;
+}
+
+.pie-legend .color-e2b855 {
+	background-color:#e2b855;
+}
+
+.pie-legend .color-dde255 {
+	background-color:#dde255;
+}
+
+.pie-legend .color-aee255 {
+	background-color:#aee255;
+}
+
+.pie-legend .color-7fe255 {
+	background-color:#7fe255;
+}
+
+.pie-legend .color-55e25a {
+	background-color:#55e25a;
+}
+
+.pie-legend .color-55e289 {
+	background-color:#55e289;
+}
+
+.pie-legend .color-55e2b8 {
+	background-color:#55e2b8;
+}
+
+.pie-legend .color-55dde2 {
+	background-color:#55dde2;
+}
+
+.pie-legend .color-55aee2 {
+	background-color:#55aee2;
+}
+
+.pie-legend .color-557fe2 {
+	background-color:#557fe2;
 }
 
 /* tables */

@@ -42,6 +42,11 @@ def underline(value):
 @register.filter(name='trim')
 def trim(value):
 	return value.strip()
+
+@stringfilter
+@register.filter(name='trimHash')
+def trimHash(value):
+	return value.replace('#','').replace('\'','')
 	
 @stringfilter
 @register.filter(name='trimAndUnescape')

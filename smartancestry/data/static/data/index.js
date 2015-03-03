@@ -2,3 +2,4 @@
 global.window || (global.window = global);
 
 module.exports = require('./Chart');
+//module.exports = require('./Colour');

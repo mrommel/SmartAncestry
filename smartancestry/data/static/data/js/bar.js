@@ -4,7 +4,6 @@ var Canvas = require('canvas'),
     canvas = new Canvas(600, 450),
     ctx = canvas.getContext('2d'),
     Chart = require('../'),
-    data = require('./bar.json'), 
     fs = require('fs');
 
 var server = http.createServer(function(req,res) {
@@ -14,11 +13,40 @@ var server = http.createServer(function(req,res) {
 	var query = request.query;
 
 	if (request.pathname == '/bar.png') {
+	
+		var barChartData = {
+		  labels : [
+			"January",
+			"February",
+			"March",
+			"April",
+			"May",
+			"June",
+			"July"
+		  ],
+		  datasets : [
+			{
+			  fillColor : "rgba(151,187,205,0.5)",
+			  strokeColor : "rgba(151,187,205,0.8)",
+			  highlightFill : "rgba(151,187,205,0.75)",
+			  highlightStroke : "rgba(151,187,205,1)",
+			  data : [0,0,0,0,0,0,0]
+			},
+			{
+			  fillColor : "rgba(220,220,220,0.5)",
+			  strokeColor : "rgba(220,220,220,0.8)",
+			  highlightFill: "rgba(220,220,220,0.75)",
+			  highlightStroke: "rgba(220,220,220,1)",
+			  data : [0,0,0,0,0,0,0]
+			}
+		  ]
+		};
+	
 		if (query.data1) {
 			var index = 0;
 			var trimmedParam = query.data1.replace('[', '').replace(']', '');
 			trimmedParam.split(",").forEach(function (item) {
-				data.datasets[0].data[index] = item;
+				barChartData.datasets[0].data[index] = item;
 				index++;
 			});
 		}
@@ -27,7 +55,19 @@ var server = http.createServer(function(req,res) {
 			var index = 0;
 			var trimmedParam = query.data2.replace('[', '').replace(']', '');
 			trimmedParam.split(",").forEach(function (item) {
-				data.datasets[1].data[index] = item;
+				barChartData.datasets[1].data[index] = item;
+				index++;
+			});
+		}
+		
+		if (query.data) {
+			// remove second data
+			//data.datasets[1] = null;
+			 
+			var index = 0;
+			var trimmedParam = query.data.replace('[', '').replace(']', '');
+			trimmedParam.split(",").forEach(function (item) {
+				barChartData.datasets[0].data[index] = item;
 				index++;
 			});
 		}
@@ -35,14 +75,14 @@ var server = http.createServer(function(req,res) {
 		if (query.axis) {
 			var index = 0;
 			query.axis.split(",").forEach(function (item) {
-				data.labels[index] = item;
+				barChartData.labels[index] = item;
 				index++;
 			});
 		}
 
 		ctx.fillStyle = '#fff';
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
-		var chart = new Chart(ctx).Bar(data);
+		var chart = new Chart(ctx).Bar(barChartData);
 	
 		console.log("deliver bar.png?");
 		canvas.toBuffer(function (err, buf) {
@@ -104,9 +144,9 @@ var server = http.createServer(function(req,res) {
 				index++;
 			});
 		}
-		pieData.forEach(function (pieItem) {
+		/*pieData.forEach(function (pieItem) {
 			console.log("pie data: value=" + pieItem.value + ", color=" + pieItem.color);
-		});
+		});*/
 	
 		ctx.fillStyle = '#fff';
 		ctx.fillRect(0, 0, canvas.width, canvas.height);

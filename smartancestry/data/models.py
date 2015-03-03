@@ -429,11 +429,11 @@ class StatisticsItemInfo(object):
 	def name_suffix(self):
 		return mark_safe(self.name.split(',')[1])
 
-COLORS = ( "#81D8D0", "#9ACD32", "#EDDA74", "#C85A17", "#FEECCF", "#F7464A", "#DDDDDC", "#E18B6B", "#7931DF", "#737CA1", "#1589FF", "#3BB9FF", 
-	"#F76541", "#9ACD32", "#EDDA74", "#C85A17", "#FEECCF", "#F7464A", "#DDDDDC", "#E18B6B", "#7931DF", "#737CA1", "#1589FF", "#3BB9FF",
-	"#F76541", "#9ACD32", "#EDDA74", "#C85A17", "#FEECCF", "#F7464A", "#DDDDDC", "#E18B6B", "#7931DF", "#737CA1", "#1589FF", "#3BB9FF",
-	"#F76541", "#9ACD32", "#EDDA74", "#C85A17", "#FEECCF", "#F7464A", "#DDDDDC", "#E18B6B", "#7931DF", "#737CA1", "#1589FF", "#3BB9FF")
-				
+COLORS = ( "#e28955", "#e2b855", "#dde255", "#aee255", "#7fe255", "#55e25a", "#55e289", "#55e2b8", "#55dde2", "#55aee2", "#557fe2", "#e25a55",
+	"#e28955", "#e2b855", "#dde255", "#aee255", "#7fe255", "#55e25a", "#55e289", "#55e2b8", "#55dde2", "#55aee2", "#557fe2", "#e25a55",
+	"#e28955", "#e2b855", "#dde255", "#aee255", "#7fe255", "#55e25a", "#55e289", "#55e2b8", "#55dde2", "#55aee2", "#557fe2", "#e25a55",
+	"#e28955", "#e2b855", "#dde255", "#aee255", "#7fe255", "#55e25a", "#55e289", "#55e2b8", "#55dde2", "#55aee2", "#557fe2", "#e25a55")	
+
 class StatisticsListInfo(object):
 	def __init__(self):
 		self.list = []
@@ -460,6 +460,12 @@ class StatisticsListInfo(object):
 			rest_value = rest_value + item.value
 		result_list.append(StatisticsItemInfo(_('Rest'), rest_value, COLORS[len(self.list)]))
 		
+		# reapply colors
+		index = 0
+		for item in result_list:
+			item.color = COLORS[index]
+			index = index + 1
+		
 		self.list = result_list
 		
 	def values(self):
@@ -467,6 +473,14 @@ class StatisticsListInfo(object):
 		
 		for item in self.list:
 			result_list.append(item.value)
+		
+		return result_list
+		
+	def colors(self):
+		result_list = []
+		
+		for item in self.list:
+			result_list.append(item.color)
 		
 		return result_list
 	
@@ -504,6 +518,12 @@ class StatisticsInfo(object):
 		
 	def birthLocationsValuesStr(self):
 		return str(self.birthLocations.values())
+		
+	def birthLocationsColorsStr(self):
+		return str(self.birthLocations.colors())
+		
+	def childrenValuesStr(self):			
+		return str(self.children.values())
 
 class Ancestry(models.Model):
 	name = models.CharField(max_length=50)
