@@ -165,7 +165,10 @@ class Person(models.Model):
 			return self.mother_extern
 		
 	def thumbnail(self):
-		return '<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % ((self.image.name, self.image.name))
+		if self.image.name is not None and self.image.name <> '':
+			return '<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % ((self.image.name, self.image.name))
+		else:
+			return '<img border="0" alt="" src="/static/data/images/Person-icon-grey.JPG" height="40" />'
 	thumbnail.allow_tags = True
 		
 	def age(self):
@@ -533,14 +536,30 @@ class Ancestry(models.Model):
 		return '<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % ((self.image.name, self.image.name))
 	thumbnail.allow_tags = True
 	
+	def number_of_members(self):
+		return '%d persons' % len(AncestryRelation.objects.filter(ancestry = self))
+	
 	def export(self):
-		return '<a href="/data/export/ancestry/%d/" target="_blank">export</a>' % (self.id)
+		return '<a href="/data/export/ancestry/%d/" target="_blank">Export PDF</a>' % (self.id)
 	export.allow_tags = True
 	
 	def members(self):
 		result_list = AncestryRelation.objects.filter(ancestry = self)
 		result_list = sorted(result_list, key=attrgetter('person.birth_date'), reverse=True)
 		return result_list
+	
+	def featured(self):
+		result_list = AncestryRelation.objects.filter(ancestry = self).filter(featured = True)
+		result_list = sorted(result_list, key=attrgetter('person.birth_date'), reverse=True)
+		return result_list
+		
+	def featured_str(self):
+		str = '<ul>'
+		for item in self.featured():
+			str = '%s<li>%s</li>' % (str, item.person)
+		str = '%s</ul>' % str
+		
+		return mark_safe(str)
 	
 	def locations(self):
 		result_list = []
@@ -672,6 +691,7 @@ class Ancestry(models.Model):
 class AncestryRelation(models.Model):
 	person = models.ForeignKey(Person)
 	ancestry = models.ForeignKey(Ancestry)
+	featured = models.NullBooleanField(default=False, blank=True, null=True)
 	
 	def __unicode__(self):			  
 		return '%s' % (self.ancestry.name)

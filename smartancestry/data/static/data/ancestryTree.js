@@ -217,3 +217,9 @@ AncestryTree.prototype.getCursorPosition = function(e) {
 	return new Cell(x, y);
 };
 
+if (typeof module === 'object' && module.exports) {
+	module.exports.AncestryTree = AncestryTree;
+	module.exports.Cell = Cell;
+	module.exports.Relation = Relation;
+	module.exports.Person = Person;
+}

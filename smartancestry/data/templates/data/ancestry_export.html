@@ -5,19 +5,19 @@
 <titlepage>
 <title>{{ ancestry.name }}</title>
 {% if ancestry.image %}
-	<img src="{{ MEDIA_URL }}..{{ ancestry.image.url }}" alt="Img" width="205"><br />
+	<img src="{{ MEDIA_URL }}..{{ ancestry.image.url }}" alt="Img" width="405"><br />
 {% else %}
-	<img src="" alt="Img" height="237" width="205"><br />
+	<img src="" alt="Img" height="637" width="405"><br />
 {% endif %}
-BY
-<author>I. &amp; M. Rommel</author>
+{% trans "by" %}
+<author>{% trans "I. &amp; M. Rommel" %}</author>
 
 </titlepage>
 
-<acknowledge>A project of I. &amp; M. Rommel</acknowledge>
+<acknowledge>{% trans "A project of I. &amp; M. Rommel" %}</acknowledge>
 
 <toc>
-<title>Contents</title>
+<title>{% trans "Contents" %}</title>
 <list class="toc">
 <item href="#chapter1">1. {% trans "Members" %}</item>
 {% if sorted_members %}
@@ -30,10 +30,13 @@ BY
 
 <item href="#chapter3">3. {% trans "Statistics" %}</item>
 <item href="#chapter3-1" class="sub-chapter">{% trans "Specials" %}</item>
-<item href="#chapter3-2" class="sub-chapter">{% trans "Births and Deaths per month" %}</item>
-<item href="#chapter3-3" class="sub-chapter">{% trans "Gender distribution" %}</item>
-<item href="#chapter3-4" class="sub-chapter">{% trans "Birth locations" %}</item>
-<item href="#chapter3-5" class="sub-chapter">{% trans "Children" %}</item>
+<item href="#chapter3-2" class="sub-chapter">{% trans "Locations" %}</item>
+<item href="#chapter3-3" class="sub-chapter">{% trans "Births and Deaths per month" %}</item>
+<item href="#chapter3-4" class="sub-chapter">{% trans "Gender distribution" %}</item>
+<item href="#chapter3-5" class="sub-chapter">{% trans "Birth locations" %}</item>
+<item href="#chapter3-6" class="sub-chapter">{% trans "Children" %}</item>
+
+<item href="#chapter4">4. {% trans "Family trees" %}</item>
 </list>
 </toc>
 
@@ -184,10 +187,17 @@ BY
 </para>
 
 <para>
+
+<h2>{% trans "Locations" %}</h2>
+<a id="chapter3-2">&nbsp;</a>
+
+</para>
+
+<para>
 <h2>{% trans "Births and Deaths per month" %}</h2>
 
 <div class="chartContainer">
-	<a id="chapter3-2">&nbsp;</a>
+	<a id="chapter3-3">&nbsp;</a>
 	<img src="http://127.0.0.1:4444/bar.png?data1={{ statistics.birthPerMonthStr|encodeSpaces }}&data2={{ statistics.deathPerMonthStr|encodeSpaces }}&axis={% trans "January" %},{% trans "February" %},{% trans "March" %},{% trans "April" %},{% trans "May" %},{% trans "June" %},{% trans "July" %},{% trans "August" %},{% trans "September" %},{% trans "October" %},{% trans "November" %},{% trans "December" %}" id="birthsPerMonthChart" width="450" />
 	
 	<div id="birthsPerMonthChartLegend">
@@ -210,7 +220,7 @@ BY
 <h2>{% trans "Gender distribution" %}</h2>
 			
 <div class="chartContainer">
-	<a id="chapter3-3">&nbsp;</a>
+	<a id="chapter3-4">&nbsp;</a>
 	<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.genderValuesStr|encodeSpaces }}" id="genderChart" width="450" />
 	
 	<div id="genderLegend">
@@ -232,7 +242,7 @@ BY
 <h2>{% trans "Birth locations" %}</h2>
 			
 <div class="chartContainer">
-	<a id="chapter3-4">&nbsp;</a>
+	<a id="chapter3-5">&nbsp;</a>
     <img src="http://127.0.0.1:4444/pie.png?data={{ statistics.birthLocationsValuesStr|encodeSpaces }}&colors={{ statistics.birthLocationsColorsStr|trimHash|encodeSpaces }}" id="birthLocationsChart" width="450" />
 	
     <div id="birthLocationsLegend">
@@ -252,12 +262,34 @@ BY
 <h2>{% trans "Children" %}</h2>
 
 <div class="chartContainer">
-	<a id="chapter3-5">&nbsp;</a>
+	<a id="chapter3-6">&nbsp;</a>
 	<img src="http://127.0.0.1:4444/bar.png?data={{ statistics.childrenValuesStr|encodeSpaces }}&axis=0,1,2,3,4,5,6,7,8,9,10" id="childrenChart" width="450" />
 	
     <div id="childrenLegend">
     </div>
 </div>
+</para>
+
+</chapter>
+
+<!-- Chapter 4 -->
+
+<chapter id="chapter4">
+
+<chapheader>
+<chapnum>4. </chapnum>
+<title>{% trans "Family trees" %}</title>
+</chapheader>
+
+<para>
+
+{% if featured %}
+	{% for member in featured %}
+	{% endfor %}
+{% else %}
+	<para>{% trans "No members are available." %}</para>
+{% endif %}
+
 </para>
 
 </chapter>

@@ -128,7 +128,7 @@ def export_pdf(modeladmin, request, queryset):
 export_pdf.short_description = "create pdf"
 
 class AncestryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'thumbnail', 'export']
+    list_display = ['name', 'thumbnail', 'number_of_members', 'featured_str', 'export']
     ordering = ['name']
     
     actions = [export_pdf]
