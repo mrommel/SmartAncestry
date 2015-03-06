@@ -29,6 +29,9 @@ node bar.js
 node colors.js 
 ==> prints colors (hsl / 12)
 
+node tree.js
+==> create ancestry trees
+
 # misc
 
 http://www.verwandt.de/karten/absolut/schossig.html

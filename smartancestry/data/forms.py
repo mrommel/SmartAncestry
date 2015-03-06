@@ -125,7 +125,7 @@ def export_pdf(modeladmin, request, queryset):
     ct = ContentType.objects.get_for_model(queryset.model)
     return HttpResponseRedirect("/data/export/ancestry/%s/" % (",".join(selected)))
     
-export_pdf.short_description = "create pdf"
+export_pdf.short_description = _("Create pdfs")
 
 class AncestryAdmin(admin.ModelAdmin):
     list_display = ['name', 'thumbnail', 'number_of_members', 'featured_str', 'export']

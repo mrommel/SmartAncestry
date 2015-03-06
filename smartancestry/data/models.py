@@ -14,6 +14,38 @@ import logging
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
+def ellipses(original_string, max_length):
+    if len(original_string) <= max_length:
+        return original_string
+    else:
+        return original_string[:max_length-4] + " ..."
+
+def trimAndUnescape(value):
+	val = value.strip()
+	val = val.replace('<u>', '')
+	val = val.replace('</u>', '')
+	#val = val.replace('&auml;', 'ae')
+	val = val.replace('  ', ' ')
+	val = val.replace('  ', ' ')
+	return val
+	
+def underlineIndices(value):
+	val = value.strip()
+	#val = val.replace('&auml;', 'ae')
+	val = val.replace('  ', ' ')
+	val = val.replace('  ', ' ')
+	
+	u_start = val.find('<u>')
+	u_end = val.find('</u>')
+	
+	if u_start <> -1:
+		u_start = u_start + 2
+	
+	if u_end <> -1:
+		u_end = u_end - 1
+	
+	return '%d,%d' % (u_start, u_end)
+	
 def calculate_age(born, death):
 	return death.year - born.year - ((death.month, death.day) < (born.month, born.day))
 
@@ -80,6 +112,30 @@ class TreeInfo(object):
 		self.level = level
 		self.person = person
 		self.selected = selected
+		
+	# {4,3,0,%22%E2%99%82%20Marcel%20Rommel%22,-1,-1,%27Geb.:%2013.11.2006%20Berlin%27,%27Gest.:%20%27}	
+	def info(self):			  
+		id = self.person.id
+		selected = self.selected
+		sign = self.person.gender_sign()
+		name = trimAndUnescape(str(self.person.full_name()))
+		indices = underlineIndices(str(self.person.full_name()))
+		
+		# born str construction
+		born = str('%s: %02d.%02d.%04d' % (_('Born'), self.person.birth_date.day, self.person.birth_date.month, self.person.birth_date.year))
+		if self.person.birth_location is not None:
+			born = born + ' ' + self.person.birth_location.city.encode('utf-8')
+		born = ellipses(born, 32)
+			
+		# died str construction
+		died = str('%s: ' % _('Died'))
+		if self.person.death_date is not None:
+			died = died + (' %02d.%02d.%04d' % (self.person.death_date.day, self.person.death_date.month, self.person.death_date.year))
+		if self.person.death_location is not None:
+			died = died + ' ' + self.person.death_location.city.encode('utf-8')
+		died = ellipses(died, 32)
+			
+		return '{%d,%d,%d,\'%s %s\',%s,%s,%s}' % (id, self.level, selected, sign, name, indices, born, died)
 
 class PartnerInfo(object):
 	def __init__(self, status, partner, partner_name, location, date):
@@ -102,12 +158,15 @@ class RelationsInfo(object):
 class PersonInfo(object):
 	def __init__(self, id, name, gender):
 		self.id = id
-		self.full_name = name
+		self.name = name
 		self.sex = gender
 		self.birth_date = None
 		self.birth_location = None
 		self.death_date = None
 		self.death_location = None
+		
+	def full_name(self):
+		return self.name.strip()
 		
 	def gender_sign(self):
 		if self.sex == 'M':
@@ -118,6 +177,9 @@ class PersonInfo(object):
 def name_of_ancestry(x):
 	return mark_safe(x.ancestry.name)
 
+"""
+	class of persons
+"""
 class Person(models.Model):
 	first_name = models.CharField(max_length=50)
 	last_name = models.CharField(max_length=50)
@@ -144,7 +206,7 @@ class Person(models.Model):
 	user_name.short_description = 'Name'
 	
 	def full_name(self):
-		return '%s %s' % ((' ' + str(self.first_name) + ' ').replace(" _", " <u>").replace("_ ", "</u> "), self.last_name)
+		return ('%s %s' % ((' ' + str(self.first_name) + ' ').replace(" _", " <u>").replace("_ ", "</u> "), self.last_name)).strip()
 	
 	def gender_sign(self):
 		if self.sex == 'M':
@@ -397,6 +459,22 @@ class Person(models.Model):
 		
 		return RelativesInfo(relatives_list, relations_list)
 	
+	# create list of relations for tree
+	# [(1,2);(3,1)]
+	def relations_str(self):
+		result_list = []
+		for item in self.relatives().relations:
+			result_list.append('%d+%d' % (item.source, item.destination))
+		return str(result_list).replace(',', ';').replace('+', ',').replace(' ', '').replace('[\'', '[(').replace('\';\'',');(').replace('\']', ')]')
+	
+	# creates a list of relatives for tree
+	# [{4,3,0,%22%E2%99%82%20Marcel%20Rommel%22,-1,-1,%27Geb.:%2013.11.2006%20Berlin%27,%27Gest.:%20%27}]
+	def relatives_str(self):
+		result_list = []
+		for item in self.relatives().relatives:
+			result_list.append(item.info())
+		return str(result_list).replace('"', '').replace('}, {', '};{').replace(' ', '%20')
+	
 	@models.permalink
 	def get_absolute_url(self):
 		return ('data.views.person', [str(self.id)])
@@ -540,7 +618,7 @@ class Ancestry(models.Model):
 		return '%d persons' % len(AncestryRelation.objects.filter(ancestry = self))
 	
 	def export(self):
-		return '<a href="/data/export/ancestry/%d/" target="_blank">Export PDF</a>' % (self.id)
+		return '<a href="/data/export/ancestry/%d/%s.pdf" target="_blank">Export PDF</a>' % (self.id, self.name)
 	export.allow_tags = True
 	
 	def members(self):
@@ -719,12 +797,12 @@ class FamilyStatusRelation(models.Model):
 			
 	def status_name(self):
 		if self.status == 'M':			
-			return "Verheiratet"
+			return _("married")
 		else:
 			if self.status == 'P':			
-				return "Partnerschaft"
+				return _("partnership")
 			else:
-				return "Geschieden"
+				return _("divorced")
 				
 		return "---"
 
@@ -740,10 +818,10 @@ class FamilyStatusRelation(models.Model):
 			wifeStr = self.wife_extern
 			
 		if self.status == 'M':			
-			return 'Marriage %s and %s' % (husbandStr, wifeStr)
+			return _('Marriage %s and %s') % (husbandStr, wifeStr)
 		else:
 			if self.status == 'P':			
-				return 'Partnership %s and %s' % (husbandStr, wifeStr)
+				return _('Partnership %s and %s') % (husbandStr, wifeStr)
 			else:
-				return 'Divorce %s and %s' % (husbandStr, wifeStr)
+				return _('Divorce %s and %s') % (husbandStr, wifeStr)
 			

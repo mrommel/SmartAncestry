@@ -26,15 +26,15 @@ var server = http.createServer(function(req,res) {
 		  ],
 		  datasets : [
 			{
-			  fillColor : "rgba(151,187,205,0.5)",
-			  strokeColor : "rgba(151,187,205,0.8)",
+			  fillColor : "rgba(226,137,85,0.8)",
+			  strokeColor : "rgba(226,137,85,1.0)",
 			  highlightFill : "rgba(151,187,205,0.75)",
 			  highlightStroke : "rgba(151,187,205,1)",
 			  data : [0,0,0,0,0,0,0]
 			},
 			{
-			  fillColor : "rgba(220,220,220,0.5)",
-			  strokeColor : "rgba(220,220,220,0.8)",
+			  fillColor : "rgba(226,184,85,0.8)",
+			  strokeColor : "rgba(226,184,85,1.0)",
 			  highlightFill: "rgba(220,220,220,0.75)",
 			  highlightStroke: "rgba(220,220,220,1)",
 			  data : [0,0,0,0,0,0,0]
@@ -96,13 +96,13 @@ var server = http.createServer(function(req,res) {
 		var pieData = [
 					{
 						value: 48,
-						color: "rgba(151,187,205,0.5)",
+						color: "rgba(226,137,85,0.8)",
 						highlight: "#FF5A5E",
 						label: "Item1"
 					},
 					{
 						value: 33,
-						color: "rgba(220,220,220,0.5)",
+						color: "rgba(226,184,85,0.8)",
 						highlight: "#FF5A5E",
 						label: "Item2"
 					},	

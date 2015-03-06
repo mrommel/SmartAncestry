@@ -203,11 +203,11 @@
 	<div id="birthsPerMonthChartLegend">
 		<ul class="bar-legend">
 			<li>
-				<span class="color1"></span>
+				<span class="color color1"></span>
 				<span class="title">Geburten pro Monat</span>
 			</li>
 			<li>
-				<span class="color2"></span>
+				<span class="color color2"></span>
 				<span class="title">Todesfälle pro Monat</span>
 			</li>
 		</ul>
@@ -226,11 +226,11 @@
 	<div id="genderLegend">
 		<ul class="pie-legend">
 			<li>
-				<span class="color1"></span>
+				<span class="color color1"></span>
 				<span class="title">M&auml;nner</span>
 			</li>
 			<li>
-				<span class="color2"></span>
+				<span class="color color2"></span>
 				<span class="title">Frauen</span>
 			</li>
 		</ul>
@@ -285,6 +285,8 @@
 
 {% if featured %}
 	{% for member in featured %}
+		{{ member.person }}
+		<img src="http://localhost:4445/tree.png?persons={{ member.person.relatives_str }}&relations={{ member.person.relations_str }}" width=550 />
 	{% endfor %}
 {% else %}
 	<para>{% trans "No members are available." %}</para>

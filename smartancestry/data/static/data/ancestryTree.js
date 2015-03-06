@@ -30,8 +30,19 @@ Relation.prototype = {
 	},
 	
 	draw: function(context, persons) {
-		var cell1 = this.getSourcePerson(persons).getSource();
-		var cell2 = this.getDestinationPerson(persons).getDestination();
+		var sourcePerson = this.getSourcePerson(persons);
+		if (sourcePerson == undefined) {
+			console.log('Cannot find person with id: ' + this.source);
+			return;
+		}
+		var cell1 = sourcePerson.getSource();
+		
+		var destinationPerson = this.getDestinationPerson(persons);
+		if (destinationPerson == undefined) {
+			console.log('Cannot find person with id: ' + this.destination);
+			return;
+		}
+		var cell2 = destinationPerson.getDestination();
 		var x0 = (cell1.x + cell2.x) / 2; 
 		
 		context.beginPath();
