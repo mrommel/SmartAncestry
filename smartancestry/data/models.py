@@ -24,7 +24,7 @@ def trimAndUnescape(value):
 	val = value.strip()
 	val = val.replace('<u>', '')
 	val = val.replace('</u>', '')
-	#val = val.replace('&auml;', 'ae')
+	# val = val.replace('ä', u'ä')
 	val = val.replace('  ', ' ')
 	val = val.replace('  ', ' ')
 	return val
@@ -469,11 +469,12 @@ class Person(models.Model):
 	
 	# creates a list of relatives for tree
 	# [{4,3,0,%22%E2%99%82%20Marcel%20Rommel%22,-1,-1,%27Geb.:%2013.11.2006%20Berlin%27,%27Gest.:%20%27}]
+	# .replace('&#39;', '\'')
 	def relatives_str(self):
 		result_list = []
 		for item in self.relatives().relatives:
 			result_list.append(item.info())
-		return str(result_list).replace('"', '').replace('}, {', '};{').replace(' ', '%20')
+		return mark_safe(str(result_list).replace('"', '').replace('}, {', '};{').replace(' ', '%20'))
 	
 	@models.permalink
 	def get_absolute_url(self):

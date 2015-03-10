@@ -67,7 +67,7 @@
 						{% endif %}
 					</td>
 					<td width="20%">{% trans "Last name" %}:</td>
-					<td width="20%">{{ member.person.last_name }}<a id="chapter1-{{ member.person.id }}">&nbsp;</a></td>
+					<td width="20%">{% autoescape off %}{{ member.person.last_name }}{% endautoescape %}<a id="chapter1-{{ member.person.id }}">&nbsp;</a></td>
 					<td width="20%">{% trans "Age" %}:</td>
 					<td width="20%">{% if member.person.age %}{{ member.person.age }} {% trans "Years" %}{% endif %}</td>
 				</tr>
@@ -81,7 +81,7 @@
 				</tr>
 				<tr class="alternating">
 					<td width="20%">{% trans "Birth date" %}:</td>
-					<td width="20%">{{ member.person.birth_date }}</td>
+					<td width="20%">{{ member.person.birth_date | date:"d.m.Y" }}</td>
 					<td width="20%">{% trans "Birth place" %}:</td>
 					<td width="20%">
 						{% if member.person.birth_location %}
@@ -94,7 +94,7 @@
 				</tr>
 				<tr class="row">
 					<td width="20%">{% trans "Death date" %}:</td>
-					<td width="20%">{% if member.person.death_date %}{{ member.person.death_date }}{% endif %}</td>
+					<td width="20%">{% if member.person.death_date %}{{ member.person.death_date | date:"d.m.Y" }}{% endif %}</td>
 					<td width="20%">{% trans "Death place" %}:</td>
 					<td width="20%">
 						{% if member.person.death_location %}
@@ -281,18 +281,16 @@
 <title>{% trans "Family trees" %}</title>
 </chapheader>
 
-<para>
-
 {% if featured %}
 	{% for member in featured %}
-		{{ member.person }}
-		<img src="http://localhost:4445/tree.png?persons={{ member.person.relatives_str }}&relations={{ member.person.relations_str }}" width=550 />
+		<para>
+			<h2>{{ member.person }}</h2>
+			<img src="http://localhost:4445/tree.png?persons={{ member.person.relatives_str }}&relations={{ member.person.relations_str }}" width=550 />
+		</para>
 	{% endfor %}
 {% else %}
 	<para>{% trans "No members are available." %}</para>
 {% endif %}
-
-</para>
 
 </chapter>
 

@@ -140,6 +140,12 @@ chapnum:after {
 
 /* custom */
 
+h2 {
+	font-size: 1.2em;
+  	text-align: center;
+  	padding: 1em 0 2em;
+}
+
 .location {
 	height: 16px;
 }

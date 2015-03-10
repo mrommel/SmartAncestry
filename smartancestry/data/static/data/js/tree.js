@@ -39,15 +39,18 @@ var server = http.createServer(function(req,res) {
 				personObj.name = personObj.name.replace('/xe2/x99/x82', '♂');
 				personObj.name = personObj.name.replace('/xe2/x99/x80', '♀');
 				personObj.name = personObj.name.replace('\'', '');
+				console.log('name: ' + personObj.name);
 				var underlineObj = { };
 				underlineObj.start = parts[4];
 				underlineObj.end = parts[5];
 				personObj.underline = underlineObj;
 				personObj.birth = parts[6];
+				console.log('birth: ' + personObj.birth);
 				personObj.birth = personObj.birth.replace('/xc3/x9f', 'ß');
 				personObj.birth = personObj.birth.replace('/xc3/xbc', 'ü');
 				console.log('birth: ' + personObj.birth);
 				personObj.death = parts[7];
+				console.log('death: ' + personObj.death);
 				personObj.death = personObj.death.replace('/xc3/x9f', 'ß');
 				personObj.death = personObj.death.replace('/xc3/xbc', 'ü');
 				console.log('death: ' + personObj.death);
