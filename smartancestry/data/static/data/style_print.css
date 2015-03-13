@@ -159,12 +159,65 @@ h2 {
 	height: 100px;
 }
 
+.not_breaking {
+	page-break-inside: avoid;
+}
+
+/* tables */
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+td {
+	text-align: left; 
+	padding: 3px 5px; 
+	vertical-align: middle;
+
+    border-left: 2px solid white;
+    border-right: 2px solid white;
+    border-bottom: 2px solid white;
+    
+    text-indent: 0em;
+}
+
 .row {
-	background-color: #eeeeee;
+	background-color: #ededed;
 }
 
 .alternating {
-	background-color: #ffffff;
+	background-color: #f7f7f7;
+}
+
+.label {
+	color:#666; 
+}
+
+.commalist {
+  	display: inline;
+  	list-style: none;
+  	padding: 0em 0em;
+  	margin: 0px;
+}
+
+.commalist ul {
+	padding: 0em 0em;
+	margin: 0px;
+}
+
+.commalist li {
+  	display: inline;
+  	padding: 0em 0em;
+  	margin: 0px;
+}
+
+.commalist li:after {
+  	content: ", ";
+}
+
+.commalist li:last-child:after {
+    content: "";
 }
 
 /* chartjs */
@@ -180,6 +233,7 @@ h2 {
 	float: left;
 	width: 10em;
 	height: 350px;
+	text-indent: 0em;
 }
 
 #genderChart {
@@ -190,6 +244,7 @@ h2 {
 	float: left;
 	width: 10em;
 	height: 350px;
+	text-indent: 0em;
 }
 
 #birthLocationsChart {
@@ -200,6 +255,7 @@ h2 {
 	float: left;
 	width: 10em;
 	height: 350px;
+	text-indent: 0em;
 }
 
 #childrenChart {
@@ -210,6 +266,7 @@ h2 {
 	float: left;
 	width: 6em;
 	height: 350px;
+	text-indent: 0em;
 }
 
 /* bar */
@@ -344,20 +401,3 @@ h2 {
 .pie-legend .color-557fe2 {
 	background-color:#557fe2;
 }
-
-/* tables */
-
-table { 
-	float: top; 
-	width: 100%; 
-	border-collapse: collapse; 
-	margin-bottom: 0em;
-	page-break-inside: avoid;
-}
-table, table td, table th { border: thin solid white; padding: 0.0em; text-align: left }
-
-table { float: none; width: 100%; margin: 0em 0 }
-table td { padding: 0.05em 0.0em }
-table th { padding: 0.0em 0.0em; text-align: center; font-weight: bold }
-
-table.collapsible { display: none }

@@ -57,32 +57,33 @@
 {% if member_list %}
 	{% for member in member_list %}
 		<para>
+			<div class="not_breaking">
 			<table>
 				<tr class="row">
 					<td width="20%" rowspan="5">
 						{% if member.person.image %}
 							<img src="{{ MEDIA_URL }}..{{ member.person.image.url }}" alt="Img" class="portait">
 						{% else %}
-							<img src="" alt="Img" class="portait">
+							<img src="/static/data/images/avatar_{{ member.person.sex}}.png" alt="Img{{ member.person.sex}}" class="portait">
 						{% endif %}
 					</td>
-					<td width="20%">{% trans "Last name" %}:</td>
+					<td width="20%" class="label">{% trans "Last name" %}:</td>
 					<td width="20%">{% autoescape off %}{{ member.person.last_name }}{% endautoescape %}<a id="chapter1-{{ member.person.id }}">&nbsp;</a></td>
-					<td width="20%">{% trans "Age" %}:</td>
+					<td width="20%" class="label">{% trans "Age" %}:</td>
 					<td width="20%">{% if member.person.age %}{{ member.person.age }} {% trans "Years" %}{% endif %}</td>
 				</tr>
 				<tr class="alternating">
-					<td width="20%">{% trans "First name" %}:</td>
+					<td width="20%" class="label">{% trans "First name" %}:</td>
 					<td colspan="3">{{ member.person.first_name|underline }}</td>
 				</tr>
 				<tr class="row">
-					<td width="20%">{% trans "Birth name" %}:</td>
-					<td colspan="3">{{ member.person.birth_name }}</td>
+					<td width="20%" class="label">{% trans "Birth name" %}:</td>
+					<td colspan="3">{% if member.person.birth_name %}{{ member.person.birth_name }}{% endif %}</td>
 				</tr>
 				<tr class="alternating">
-					<td width="20%">{% trans "Birth date" %}:</td>
+					<td width="20%" class="label">{% trans "Birth date" %}:</td>
 					<td width="20%">{{ member.person.birth_date | date:"d.m.Y" }}</td>
-					<td width="20%">{% trans "Birth place" %}:</td>
+					<td width="20%" class="label">{% trans "Birth place" %}:</td>
 					<td width="20%">
 						{% if member.person.birth_location %}
 							{% if member.person.birth_location.image %}
@@ -93,9 +94,9 @@
 					</td>
 				</tr>
 				<tr class="row">
-					<td width="20%">{% trans "Death date" %}:</td>
+					<td width="20%" class="label">{% trans "Death date" %}:</td>
 					<td width="20%">{% if member.person.death_date %}{{ member.person.death_date | date:"d.m.Y" }}{% endif %}</td>
-					<td width="20%">{% trans "Death place" %}:</td>
+					<td width="20%" class="label">{% trans "Death place" %}:</td>
 					<td width="20%">
 						{% if member.person.death_location %}
 							{% if member.person.death_location.image %}
@@ -108,30 +109,94 @@
 			</table>
 			<table>
 				<tr class="alternating">
-					<td width="25%">{% trans "Profession" %}:</td>
-					<td width="25%" colspan="3">{% if member.person.profession %}{{ member.person.profession }}{% endif %}</td>
+					<td width="20%" class="label first">{% trans "Profession" %}:</td>
+					<td width="30%" colspan="3" class="first">{% if member.person.profession %}{{ member.person.profession }}{% endif %}</td>
 				</tr>
-				<tr class="row">
-					<td width="25%">{% trans "Wife" %}:</td>
-					<td width="25%"></td>
-					<td width="25%">{% trans "Marriage" %}:</td>
-					<td width="25%"></td>
+				{% if member.person.partner_relations %}
+					{% for partner_relation in member.person.partner_relations %}
+						<tr class="{% if forloop.counter|divisibleby:2 %}alternating{% else %}row{% endif %}">
+							<td width="20%" class="label">
+								{% if partner_relation.status == 'married' %}
+									{% trans "Marriage" %}:
+								{% endif %}
+								{% if partner_relation.status == 'divorced' %}
+									{% trans "Divorce" %}:
+								{% endif %}
+								{% if partner_relation.status == 'partnership' %}
+									{% trans "Partnership" %}:
+								{% endif %}
+							</td>
+							<td width="30%">{% if partner_relation.partner %}{{ partner_relation.partner }}{% else %}{{ partner_relation.partner_name }}{% endif %}</td>
+							<td width="50%" colspan="2">
+								{% if partner_relation.date %}
+									{{ partner_relation.date | date:"d.m.Y" }}&nbsp;-
+								{% endif %}
+								{% if partner_relation.location %}
+									{% if partner_relation.location.image %}
+										<img src="{{ MEDIA_URL }}..{{ partner_relation.location.image.url }}" class="location" />
+									{% endif %}
+									{{ partner_relation.location|location_without_country }}
+								{% endif %}
+							</td>
+						</tr>
+					{% endfor %}
+				{% endif %}
+				<tr class="{% if member.person.partner_relations|length|divisibleby:2 %}row{% else %}alternating{% endif %}">
+					<td width="20%" class="label">{% trans "Father" %}:</td>
+					<td width="30%">
+						{% if member.person.father %}
+							{{ member.person.father }}
+						{% else %}
+							{{ member.person.father_extern }}
+						{% endif %}
+					</td>
+					<td width="20%" class="label">{% trans "Mother" %}:</td>
+					<td width="30%">
+						{% if member.person.mother %}
+							{{ member.person.mother }}
+						{% else %}
+							{{ member.person.mother_extern }}
+						{% endif %}
+					</td>
 				</tr>
-				<tr class="alternating">
-					<td width="25%">{% trans "Father" %}:</td>
-					<td width="25%"></td>
-					<td width="25%">{% trans "Mother" %}:</td>
-					<td width="25%"></td>
+				<tr class="{% if member.person.partner_relations|length|divisibleby:2 %}alternating{% else %}row{% endif %}">
+					<td width="20%" class="label">{% trans "Children" %}:</td>
+					<td width="30%" colspan="3">
+						<ul class="commalist">
+						{% if member.person.children %}
+    						{% for child in member.person.children %}
+        						<li>{{ child.first_name|underline }}</li>
+    						{% endfor %}
+						{% else %}
+							{% if member.person.children_extern_list %}
+								{% for child in member.person.children_extern_list %}
+        							<li>{{ child }}</li>
+    							{% endfor %}
+    						{% endif %}
+						{% endif %}
+						</ul>
+					</td>
 				</tr>
-				<tr class="row">
-					<td width="25%">{% trans "Children" %}:</td>
-					<td width="25%" colspan="3"></td>
+				<tr class="{% if member.person.partner_relations|length|divisibleby:2 %}row{% else %}alternating{% endif %}">
+					<td width="20%" class="label">{% trans "Siblings" %}:</td>
+					<td width="30%" colspan="3">
+						<ul class="commalist">
+						{% if member.person.siblings %}
+    						{% for child in member.person.siblings %}
+        						<li>{{ child.first_name|underline }}</li>
+    						{% endfor %}
+						{% else %}
+							{% if member.person.siblings_extern_list %}
+								{% for child in member.person.siblings_extern_list %}
+        							<li>{{ child }}</li>
+    							{% endfor %}
+    						{% endif %}
+						{% endif %}
+						</ul>
+					</td>
 				</tr>
-				<tr class="alternating">
-					<td width="25%">{% trans "Siblings" %}:</td>
-					<td width="25%" colspan="3"></td>
-				</tr>
-			</table>			
+			</table>
+			</div>			
 		</para>
 	{% endfor %}
 {% else %}
