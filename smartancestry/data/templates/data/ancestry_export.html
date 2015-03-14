@@ -3,18 +3,19 @@
 <book>
 <frontmatter>
 <titlepage>
-<title>{{ ancestry.name }}</title>
 {% if ancestry.image %}
-	<img src="{{ MEDIA_URL }}..{{ ancestry.image.url }}" alt="Img" width="405"><br />
+	<img src="{{ MEDIA_URL }}..{{ ancestry.image.url }}" alt="Img" width="405">
 {% else %}
-	<img src="" alt="Img" height="637" width="405"><br />
+	<img src="" alt="Img" height="637" width="405">
 {% endif %}
-{% trans "by" %}
-<author>{% trans "I. &amp; M. Rommel" %}</author>
+
+<date>{% now "j.F Y" %}</date>
+<title>{% trans "Ancestrybook" %}</title>
+<subtitle>{{ ancestry.name }}</subtitle>
 
 </titlepage>
 
-<acknowledge>{% trans "A project of I. &amp; M. Rommel" %}</acknowledge>
+<acknowledge>{% trans "Ancestrybook" %} {{ ancestry.name }}</acknowledge>
 
 <toc>
 <title>{% trans "Contents" %}</title>
@@ -230,15 +231,20 @@
 
 <para>
 
+<table>
 {% for timeline_entry in ancestry.timeline %}
-	<li class="timeline"><strong>{{ timeline_entry.year }}</strong>
+	<tr class="{% if forloop.counter|divisibleby:2 %}alternating{% else %}row{% endif %}">
+		<td><strong>{{ timeline_entry.year }}</strong></td>
+		<td>
 		<ul class="not_breaking">
 			{% for timeline_entry_inner in timeline_entry.list %}
 				<li>{{ timeline_entry_inner.date }} {{ timeline_entry_inner.title }}</li>
 			{% endfor %}
 		</ul>
-	</li>
+		</tD>
+	</tr>
 {% endfor %}
+</table>
 
 </para>
 

@@ -16,7 +16,7 @@
 
 @page :left {
   @top-left {
-    content: string(author);
+    content: string(head);
     vertical-align: middle;
     font-size: 9pt;
   }
@@ -78,18 +78,29 @@ titlepage {
   text-align: center;
 }
 
-titlepage title {
-  padding: 3em 0 3em;
-  font-size: 1.5em;
-  display: block;
+titlepage img {
+  text-align: center;
+  padding: 14em 0 0;
 }
 
-titlepage author {
-  font-size: 1.5em;
+titlepage date {
+  font-size: 0.8em;
   text-align: center;
   padding: 3em 0 0;
   display: block;
-  string-set: author content();
+}
+
+titlepage title {
+  padding: 3em 0 1em;
+  font-size: 2em;
+  display: block;
+}
+
+titlepage subtitle {
+  padding: 0em;
+  font-size: 1.5em;
+  display: block;
+  string-set: head content();
 }
 
 titlepage, acknowledge, toc, chapter {
