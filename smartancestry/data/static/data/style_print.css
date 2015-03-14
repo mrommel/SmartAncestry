@@ -112,6 +112,10 @@ toc title, chapter chapheader {
   padding: 3em 0 2em;
 }
 
+toc item {
+	font-size: 0.9em;
+}
+
 toc item:after {
   content: leader('.') target-counter(attr(href), page);
 }
@@ -400,4 +404,12 @@ td {
 
 .pie-legend .color-557fe2 {
 	background-color:#557fe2;
+}
+
+/* distribution */
+
+.distribution {
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
 }

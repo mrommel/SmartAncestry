@@ -58,6 +58,16 @@ class LocationInfo(object):
 		return "{:10.4f}".format(self.lon) + ", " + "{:10.4f}".format(self.lat)
 
 """
+	class of a distribution
+"""
+class Distribution(models.Model):
+	family_name = models.CharField(max_length=50)
+	image = models.ImageField(upload_to='media/distributions', blank=True, null=True)
+
+	def __unicode__(self):			  
+		return '%s' % (self.family_name)
+
+"""
 	class of a location with city, state and country
 	
 	meta information: image, longitude, latitude
@@ -764,8 +774,18 @@ class Ancestry(models.Model):
 		
 		return final_list
 	
+	def distributions(self):
+		return DistributionRelation.objects.filter(ancestry = self)
+	
 	def __unicode__(self):			  
 		return self.name
+
+class DistributionRelation(models.Model):
+	distribution = models.ForeignKey(Distribution)
+	ancestry = models.ForeignKey(Ancestry)
+	
+	def __unicode__(self):			  
+		return '%s - %s' % (self.ancestry.name, self.distribution.family_name)
 
 class AncestryRelation(models.Model):
 	person = models.ForeignKey(Person)

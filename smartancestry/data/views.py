@@ -79,6 +79,7 @@ def ancestry_export(request, ancestry_id):
 		'sorted_members': sorted_members,
 		'member_list': ancestry.members(),
 		'featured': ancestry.featured(),
+		'distributions': ancestry.distributions(),
 		'locations' : ancestry.locations,
 		'statistics' : ancestry.statistics,
 	})

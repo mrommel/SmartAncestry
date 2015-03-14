@@ -37,6 +37,19 @@
 <item href="#chapter3-6" class="sub-chapter">{% trans "Children" %}</item>
 
 <item href="#chapter4">4. {% trans "Family trees" %}</item>
+{% if featured %}
+	{% for member in featured %}
+		<item href="#chapter4-{{ member.person.id }}" class="sub-chapter">{{ member.person.last_name|underline }}, {{ member.person.first_name|underline }}</item>
+	{% endfor %}
+{% endif %}
+
+<item href="#chapter5">5. {% trans "Distributions" %}</item>
+{% if distributions %}
+	{% for distribution in distributions %}
+		<item href="#chapter5-{{ distribution.distribution.id }}" class="sub-chapter">{{ distribution.distribution }}</item>
+	{% endfor %}
+{% endif %}
+
 </list>
 </toc>
 
@@ -350,6 +363,7 @@
 	{% for member in featured %}
 		<para>
 			<h2>{{ member.person }}</h2>
+			<a id="chapter4-{{ member.person.id }}">&nbsp;</a>
 			<img src="http://localhost:4445/tree.png?persons={{ member.person.relatives_str }}&relations={{ member.person.relations_str }}" width=550 />
 		</para>
 	{% endfor %}
@@ -359,7 +373,30 @@
 
 </chapter>
 
-<!-- Chapter ... -->
+<!-- Chapter 5 -->
+
+<chapter id="chapter5">
+
+<chapheader>
+<chapnum>5. </chapnum>
+<title>{% trans "Distributions" %}</title>
+</chapheader>
+
+{% if distributions %}
+	{% for distribution in distributions %}
+		<para>
+			<div class="not_breaking">
+			<h2>{{ distribution.distribution.family_name }}</h2>
+			<a id="chapter5-{{ distribution.distribution.id }}">&nbsp;</a>
+			<img src="{{ MEDIA_URL }}..{{ distribution.distribution.image.url }}" class="distribution" />
+			</div>
+		</para>
+	{% endfor %}
+{% else %}
+	<para>{% trans "No distributions are available." %}</para>
+{% endif %}
+
+</chapter>
 
 </part>
 </bookbody>
