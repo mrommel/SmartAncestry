@@ -269,6 +269,11 @@
 
 <h2>{% trans "Locations" %}</h2>
 <a id="chapter3-2">&nbsp;</a>
+{% if ancestry.map %}
+	<img src="{{ MEDIA_URL }}..{{ ancestry.map.url }}" alt="Img" height="400" class="distribution"><br />
+{% else %}
+	<img src="" alt="Img" height="400" width="500" class="distribution"><br />
+{% endif %}
 
 </para>
 
@@ -365,7 +370,7 @@
 		<para>
 			<h2>{{ member.person }}</h2>
 			<a id="chapter4-{{ member.person.id }}">&nbsp;</a>
-			<img src="http://localhost:4445/tree.png?persons={{ member.person.relatives_str }}&relations={{ member.person.relations_str }}" width=550 />
+			<img src="http://localhost:4445/tree.png?persons={{ member.person.relatives_str }}&relations={{ member.person.relations_str }}" width=550 class="distribution" />
 		</para>
 	{% endfor %}
 {% else %}

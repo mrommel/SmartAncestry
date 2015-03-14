@@ -47,8 +47,8 @@ Relation.prototype = {
 		
 		context.beginPath();
 		context.moveTo(cell1.x, cell1.y);
-		context.lineTo(x0, cell1.y);
-		context.lineTo(x0, cell2.y);
+		context.lineTo(x0-2, cell1.y);
+		context.lineTo(x0+2, cell2.y);
 		context.lineTo(cell2.x, cell2.y);
 		context.strokeStyle = "#000";
 		context.stroke();

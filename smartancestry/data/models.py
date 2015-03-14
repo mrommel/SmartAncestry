@@ -215,8 +215,20 @@ class Person(models.Model):
 	
 	user_name.short_description = 'Name'
 	
+	def first_name_short(self):
+		if not ' ' in self.first_name:
+			return self.first_name
+			
+		result_list = self.first_name.split(' ')
+		
+		for x in range(0, len(result_list)):
+			if not '_' in result_list[x]:
+				result_list[x] = result_list[x][0] + '.'
+		
+		return ' '.join(result_list)
+	
 	def full_name(self):
-		return ('%s %s' % ((' ' + str(self.first_name) + ' ').replace(" _", " <u>").replace("_ ", "</u> "), self.last_name)).strip()
+		return ('%s %s' % ((' ' + str(self.first_name_short()) + ' ').replace(" _", " <u>").replace("_ ", "</u> "), self.last_name)).strip()
 	
 	def gender_sign(self):
 		if self.sex == 'M':
@@ -620,6 +632,7 @@ class StatisticsInfo(object):
 class Ancestry(models.Model):
 	name = models.CharField(max_length=50)
 	image = models.ImageField(upload_to='media/ancestries', blank=True, null=True)
+	map = models.ImageField(upload_to='media/maps', blank=True, null=True)
 	
 	def thumbnail(self):
 		return '<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % ((self.image.name, self.image.name))

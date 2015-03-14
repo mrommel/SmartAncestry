@@ -38,6 +38,8 @@ var server = http.createServer(function(req,res) {
 				personObj.name = personObj.name.replace('\'', '');
 				personObj.name = personObj.name.replace('/xe2/x99/x82', '♂');
 				personObj.name = personObj.name.replace('/xe2/x99/x80', '♀');
+				personObj.name = personObj.name.replace('Ã¤', 'ä');
+				personObj.name = personObj.name.replace('Ã¶', 'ö');
 				personObj.name = personObj.name.replace('\'', '');
 				console.log('name: ' + personObj.name);
 				var underlineObj = { };
@@ -48,11 +50,13 @@ var server = http.createServer(function(req,res) {
 				console.log('birth: ' + personObj.birth);
 				personObj.birth = personObj.birth.replace('/xc3/x9f', 'ß');
 				personObj.birth = personObj.birth.replace('/xc3/xbc', 'ü');
+				personObj.birth = personObj.birth.replace('/xc3/xa4', 'ä');
 				console.log('birth: ' + personObj.birth);
 				personObj.death = parts[7];
 				console.log('death: ' + personObj.death);
 				personObj.death = personObj.death.replace('/xc3/x9f', 'ß');
 				personObj.death = personObj.death.replace('/xc3/xbc', 'ü');
+				personObj.death = personObj.death.replace('/xc3/xa4', 'ä');
 				console.log('death: ' + personObj.death);
 				personData.push(personObj);
 				//console.log("person: " + index + " => " + item);
