@@ -142,9 +142,10 @@
 							<td width="30%">{% if partner_relation.partner %}{{ partner_relation.partner }}{% else %}{{ partner_relation.partner_name }}{% endif %}</td>
 							<td width="50%" colspan="2">
 								{% if partner_relation.date %}
-									{{ partner_relation.date | date:"d.m.Y" }}&nbsp;-
+									{{ partner_relation.date | date:"d.m.Y" }}&nbsp;
 								{% endif %}
 								{% if partner_relation.location %}
+									{% trans "in" %}&nbsp;
 									{% if partner_relation.location.image %}
 										<img src="{{ MEDIA_URL }}..{{ partner_relation.location.image.url }}" class="location" />
 									{% endif %}
@@ -230,8 +231,8 @@
 <para>
 
 {% for timeline_entry in ancestry.timeline %}
-	<li><strong>{{ timeline_entry.year }}</strong>
-		<ul>
+	<li class="timeline"><strong>{{ timeline_entry.year }}</strong>
+		<ul class="not_breaking">
 			{% for timeline_entry_inner in timeline_entry.list %}
 				<li>{{ timeline_entry_inner.date }} {{ timeline_entry_inner.title }}</li>
 			{% endfor %}

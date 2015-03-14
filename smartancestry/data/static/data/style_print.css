@@ -155,7 +155,7 @@ h2 {
 }
 
 .sub-chapter {
-	text-indent: 20px;
+	padding-left: 20px;
 }
 
 .portait {
@@ -165,6 +165,10 @@ h2 {
 
 .not_breaking {
 	page-break-inside: avoid;
+}
+
+.timeline {
+	list-style: none;
 }
 
 /* tables */

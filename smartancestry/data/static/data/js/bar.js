@@ -122,6 +122,7 @@ var server = http.createServer(function(req,res) {
 					};
 				}
 				pieData[index].value = Math.round(item);
+				pieData[index].label = '' + Math.round(item);
 				index++;
 			});
 		}

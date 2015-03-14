@@ -2489,6 +2489,16 @@
 				segment.endAngle = segment.startAngle + segment.circumference;
 
 				segment.draw();
+				
+				// draw labels
+				var textRotation = -(segment.startAngle + segment.circumference)+segment.circumference/2,
+						tX = this.chart.width/2+animDecimal*this.outerRadius*Math.cos(textRotation)*0.9,
+						tY = this.chart.height/2-animDecimal*this.outerRadius*Math.sin(textRotation)*0.9;
+				this.chart.ctx.fillStyle = segment.labelColor || 'white';
+				this.chart.ctx.translate(tX, tY);
+				this.chart.ctx.fillText(segment.label, 0, 0);
+				this.chart.ctx.translate(-tX, -tY);
+					
 				if (index === 0){
 					segment.startAngle = Math.PI * 1.5;
 				}
