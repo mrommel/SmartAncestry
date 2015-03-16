@@ -132,7 +132,10 @@ class TreeInfo(object):
 		indices = underlineIndices(str(self.person.full_name()))
 		
 		# born str construction
-		born = str('%s: %02d.%02d.%04d' % (_('Born'), self.person.birth_date.day, self.person.birth_date.month, self.person.birth_date.year))
+		if self.person.birth_date is not None:
+			born = str('%s: %02d.%02d.%04d' % (_('Born'), self.person.birth_date.day, self.person.birth_date.month, self.person.birth_date.year))
+		else:
+			born = str('%s: ' % _('Born'))
 		if self.person.birth_location is not None:
 			born = born + ' ' + self.person.birth_location.city.encode('utf-8')
 		born = ellipses(born, 32)
@@ -758,7 +761,10 @@ class Ancestry(models.Model):
 			person = ancestryPerson.person
 			if person.birth_date is not None:
 				if person.birth_location is not None:
-					result_list.append(TimelineInfo(person.birth_date, _('%s %s was born in %s') % (person.first_name, person.last_name, person.birth_location)))
+					if person.birth_name is not None and person.birth_name <> '':
+						result_list.append(TimelineInfo(person.birth_date, _('%s %s (born %s) was born in %s') % (person.first_name, person.last_name, person.birth_name, person.birth_location)))
+					else:
+						result_list.append(TimelineInfo(person.birth_date, _('%s %s was born in %s') % (person.first_name, person.last_name, person.birth_location)))
 				else:
 					result_list.append(TimelineInfo(person.birth_date, _('%s %s was born') % (person.first_name, person.last_name)))
 			

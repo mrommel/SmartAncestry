@@ -162,7 +162,9 @@
 						{% if member.person.father %}
 							{{ member.person.father }}
 						{% else %}
-							{{ member.person.father_extern }}
+							{% if member.person.father_extern %}
+								{{ member.person.father_extern }}
+							{% endif %}	
 						{% endif %}
 					</td>
 					<td width="20%" class="label">{% trans "Mother" %}:</td>
@@ -170,7 +172,9 @@
 						{% if member.person.mother %}
 							{{ member.person.mother }}
 						{% else %}
-							{{ member.person.mother_extern }}
+							{% if member.person.mother_extern %}
+								{{ member.person.mother_extern }}
+							{% endif %}
 						{% endif %}
 					</td>
 				</tr>

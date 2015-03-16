@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-14 20:57+0000\n"
+"POT-Creation-Date: 2015-03-15 16:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,64 +70,69 @@ msgstr "Jüngste Heirat"
 msgid "Most Children"
 msgstr "Meiste Kinder"
 
-#: models.py:761
+#: models.py:762
+#, python-format
+msgid "%s %s (born %s) was born in %s"
+msgstr "%s %s (geb. %s) wurde in %s geboren"
+
+#: models.py:764
 #, python-format
 msgid "%s %s was born in %s"
 msgstr "%s %s wurde in %s geboren"
 
-#: models.py:763
+#: models.py:766
 #, python-format
 msgid "%s %s was born"
 msgstr "%s %s wurde geboren"
 
-#: models.py:767
+#: models.py:770
 #, python-format
 msgid "%s %s has died in %s"
 msgstr "%s %s starb in %s"
 
-#: models.py:769
+#: models.py:772
 #, python-format
 msgid "%s %s has died"
 msgstr "%s %s starb"
 
-#: models.py:775
+#: models.py:778
 #, python-format
 msgid "marriage of %s and %s in %s"
 msgstr "Hochzeit von %s und %s in %s"
 
-#: models.py:777
+#: models.py:780
 #, python-format
 msgid "marriage of %s and %s"
 msgstr "Hochzeit von %s und %s"
 
-#: models.py:779
+#: models.py:782
 #, python-format
 msgid "divorce of %s and %s"
 msgstr "Scheidung von %s und %s"
 
-#: models.py:834
+#: models.py:837
 msgid "married"
 msgstr "Verheirated"
 
-#: models.py:837
+#: models.py:840
 msgid "partnership"
 msgstr "Partnerschaft"
 
-#: models.py:839
+#: models.py:842
 msgid "divorced"
 msgstr "Geschieden"
 
-#: models.py:855
+#: models.py:858
 #, python-format
 msgid "Marriage %s and %s"
 msgstr "Hochzeit von %s und %s"
 
-#: models.py:858
+#: models.py:861
 #, python-format
 msgid "Partnership %s and %s"
 msgstr "Partnerschaft zwischen %s und %s"
 
-#: models.py:860
+#: models.py:863
 #, python-format
 msgid "Divorce %s and %s"
 msgstr "Scheidung von %s und %s"
@@ -148,7 +153,7 @@ msgid "Ancestries"
 msgstr "Stammbäume"
 
 #: templates/base.html:23 templates/data/ancestry_export.html:47
-#: templates/data/ancestry_export.html:389 templates/data/distributions.html:7
+#: templates/data/ancestry_export.html:394 templates/data/distributions.html:7
 msgid "Distributions"
 msgstr "Verteilung"
 
@@ -162,7 +167,7 @@ msgid "Years"
 msgstr "Jahre"
 
 #: templates/data/ancestry.html:198 templates/data/ancestry_export.html:218
-#: templates/data/ancestry_export.html:378
+#: templates/data/ancestry_export.html:383
 msgid "No members are available."
 msgstr "Keine Stammbäume vorhanden"
 
@@ -172,65 +177,65 @@ msgid "Timeline"
 msgstr "Zeitstrahl"
 
 #: templates/data/ancestry.html:227 templates/data/ancestry_export.html:33
-#: templates/data/ancestry_export.html:259
+#: templates/data/ancestry_export.html:264
 msgid "Specials"
 msgstr "Besonderheiten"
 
 #: templates/data/ancestry.html:237 templates/data/ancestry_export.html:34
-#: templates/data/ancestry_export.html:271
+#: templates/data/ancestry_export.html:276
 msgid "Locations"
 msgstr "Orte"
 
 #: templates/data/ancestry.html:243 templates/data/ancestry_export.html:35
-#: templates/data/ancestry_export.html:282
+#: templates/data/ancestry_export.html:287
 msgid "Births and Deaths per month"
 msgstr "Geburten und Todesfälle pro Monat"
 
-#: templates/data/ancestry.html:251 templates/data/ancestry_export.html:286
+#: templates/data/ancestry.html:251 templates/data/ancestry_export.html:291
 msgid "January"
 msgstr "Januar"
 
-#: templates/data/ancestry.html:251 templates/data/ancestry_export.html:286
+#: templates/data/ancestry.html:251 templates/data/ancestry_export.html:291
 msgid "February"
 msgstr "Februar"
 
-#: templates/data/ancestry.html:251 templates/data/ancestry_export.html:286
+#: templates/data/ancestry.html:251 templates/data/ancestry_export.html:291
 msgid "March"
 msgstr "März"
 
-#: templates/data/ancestry.html:252 templates/data/ancestry_export.html:286
+#: templates/data/ancestry.html:252 templates/data/ancestry_export.html:291
 msgid "April"
 msgstr "April"
 
-#: templates/data/ancestry.html:252 templates/data/ancestry_export.html:286
+#: templates/data/ancestry.html:252 templates/data/ancestry_export.html:291
 msgid "May"
 msgstr "Mai"
 
-#: templates/data/ancestry.html:252 templates/data/ancestry_export.html:286
+#: templates/data/ancestry.html:252 templates/data/ancestry_export.html:291
 msgid "June"
 msgstr "Juni"
 
-#: templates/data/ancestry.html:253 templates/data/ancestry_export.html:286
+#: templates/data/ancestry.html:253 templates/data/ancestry_export.html:291
 msgid "July"
 msgstr "Juli"
 
-#: templates/data/ancestry.html:253 templates/data/ancestry_export.html:286
+#: templates/data/ancestry.html:253 templates/data/ancestry_export.html:291
 msgid "August"
 msgstr "August"
 
-#: templates/data/ancestry.html:253 templates/data/ancestry_export.html:286
+#: templates/data/ancestry.html:253 templates/data/ancestry_export.html:291
 msgid "September"
 msgstr "September"
 
-#: templates/data/ancestry.html:254 templates/data/ancestry_export.html:286
+#: templates/data/ancestry.html:254 templates/data/ancestry_export.html:291
 msgid "October"
 msgstr "Oktober"
 
-#: templates/data/ancestry.html:254 templates/data/ancestry_export.html:286
+#: templates/data/ancestry.html:254 templates/data/ancestry_export.html:291
 msgid "November"
 msgstr "November"
 
-#: templates/data/ancestry.html:254 templates/data/ancestry_export.html:286
+#: templates/data/ancestry.html:254 templates/data/ancestry_export.html:291
 msgid "December"
 msgstr "Dezember"
 
@@ -247,14 +252,14 @@ msgid "Gender"
 msgstr "Geschlecht"
 
 #: templates/data/ancestry.html:323 templates/data/ancestry_export.html:37
-#: templates/data/ancestry_export.html:327
+#: templates/data/ancestry_export.html:332
 msgid "Birth locations"
 msgstr "Geburtsorte"
 
 #: templates/data/ancestry.html:353 templates/data/ancestry.html.py:364
 #: templates/data/ancestry_export.html:38
 #: templates/data/ancestry_export.html:178
-#: templates/data/ancestry_export.html:347 templates/data/person.html:116
+#: templates/data/ancestry_export.html:352 templates/data/person.html:116
 msgid "Children"
 msgstr "Kinder"
 
@@ -268,17 +273,17 @@ msgid "Contents"
 msgstr "Inhaltsverzeichnis"
 
 #: templates/data/ancestry_export.html:32
-#: templates/data/ancestry_export.html:254
+#: templates/data/ancestry_export.html:259
 msgid "Statistics"
 msgstr "Statistiken"
 
 #: templates/data/ancestry_export.html:36
-#: templates/data/ancestry_export.html:305
+#: templates/data/ancestry_export.html:310
 msgid "Gender distribution"
 msgstr "Geschlechterverteilung"
 
 #: templates/data/ancestry_export.html:40
-#: templates/data/ancestry_export.html:366
+#: templates/data/ancestry_export.html:371
 msgid "Family trees"
 msgstr "Stammbäume"
 
@@ -350,7 +355,7 @@ msgstr "Mutter"
 msgid "Siblings"
 msgstr "Geschwister"
 
-#: templates/data/ancestry_export.html:403
+#: templates/data/ancestry_export.html:408
 msgid "No distributions are available."
 msgstr "Keine Verteilungen vorhanden."
 
