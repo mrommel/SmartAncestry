@@ -36,6 +36,10 @@ node tree.js
 
 http://www.verwandt.de/karten/absolut/schossig.html
 
+# jsdoc
+
+cd /Users/mrommel/Prog/SmartAncestry/smartancestry/data/static/data/js
+../../../../../../../node_modules/jsdoc/jsdoc -d ../doc ../ancestryTree.js 
 
 # pdf generator
 

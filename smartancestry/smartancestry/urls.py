@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     url(r'^data/', include('data.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^i18n/', include('django.conf.urls.i18n')),
+    url(r'^favicon\.ico$', RedirectView.as_view(url=settings.MEDIA_URL + 'images/favicon.ico')),
 )
 
 urlpatterns += staticfiles_urlpatterns()
