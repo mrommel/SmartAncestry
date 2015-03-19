@@ -127,10 +127,17 @@ def export_pdf(modeladmin, request, queryset):
     
 export_pdf.short_description = _("Create pdfs")
 
+class AncestryRelationInline(admin.TabularInline):
+	model = AncestryRelation
+	fk_name = "ancestry"
+	extra = 1
+
 class AncestryAdmin(admin.ModelAdmin):
     list_display = ['name', 'thumbnail', 'number_of_members', 'featured_str', 'export']
     ordering = ['name']
-    
+    inlines = [
+		AncestryRelationInline,
+	]
     actions = [export_pdf]
 
 class LocationAdmin(admin.ModelAdmin):

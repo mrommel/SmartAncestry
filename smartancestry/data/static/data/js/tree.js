@@ -1,5 +1,6 @@
 var http = require('http');
 var url = require('url');
+var fs = require('fs');
 var Canvas = require('canvas'),
     canvas = new Canvas(940, 1160),
     ctx = canvas.getContext('2d'),
@@ -84,6 +85,10 @@ var server = http.createServer(function(req,res) {
 		}
 
 		var ancestryTree = new AncestryTree.AncestryTree(ctx, personData, relationsData);
+		
+		for (var i = 0; i < 20000; i++) {
+			ancestryTree.arrange();
+		}
 		ancestryTree.draw();
 	
 		console.log("deliver tree.png");
@@ -92,6 +97,69 @@ var server = http.createServer(function(req,res) {
 			res.write(buf);
 			res.end();
 		});
+	} else if (request.pathname == '/test.html') {
+		var testBuffer = 'tests\n\n';
+	
+		// ///////////////////////
+		// test Rectangle intersection1
+		var rect1 = new AncestryTree.Rectangle(0, 0, 5, 5);
+		var rect2 = new AncestryTree.Rectangle(3, 3, 5, 5);
+		var rectErg = rect1.intersection(rect2);
+		testBuffer += '# test intersection1:\n';
+		testBuffer += 'rect1: ' + rect1 + '\n';
+		testBuffer += 'rect2: ' + rect2 + '\n';
+		testBuffer += 'rect1.intersection(rect2): ' + rectErg + '\n\n';
+		
+		// test Rectangle intersection2
+		var rect1 = new AncestryTree.Rectangle(2, 0, 2, 5);
+		var rect2 = new AncestryTree.Rectangle(3, 3, 5, 5);
+		var rectErg = rect1.intersection(rect2);
+		testBuffer += '# test intersection2:\n';
+		testBuffer += 'rect1: ' + rect1 + '\n';
+		testBuffer += 'rect2: ' + rect2 + '\n';
+		testBuffer += 'rect1.intersection(rect2): ' + rectErg + '\n\n';
+		
+		// test Rectangle intersection3
+		var rect1 = new AncestryTree.Rectangle(0, 0, 2, 2);
+		var rect2 = new AncestryTree.Rectangle(3, 3, 5, 5);
+		var rectErg = rect1.intersection(rect2);
+		testBuffer += '# test intersection3 (no intersection):\n';
+		testBuffer += 'rect1: ' + rect1 + '\n';
+		testBuffer += 'rect2: ' + rect2 + '\n';
+		testBuffer += 'rect1.intersection(rect2): ' + rectErg + '\n\n';
+		
+		// ///////////////////////
+		// test Rectangle size1
+		var rect1 = new AncestryTree.Rectangle(2, 0, 2, 5);
+		testBuffer += '# test size1:\n';
+		testBuffer += 'rect1: ' + rect1 + '\n';
+		testBuffer += 'rect1.size(): ' + rect1.size() + '\n\n';
+		
+		// test Rectangle size2
+		var rect1 = new AncestryTree.Rectangle(2, 0, 0, 0);
+		testBuffer += '# test size2:\n';
+		testBuffer += 'rect1: ' + rect1 + '\n';
+		testBuffer += 'rect1.size(): ' + rect1.size() + '\n\n';
+		
+		// ///////////////////////
+		// test Rectangle expand1
+		var rect1 = new AncestryTree.Rectangle(0, 0, 2, 5);
+		testBuffer += '# test expand1:\n';
+		testBuffer += 'rect1: ' + rect1 + '\n';
+		testBuffer += 'rect1.expand(5): ' + rect1.expand(5) + '\n\n';
+		
+		// test Rectangle expand2
+		var rect1 = new AncestryTree.Rectangle(3, 3, 12, 5);
+		testBuffer += '# test expand2:\n';
+		testBuffer += 'rect1: ' + rect1 + '\n';
+		testBuffer += 'rect1.expand(1): ' + rect1.expand(1) + '\n\n';
+	
+		res.writeHead(200, {"Content-Type": "text/plain"});
+  		res.end(testBuffer + '\n');
+	} else if (request.pathname == '/favicon.ico') {
+		var favicon = fs.readFileSync('../syncly.ico');
+		res.writeHead(200, {'Content-Type': 'image/x-icon'} );
+		res.end(favicon);
 	} else {
 		res.writeHead(200, {"Content-Type": "text/plain"});
   		res.end("Hello World\n");
