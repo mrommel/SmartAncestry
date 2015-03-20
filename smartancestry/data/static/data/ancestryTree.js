@@ -303,11 +303,11 @@ Person.prototype.evaluate = function(cell, persons, relations) {
 	this.x = this.x + cell.x, this.y = this.y + cell.y;
 	 
 	persons.forEach(function(person) {		
-		value = value + person.distances(persons);	
+		value = value + person.distances(persons) / 10;	
 	}, this);		
 	
 	relations.forEach(function(relation) {		
-		value = value + relation.length(persons, relations);
+		value = value + relation.length(persons, relations) * 10;
 	}, this);
 	
 	// restore position
@@ -316,6 +316,11 @@ Person.prototype.evaluate = function(cell, persons, relations) {
 	return value;
 };
 
+/**
+ * determines if the Person should be moved up or down
+ *
+ * @return gradient the Person should be moved up or down
+ */
 Person.prototype.gradient = function(persons, relations) {
 	var cellCurrent = new Point(0, 0);
 	var valueCurrent = this.evaluate(cellCurrent, persons, relations);
@@ -351,10 +356,20 @@ Person.prototype.gradient = function(persons, relations) {
 	return cellCurrent;
 };
 
+/**
+ * string representation of the Person
+ *
+ * @return string representation of the Person
+ */
 Person.prototype.toString = function() {
 	return '[Person id:' + this.id + ' ,name:' + this.name + ' ,x:' + this.x + ' ,y:' + this.y + ']';
 };
 
+/**
+ * get the bounding rectangle of the Person
+ *
+ * @return {Rectangle} of the Person
+ */
 Person.prototype.rectangle = function() {
 	return new Rectangle(this.x, this.y, this.width, this.height);
 };
@@ -463,6 +478,9 @@ function AncestryTree(canvasContext, personData, relationData) {
 	return;
 };
 
+/**
+ * arranges the persons on the AncestryTree
+ */
 AncestryTree.prototype.arrange = function() {
 
 	this.persons.forEach(function(person) {
@@ -493,6 +511,11 @@ AncestryTree.prototype.draw = function() {
 	return;
 };
 	
+/**
+ * get the cursor position inside the AncestryTree
+ *
+ * @return {Point} cursor position inside the AncestryTree
+ */
 AncestryTree.prototype.getCursorPosition = function(e) {
 	var x;
 	var y;

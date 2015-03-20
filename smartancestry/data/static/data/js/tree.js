@@ -86,7 +86,7 @@ var server = http.createServer(function(req,res) {
 
 		var ancestryTree = new AncestryTree.AncestryTree(ctx, personData, relationsData);
 		
-		for (var i = 0; i < 20000; i++) {
+		for (var i = 0; i < 2000; i++) {
 			ancestryTree.arrange();
 		}
 		ancestryTree.draw();
