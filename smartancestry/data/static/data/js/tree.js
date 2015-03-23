@@ -100,59 +100,222 @@ var server = http.createServer(function(req,res) {
 	} else if (request.pathname == '/test.html') {
 		var testBuffer = 'tests\n\n';
 	
+		var detailed = false;
+		
+		if (query.detailed) {
+			detailed = true;
+		}
+	
 		// ///////////////////////
 		// test Rectangle intersection1
 		var rect1 = new AncestryTree.Rectangle(0, 0, 5, 5);
 		var rect2 = new AncestryTree.Rectangle(3, 3, 5, 5);
 		var rectErg = rect1.intersection(rect2);
-		testBuffer += '# test intersection1:\n';
-		testBuffer += 'rect1: ' + rect1 + '\n';
-		testBuffer += 'rect2: ' + rect2 + '\n';
-		testBuffer += 'rect1.intersection(rect2): ' + rectErg + '\n\n';
+		var passed = rectErg.equals(new AncestryTree.Rectangle(3, 3, 2, 2));
+		testBuffer += '# test intersection1: ' + passed + '\n';
+		if (detailed) {
+			testBuffer += 'rect1: ' + rect1 + '\n';
+			testBuffer += 'rect2: ' + rect2 + '\n';
+			testBuffer += 'rect1.intersection(rect2): ' + rectErg + '\n\n';
+		}
 		
 		// test Rectangle intersection2
 		var rect1 = new AncestryTree.Rectangle(2, 0, 2, 5);
 		var rect2 = new AncestryTree.Rectangle(3, 3, 5, 5);
 		var rectErg = rect1.intersection(rect2);
-		testBuffer += '# test intersection2:\n';
-		testBuffer += 'rect1: ' + rect1 + '\n';
-		testBuffer += 'rect2: ' + rect2 + '\n';
-		testBuffer += 'rect1.intersection(rect2): ' + rectErg + '\n\n';
+		var passed = rectErg.equals(new AncestryTree.Rectangle(3, 3, 1, 2));
+		testBuffer += '# test intersection2: ' + passed + '\n';
+		if (detailed) {
+			testBuffer += 'rect1: ' + rect1 + '\n';
+			testBuffer += 'rect2: ' + rect2 + '\n';
+			testBuffer += 'rect1.intersection(rect2): ' + rectErg + '\n\n';
+		}
 		
 		// test Rectangle intersection3
 		var rect1 = new AncestryTree.Rectangle(0, 0, 2, 2);
 		var rect2 = new AncestryTree.Rectangle(3, 3, 5, 5);
 		var rectErg = rect1.intersection(rect2);
-		testBuffer += '# test intersection3 (no intersection):\n';
-		testBuffer += 'rect1: ' + rect1 + '\n';
-		testBuffer += 'rect2: ' + rect2 + '\n';
-		testBuffer += 'rect1.intersection(rect2): ' + rectErg + '\n\n';
+		var passed = rectErg.equals(new AncestryTree.Rectangle(3, 3, 0, 0));
+		testBuffer += '# test intersection3: ' + passed + '\n';
+		if (detailed) {
+			testBuffer += 'rect1: ' + rect1 + '\n';
+			testBuffer += 'rect2: ' + rect2 + '\n';
+			testBuffer += 'rect1.intersection(rect2): ' + rectErg + '\n\n';
+		}
+		
+		// ///////////////////////
+		// test Rectangle empty1
+		var rect1 = new AncestryTree.Rectangle(2, 0, 2, 5);
+		var passed = !rect1.empty();
+		testBuffer += '# test empty1: ' + passed + '\n';
+		if (detailed) {
+			testBuffer += 'rect1: ' + rect1 + '\n';
+			testBuffer += 'rect1.empty(): ' + rect1.empty() + '\n\n';
+		}
+		
+		// test Rectangle empty2
+		var rect1 = new AncestryTree.Rectangle(2, 0, 0, 0);
+		var passed = rect1.empty();
+		testBuffer += '# test empty2: ' + passed + '\n';
+		if (detailed) {
+			testBuffer += 'rect1: ' + rect1 + '\n';
+			testBuffer += 'rect1.empty(): ' + rect1.empty() + '\n\n';
+		}
 		
 		// ///////////////////////
 		// test Rectangle size1
 		var rect1 = new AncestryTree.Rectangle(2, 0, 2, 5);
-		testBuffer += '# test size1:\n';
-		testBuffer += 'rect1: ' + rect1 + '\n';
-		testBuffer += 'rect1.size(): ' + rect1.size() + '\n\n';
+		var passed = rect1.size() == 10;
+		testBuffer += '# test size1: ' + passed + '\n';
+		if (detailed) {
+			testBuffer += 'rect1: ' + rect1 + '\n';
+			testBuffer += 'rect1.size(): ' + rect1.size() + '\n\n';
+		}
 		
 		// test Rectangle size2
 		var rect1 = new AncestryTree.Rectangle(2, 0, 0, 0);
-		testBuffer += '# test size2:\n';
-		testBuffer += 'rect1: ' + rect1 + '\n';
-		testBuffer += 'rect1.size(): ' + rect1.size() + '\n\n';
+		var passed = rect1.size() == 0;
+		testBuffer += '# test size2: ' + passed + '\n';
+		if (detailed) {
+			testBuffer += 'rect1: ' + rect1 + '\n';
+			testBuffer += 'rect1.size(): ' + rect1.size() + '\n\n';
+		}
 		
 		// ///////////////////////
 		// test Rectangle expand1
 		var rect1 = new AncestryTree.Rectangle(0, 0, 2, 5);
-		testBuffer += '# test expand1:\n';
-		testBuffer += 'rect1: ' + rect1 + '\n';
-		testBuffer += 'rect1.expand(5): ' + rect1.expand(5) + '\n\n';
+		var rectErg = rect1.expand(5);
+		var passed = rectErg.equals(new AncestryTree.Rectangle(-5, -5, 12, 15));
+		testBuffer += '# test expand1: ' + passed + '\n';
+		if (detailed) {
+			testBuffer += 'rect1: ' + rect1 + '\n';
+			testBuffer += 'rect1.expand(5): ' + rectErg + '\n\n';
+		}
 		
 		// test Rectangle expand2
 		var rect1 = new AncestryTree.Rectangle(3, 3, 12, 5);
-		testBuffer += '# test expand2:\n';
-		testBuffer += 'rect1: ' + rect1 + '\n';
-		testBuffer += 'rect1.expand(1): ' + rect1.expand(1) + '\n\n';
+		var rectErg = rect1.expand(1);
+		var passed = rectErg.equals(new AncestryTree.Rectangle(2, 2, 14, 7));
+		testBuffer += '# test expand2: ' + passed + '\n';
+		if (detailed) {
+			testBuffer += 'rect1: ' + rect1 + '\n';
+			testBuffer += 'rect1.expand(1): ' + rect1.expand(1) + '\n\n';
+		}
+		
+		// ///////////////////////
+		// test Rectangle equals1
+		var rect1 = new AncestryTree.Rectangle(0, 0, 2, 5);
+		var rect2 = new AncestryTree.Rectangle(0, 0, 2, 5);
+		var passed = rect1.equals(rect2);
+		testBuffer += '# test equals1: ' + passed + '\n';
+		if (detailed) {
+			testBuffer += 'rect1: ' + rect1 + '\n';
+			testBuffer += 'rect2: ' + rect2 + '\n';
+			testBuffer += 'rect1.equals(rect2): ' + rect1.equals(rect2) + '\n\n';
+		}	
+		
+		// test Rectangle equals2
+		var rect1 = new AncestryTree.Rectangle(0, 0, 2, 5);
+		var rect2 = new AncestryTree.Rectangle(0, 3, 2, 5);
+		var passed = !rect1.equals(rect2);
+		testBuffer += '# test equals2: ' + passed + '\n';
+		if (detailed) {
+			testBuffer += 'rect1: ' + rect1 + '\n';
+			testBuffer += 'rect2: ' + rect2 + '\n';
+			testBuffer += 'rect1.equals(rect2): ' + rect1.equals(rect2) + '\n\n';
+		}
+		
+		// test Rectangle equals2
+		var rect1 = new AncestryTree.Rectangle(0, 0, 2, 5);
+		var rect2 = new AncestryTree.Rectangle(0, 0, 1, 5);
+		var passed = !rect1.equals(rect2);
+		testBuffer += '# test equals3: ' + passed + '\n';
+		if (detailed) {
+			testBuffer += 'rect1: ' + rect1 + '\n';
+			testBuffer += 'rect2: ' + rect2 + '\n';
+			testBuffer += 'rect1.equals(rect2): ' + rect1.equals(rect2) + '\n\n';
+		}
+		
+		// test Rectangle move1
+		var rect1 = new AncestryTree.Rectangle(0, 0, 2, 5);
+		var rectErg = rect1.move(1, 1);
+		var passed = rectErg.equals(new AncestryTree.Rectangle(1, 1, 2, 5));
+		testBuffer += '# test move1: ' + passed + '\n';
+		if (detailed) {
+			testBuffer += 'rect1: ' + rect1 + '\n';
+			testBuffer += 'rect1.move(1, 1): ' + rectErg + '\n';
+		}
+		
+		testBuffer += '\n\nPerson:\n';
+		
+		// ////////////////////////////
+		// test Person constructor
+		var person1 = new AncestryTree.Person(0, 'name', 'birth', 'death');
+		var passed = person1.id == 0;
+		testBuffer += '# test Person.id: ' + passed + '\n';
+		var passed = person1.name == 'name';
+		testBuffer += '# test Person.name: ' + passed + '\n';
+		var passed = person1.birth == 'birth';
+		testBuffer += '# test Person.birth: ' + passed + '\n';
+		var passed = person1.death == 'death';
+		testBuffer += '# test Person.death: ' + passed + '\n';
+		if (detailed) {
+			testBuffer += '\n';
+		}
+		
+		// test Person.getDestination1
+		var person1 = new AncestryTree.Person(0, 'name', 'birth', 'death');
+		person1.x = 10, person1.y = 10, person1.width = 50, person1.height = 50;
+		var pointDest = person1.getDestination();
+		var passed = pointDest.x == 10 && pointDest.y == 35;
+		testBuffer += '# test getDestination1: ' + passed + '\n';
+		if (detailed) {
+			testBuffer += 'person1: ' + person1 + '\n';
+			testBuffer += 'person1.getDestination(): ' + pointDest + '\n\n';
+		}
+		
+		// test Person.getSource1
+		var person1 = new AncestryTree.Person(0, 'name', 'birth', 'death');
+		person1.x = 10, person1.y = 10, person1.width = 50, person1.height = 50;
+		var pointDest = person1.getSource();
+		var passed = pointDest.x == 60 && pointDest.y == 35;
+		testBuffer += '# test getSource1: ' + passed + '\n';
+		if (detailed) {
+			testBuffer += 'person1: ' + person1 + '\n';
+			testBuffer += 'person1.getSource(): ' + pointDest + '\n\n';
+		}
+		
+		// test Person.distances1
+		var person1 = new AncestryTree.Person(0, 'name', 'birth', 'death');
+		person1.x = 10, person1.y = 10, person1.width = 50, person1.height = 50;
+		var person2 = new AncestryTree.Person(1, 'name1', 'birth1', 'death1');
+		person2.x = 10, person2.y = 60, person2.width = 50, person2.height = 50;
+		var persons = [ person1, person2 ];
+		var result = person1.distances(persons);
+		var passed = result == 1400;
+		testBuffer += '# test distances1: ' + passed + '\n';
+		if (detailed) {
+			testBuffer += 'person1: ' + person1 + '\n';
+			testBuffer += 'person2: ' + person2 + '\n';
+			testBuffer += 'person1.distances(persons): ' + result + '\n\n';
+		}
+		
+		// test Person.evaluate1
+		var person1 = new AncestryTree.Person(0, 'name', 'birth', 'death');
+		person1.x = 10, person1.y = 10, person1.width = 50, person1.height = 50;
+		var person2 = new AncestryTree.Person(1, 'name1', 'birth1', 'death1');
+		person2.x = 10, person2.y = 60, person2.width = 50, person2.height = 50;
+		var persons = [ person1, person2 ];
+		var relation = new AncestryTree.Relation(0, 1);
+		var result = Math.round(person1.evaluate(new AncestryTree.Point(10, 10), persons, [relation]));
+		var passed = result == 1402;
+		testBuffer += '# test evaluate1: ' + passed + '\n';
+		if (detailed) {
+			testBuffer += 'person1: ' + person1 + '\n';
+			testBuffer += 'person2: ' + person2 + '\n';
+			testBuffer += 'relation: ' + relation + '\n';
+			testBuffer += 'person1.evaluate(new Point(10, 10), persons, [relation]): ' + result + '\n\n';
+		}
 	
 		res.writeHead(200, {"Content-Type": "text/plain"});
   		res.end(testBuffer + '\n');

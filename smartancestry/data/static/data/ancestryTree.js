@@ -50,6 +50,16 @@ Rectangle.prototype.intersection = function(rect) {
 };
 
 /**
+ * returns true if the current Rectangle has size equal to zero
+ *
+ * @see size()
+ * @return true if the current Rectangle has size equal to zero
+ */
+Rectangle.prototype.empty = function() {
+	return this.size() == 0;
+};
+
+/**
  * returns the size of current Rectangle
  *
  * @return size of current Rectangle
@@ -72,6 +82,17 @@ Rectangle.prototype.expand = function(increment) {
 	this.height += 2*increment; 
 
 	return this;
+};
+
+/**
+ * returns true if other is equal to the current Rectangle
+ *
+ * @param {Rectangle} other - The other Rectangle to compare with.
+ * @return true if other is equal to the current Rectangle
+ */
+Rectangle.prototype.equals = function(other) {
+
+	return this.x == other.x && this.y == other.y && this.width == other.width && this.height == this.height;
 };
 
 /**
@@ -156,19 +177,23 @@ Relation.prototype.length = function(persons, relations) {
  * draws the Relation on the Context
  *
  * @param {Context} context to draw on
+ * @return true if the relation could be drawn, false otherwise
  */
 Relation.prototype.draw = function(context, persons) {
+	if (context == undefined) {
+		return;
+	}
 	var sourcePerson = this.getSourcePerson(persons);
 	if (sourcePerson == undefined) {
 		console.log('Cannot find person with id: ' + this.source);
-		return;
+		return false;
 	}
 	var cell1 = sourcePerson.getSource();
 	
 	var destinationPerson = this.getDestinationPerson(persons);
 	if (destinationPerson == undefined) {
 		console.log('Cannot find person with id: ' + this.destination);
-		return;
+		return false;
 	}
 	var cell2 = destinationPerson.getDestination();
 	var x0 = (cell1.x + cell2.x) / 2; 
@@ -180,6 +205,8 @@ Relation.prototype.draw = function(context, persons) {
 	context.lineTo(cell2.x, cell2.y);
 	context.strokeStyle = "#000";
 	context.stroke();
+	
+	return true;
 };
 
 // ///////////////////////////////////////////
@@ -281,31 +308,44 @@ Person.prototype.draw = function(context) {
  * get distances of current {Person} to persons
  *
  * @param {Person} persons - Array of {Person} to get the distances to this {Person}
+ * @return overlapping area of persons
  */
 Person.prototype.distances = function(persons) {
 	var value = 0;
 	var rectangle = this.rectangle().expand(10);
 	
 	persons.forEach(function(item) {		
-		value = value + rectangle.intersection(item.rectangle().expand(10)).size();
+		if (item.id != this.id) {
+			value = value + rectangle.intersection(item.rectangle().expand(10)).size();
+		}
 	}, this);
 	
 	// console.log('distances for ' + rectangle + ' = ' + value);
 	return value;
 };
 
+/**
+ * get distances of current {Person} to persons
+ *
+ * @see Person.distances(persons)
+ * @param {Point} cell - tmp changed position of the current Person
+ * @param {Person} persons - Array of {Person} to get the distances to this {Person}
+ * @param {Relation} relations - Array of {Relation} of all relations
+ */
 Person.prototype.evaluate = function(cell, persons, relations) {
 	var value = 0;
 	// backup position
 	var tmp_x = this.x, tmp_y = this.y;
 	
-	// apply
+	// apply changed position
 	this.x = this.x + cell.x, this.y = this.y + cell.y;
 	 
+	// calculate overlapping to all other persons
 	persons.forEach(function(person) {		
 		value = value + person.distances(persons) / 10;	
 	}, this);		
 	
+	// sum of all relation length 
 	relations.forEach(function(relation) {		
 		value = value + relation.length(persons, relations) * 10;
 	}, this);
@@ -340,20 +380,20 @@ Person.prototype.gradient = function(persons, relations) {
 	}
 	
 	var cellBottom1 = new Point(0, -1);
-	var valueBottom1 = this.evaluate(cellTop1, persons, relations);
+	var valueBottom1 = this.evaluate(cellBottom1, persons, relations);
 	if (valueCurrent > valueBottom1) {
 		cellCurrent = cellBottom1;
 		valueCurrent = valueBottom1;
 	}
 	
 	var cellBottom3 = new Point(0, -3);
-	var valueBottom3 = this.evaluate(cellTop3, persons, relations);
+	var valueBottom3 = this.evaluate(cellBottom3, persons, relations);
 	if (valueCurrent > valueBottom3) {
 		cellCurrent = cellBottom3;
 		valueCurrent = valueBottom3;
 	}
 	
-	return cellCurrent;
+	return { 'point': cellCurrent, 'value': valueCurrent};
 };
 
 /**
@@ -483,13 +523,24 @@ function AncestryTree(canvasContext, personData, relationData) {
  */
 AncestryTree.prototype.arrange = function() {
 
+	var bestIndex = 0;
+	var bestGradient = { 'point': new Point(0, 0), 'value': 1000000 };
+
+	var index = 0;
 	this.persons.forEach(function(person) {
 		var gradient = person.gradient(this.persons, this.relationData);
-		//console.log("move: " + person + " = " + gradient);
-		person.x = person.x + gradient.x;
-		person.y = person.y + gradient.y;
+		if (bestGradient.value > gradient.value) {
+			bestGradient = gradient;
+			bestIndex = index;
+		}
 		
+		index = index + 1;
 	}, this);
+	
+	this.persons[bestIndex].x = this.persons[bestIndex].x + bestGradient.point.x;
+	this.persons[bestIndex].y = this.persons[bestIndex].y + bestGradient.point.y;
+	
+	//console.log('Best index: ' + bestIndex + ' gradient: ' + bestGradient.point);
 
 	return;
 };
