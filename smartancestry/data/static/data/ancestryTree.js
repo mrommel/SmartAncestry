@@ -143,6 +143,11 @@ Relation.prototype.getSourcePerson = function(persons) {
 	return person;
 };
 
+/**
+ * returns the destination Person of current Relation
+ *
+ * @return destination {Person} of current Relation
+ */
 Relation.prototype.getDestinationPerson = function(persons) {
 	var person;
 
@@ -155,6 +160,11 @@ Relation.prototype.getDestinationPerson = function(persons) {
 	return person;
 };
 
+/**
+ * returns the length of current Relation
+ *
+ * @return length of current Relation
+ */
 Relation.prototype.length = function(persons, relations) {
 	var sourcePerson = this.getSourcePerson(persons);
 	if (sourcePerson == undefined) {
@@ -258,10 +268,6 @@ Person.prototype.getSource = function() {
 	return new Point(this.x + this.width, this.y + this.height / 2);
 };
 
-Person.prototype.getInfo = function() {
-	return this.name;
-};
-
 /**
  * draws the {Person} on the {Context}
  *
@@ -362,6 +368,7 @@ Person.prototype.evaluate = function(cell, persons, relations) {
  * @return gradient the Person should be moved up or down
  */
 Person.prototype.gradient = function(persons, relations) {
+
 	var cellCurrent = new Point(0, 0);
 	var valueCurrent = this.evaluate(cellCurrent, persons, relations);
 	
@@ -433,20 +440,17 @@ var Point = function(x, y) {
 };
 
 /**
- * get Person at current point of which hits a person in the list
+ * moves current Point in dx and dy direction
  *
- * @param {Person} persons - Array of {Person} to find the 
- * @return {Person} at the current Points location
+ * @param {int} dx - The x-coordinate movement of the Point.
+ * @param {int} dy - The y-coordinate movement of the Point.
+ * @return current Point after it has been moved
  */
-Point.prototype.getPerson = function(persons) {
-	var person;
-
-	for (index = 0; index < persons.length; ++index) {
-		if(persons[index].x <= this.x && this.x <= (persons[index].x + personWidth) && persons[index].y <= this.y && this.y <= (persons[index].y + personHeight)) {
-			person = persons[index];
-		}
-	}
-	return person;
+Point.prototype.move = function(dx, dy) {
+	this.x = this.x + dx;
+	this.y = this.y + dy;
+	
+	return this;
 };
 
 /**
@@ -516,6 +520,23 @@ function AncestryTree(canvasContext, personData, relationData) {
 	}, this);
 	
 	return;
+};
+
+/**
+ * get Person at point of which hits a person in the list
+ *
+ * @param {Point} point - point to check if it hits a Person
+ * @return {Person} at the point location
+ */
+AncestryTree.prototype.getPersonAt = function(point) {
+
+	var person;
+	for (index = 0; index < this.personData.length; ++index) {
+		if(this.personData[index].x <= this.x && this.x <= (this.personData[index].x + personWidth) && this.personData[index].y <= this.y && this.y <= (this.personData[index].y + personHeight)) {
+			person = persons[index];
+		}
+	}
+	return person;
 };
 
 /**
