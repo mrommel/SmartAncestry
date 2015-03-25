@@ -1,0 +1,13 @@
+{
+  	"name": "ancestryTree",
+  	"description": "A package using ancestryTree",
+  	"author": "Michael Rommel <michamaxe@gmail.com>",
+  	"dependencies": {
+    	"node": ">= 0.4.0",
+  	},
+	"scripts": {
+    	"start": "node tree.js",
+    	"predeploy": "echo im about to deploy",
+    	"postdeploy": "echo ive deployed",
+  	},
+}

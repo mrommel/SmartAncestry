@@ -6,6 +6,9 @@ var Canvas = require('canvas'),
     ctx = canvas.getContext('2d'),
     AncestryTree = require('../ancestryTree.js');
 
+/**
+ * creates webserver at 4445
+ */
 var server = http.createServer(function(req,res) {
 	// parse url
 	var request = url.parse(req.url, true);

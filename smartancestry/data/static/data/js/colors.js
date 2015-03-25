@@ -7,10 +7,6 @@ var baseHue = Math.round(baseColor.getHSL().h);
 var baseSat = Math.round(baseColor.getHSL().s);
 var baseLum = Math.round(baseColor.getHSL().l);
 
-//console.log("baseColor.h = " + baseHue);
-//console.log("baseColor.s = " + baseSat);
-//console.log("baseColor.l = " + baseLum);
-
 console.log("current: 0 => " + baseColor.getCSSHexadecimalRGB());
 
 var n = 12;
