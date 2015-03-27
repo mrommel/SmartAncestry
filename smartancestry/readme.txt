@@ -21,7 +21,7 @@ python ../manage.py compilemessages
 
 # node js scripts
 
-cd /Users/mrommel/Prog/SmartAncestry/smartancestry/data/static/data/js
+cd ~/Prog/SmartAncestry/smartancestry/data/static/data/js
 
 node bar.js 
 ==> Listening at http://localhost:4444

@@ -323,7 +323,7 @@ var server = http.createServer(function(req,res) {
 		res.writeHead(200, {"Content-Type": "text/plain"});
   		res.end(testBuffer + '\n');
 	} else if (request.pathname == '/favicon.ico') {
-		var favicon = fs.readFileSync('../syncly.ico');
+		var favicon = fs.readFileSync('../../../images/favicon.ico');
 		res.writeHead(200, {'Content-Type': 'image/x-icon'} );
 		res.end(favicon);
 	} else {
