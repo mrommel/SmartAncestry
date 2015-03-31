@@ -19,6 +19,8 @@ var server = http.createServer(function(req,res) {
 		ctx.fillStyle = '#fcfcfc';
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+		console.log("query: '" + request.search + "'");
+
 		var personData = [
 		];
 		

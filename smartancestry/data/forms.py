@@ -109,17 +109,35 @@ class PersonAncestryListFilter(admin.SimpleListFilter):
 	parameter_name = 'ancestry'
 
 class PersonAdmin(admin.ModelAdmin):
-	list_display = ('user_name', 'thumbnail', 'birth_date', 'birth_location', 'death_date', 'death_location', 'father_name', 'mother_name', 'ancestry_names')
-	list_filter = ('birth_date', ) #PersonAncestryListFilter,
-	ordering = ('-birth_date',)
-	inlines = [
-		AncestryRelationInline,
-		HusbandFamilyStatusRelationInline,
-		WifeFamilyStatusRelationInline,
-	]
-	actions_on_top = True
-	actions_on_bottom = True
-
+    list_display = ('user_name', 'thumbnail', 'birth_date', 'birth_location', 'death_date', 'death_location', 'father_name', 'mother_name', 'ancestry_names')
+    fieldsets = (
+        (None, {
+            'fields': ('first_name', 'last_name', 'birth_name', 'sex')
+        }),
+        ('Dates/Locations', {
+            'classes': ('collapse',),
+            'fields': ('birth_date', 'birth_location', 'death_date', 'death_location', 'already_died')
+        }),
+        ('Relations', {
+        	'classes': ('collapse',),
+        	'fields': ('father', 'father_extern', 'mother', 'mother_extern', 'children_extern', 'childen_text', 'siblings_extern')
+        }),
+        ('Notes', {
+        	'classes': ('collapse',),
+        	'fields': ('profession', 'notes', 'image')
+        }),
+    )
+    readonly_fields = ('childen_text',)
+    list_filter = ('birth_date', ) #PersonAncestryListFilter,
+    ordering = ('-birth_date',)
+    inlines = [
+        AncestryRelationInline,
+        HusbandFamilyStatusRelationInline,
+        WifeFamilyStatusRelationInline,
+    ]
+    actions_on_top = True
+    actions_on_bottom = True
+    
 def export_pdf(modeladmin, request, queryset):
     selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
     ct = ContentType.objects.get_for_model(queryset.model)

@@ -25,7 +25,7 @@ fi
 start() {
 		echo "Starting node/python servers: "
 		if [ -f $bar_pidfile ] ; then
-				if test `ps -e | grep -c $bar_pid` > 1; then
+				if test `ps -e | grep -c $bar_pid` = 2; then
 						echo "Not starting bar - instance already running with PID: $bar_pid"
 				else
 						echo "Starting bar"
@@ -43,7 +43,7 @@ start() {
 		fi
 		
 		if [ -f $tree_pidfile ] ; then
-				if test `ps -e | grep -c $tree_pid` > 1; then
+				if test `ps -e | grep -c $tree_pid` = 2; then
 						echo "Not starting tree - instance already running with PID: $tree_pid"
 				else
 						echo "Starting tree"
@@ -61,12 +61,13 @@ start() {
 		fi
 		
 		if [ -f $python_pidfile ] ; then
-				if test `ps -e | grep -c $python_pid` > 1; then
+				if test `ps -e | grep -c $python_pid` = 2; then
 						echo "Not starting python - instance already running with PID: $python_pid"
 				else
 						echo "Starting python"
 						python manage.py runserver &> ./python.log &
 						echo $! > $python_pidfile
+						sleep 5
 				fi
 		else
 				echo "Starting python"
@@ -148,7 +149,7 @@ case "$1" in
         stop
         ;;
   status)
-        status FOO
+        status
         ;;
   restart|reload|condrestart)
         stop

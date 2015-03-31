@@ -269,7 +269,11 @@
 <a id="chapter3-1">&nbsp;</a>
 <table>
 	{% for special in statistics.specials.list %}
-		<tr><td>{{ special.name_prefix }}</td><td>{{ special.name_suffix }}</td><td>{{ special.value }}</td></tr>
+		<tr class="{% if forloop.counter|divisibleby:2 %}alternating{% else %}row{% endif %}">
+			<td>{{ special.name_prefix }}</td>
+			<td>{{ special.name_suffix }}</td>
+			<td>{{ special.value }}</td>
+		</tr>
 	{% endfor %}
 </table>
 

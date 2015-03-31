@@ -128,8 +128,10 @@ class TreeInfo(object):
 		id = self.person.id
 		selected = self.selected
 		sign = self.person.gender_sign()
-		name = trimAndUnescape(str(self.person.full_name()))
-		indices = underlineIndices(str(self.person.full_name()))
+		tmp = self.person.full_name()
+		tmp = tmp.replace(u'\xe4', '&auml;')
+		name = trimAndUnescape(str(tmp))
+		indices = underlineIndices(str(tmp))
 		
 		# born str construction
 		if self.person.birth_date is not None:
@@ -336,6 +338,22 @@ class Person(models.Model):
 			return self.children_extern.split(',')
 			
 		return None
+		
+	def childen_text(self):
+		str = ''
+		
+		for children_item in self.children():
+			str = "%s, %s" % (str, children_item.full_name())
+			
+		if self.children_extern is not None:
+			str = "%s, %s" % (str, self.children_extern)
+		
+		str = "$%s$" % (str)
+		str = str.replace("$, ", "")
+		str = str.replace(", $", "")
+		str = str.replace("$", "")
+		
+		return str
 		
 	def children_count(self):
 		count = len(self.children())

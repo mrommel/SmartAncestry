@@ -158,7 +158,7 @@ chapnum:after {
 h2 {
 	font-size: 1.2em;
   	text-align: center;
-  	padding: 1em 0 2em;
+  	padding: 1em 0 0.5em;
 }
 
 .location {
