@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load app_filters %}
+
 {% block title %}Location{% endblock %}
 
 {% block nav-persons %}<li class="active"><a href="/data/persons">Persons</a></li>{% endblock %}
@@ -41,7 +43,7 @@
         						{% if location.image %}
 									<img src="{{ MEDIA_URL }}..{{ location.image.url }}" height="16" />
 								{% endif %}
-        						{{ location }}
+        						{{ location|location_without_country }}
         						</a>
         					</li>
     					{% endfor %}

@@ -48,7 +48,7 @@
 					{% if person.image %}
 						<img src="{{ MEDIA_URL }}..{{ person.image.url }}" alt="Img" width="205">
 					{% else %}
-						<img src="" alt="Img" height="237" width="205">
+						<img src="/static/data/images/avatar_{{ person.sex}}.png" alt="Img{{ member.person.sex}}" width="205">
 					{% endif %}
 				</div>
 				<div class="details">

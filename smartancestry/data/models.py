@@ -153,12 +153,13 @@ class TreeInfo(object):
 		return '{%d,%d,%d,\'%s %s\',%s,%s,%s}' % (id, self.level, selected, sign, name, indices, born, died)
 
 class PartnerInfo(object):
-	def __init__(self, status, partner, partner_name, location, date):
+	def __init__(self, status, partner, partner_name, location, date, state):
 		self.status = status
 		self.partner = partner
 		self.partner_name = partner_name
 		self.location = location
 		self.date = date
+		self.state = state
 		
 class RelativesInfo(object):
 	def __init__(self, relatives, relations):
@@ -283,9 +284,9 @@ class Person(models.Model):
 				partners = []
 				for relation in FamilyStatusRelation.objects.filter(man = self):
 					if relation.woman is not None:
-						partners.append(PartnerInfo(relation.status_name, relation.woman, "", relation.location, relation.date))
+						partners.append(PartnerInfo(relation.status_name, relation.woman, "", relation.location, relation.date, relation.status))
 					else:
-						partners.append(PartnerInfo(relation.status_name, None, relation.wife_extern, relation.location, relation.date))
+						partners.append(PartnerInfo(relation.status_name, None, relation.wife_extern, relation.location, relation.date, relation.status))
 				return partners
 			except FamilyStatusRelation.DoesNotExist:
 				pass
@@ -295,9 +296,9 @@ class Person(models.Model):
 				partners = []
 				for relation in FamilyStatusRelation.objects.filter(woman = self):
 					if relation.man is not None:
-						partners.append(PartnerInfo(relation.status_name, relation.man, "", relation.location, relation.date))
+						partners.append(PartnerInfo(relation.status_name, relation.man, "", relation.location, relation.date, relation.status))
 					else:
-						partners.append(PartnerInfo(relation.status_name, None, relation.husband_extern, relation.location, relation.date))
+						partners.append(PartnerInfo(relation.status_name, None, relation.husband_extern, relation.location, relation.date, relation.status))
 				return partners
 			except FamilyStatusRelation.DoesNotExist:
 				pass
@@ -875,11 +876,14 @@ class FamilyStatusRelation(models.Model):
 		else:
 			wifeStr = self.wife_extern
 			
+		str = ''
 		if self.status == 'M':			
-			return _('Marriage %s and %s') % (husbandStr, wifeStr)
+			str = _('Marriage %s and %s') % (husbandStr, wifeStr)
 		else:
 			if self.status == 'P':			
-				return _('Partnership %s and %s') % (husbandStr, wifeStr)
+				str = _('Partnership %s and %s') % (husbandStr, wifeStr)
 			else:
-				return _('Divorce %s and %s') % (husbandStr, wifeStr)
+				str = _('Divorce %s and %s') % (husbandStr, wifeStr)
+				
+		return mark_safe((' ' + str + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip())
 			

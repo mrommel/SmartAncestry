@@ -130,13 +130,13 @@
 					{% for partner_relation in member.person.partner_relations %}
 						<tr class="{% if forloop.counter|divisibleby:2 %}alternating{% else %}row{% endif %}">
 							<td width="20%" class="label">
-								{% if partner_relation.status == 'married' %}
+								{% if partner_relation.state == 'M' %}
 									{% trans "Marriage" %}:
 								{% endif %}
-								{% if partner_relation.status == 'divorced' %}
+								{% if partner_relation.state == 'D' %}
 									{% trans "Divorce" %}:
 								{% endif %}
-								{% if partner_relation.status == 'partnership' %}
+								{% if partner_relation.state == 'P' %}
 									{% trans "Partnership" %}:
 								{% endif %}
 							</td>
