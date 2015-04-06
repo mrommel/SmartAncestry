@@ -530,8 +530,10 @@ class Person(models.Model):
 	def export_pdf(self):
 		pass
 	
-	def __unicode__(self):			  
-		return mark_safe('%s %s' % ((' ' + str(self.first_name) + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip(), self.last_name))
+	def __unicode__(self):		
+		first = self.first_name
+		first = first.replace(u'\xfc', '&uuml;')
+		return mark_safe('%s %s' % ((' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip(), self.last_name))
 
 class TimelineInfo(object):
 	def __init__(self, date, title):
