@@ -234,7 +234,10 @@ class Person(models.Model):
 		return ' '.join(result_list)
 	
 	def full_name(self):
-		return ('%s %s' % ((' ' + str(self.first_name_short()) + ' ').replace(" _", " <u>").replace("_ ", "</u> "), self.last_name)).strip()
+		first = self.first_name_short()
+		first = first.replace(u'\xfc', '&uuml;')
+		first = first.replace(u'\xf6', '&ouml;')
+		return ('%s %s' % ((' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> "), self.last_name)).strip()
 	
 	def gender_sign(self):
 		if self.sex == 'M':
@@ -533,6 +536,7 @@ class Person(models.Model):
 	def __unicode__(self):		
 		first = self.first_name
 		first = first.replace(u'\xfc', '&uuml;')
+		first = first.replace(u'\xf6', '&ouml;')
 		return mark_safe('%s %s' % ((' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip(), self.last_name))
 
 class TimelineInfo(object):

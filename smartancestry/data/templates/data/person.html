@@ -167,44 +167,7 @@
 					</p>
 				</div>
 			</div>
-			<div class="main" style="width:200px;">
-				<div>
-					<h2>Random person</h2>
-					<p>
-						{{ random }}
-					</p>
-					<div class="images">
-						{% if random.image %}
-							<img src="{{ MEDIA_URL }}..{{ random.image.url }}" alt="Img" width="205">
-						{% endif %}
-					</div>
-					<p>
-						{% if random.father %}
-							{% trans "Father" %}: <a href="/data/person/{{ random.father.id }}/" class="link">{{ random.father }}</a><br />
-						{% else %}
-							{% trans "Father" %}: {{ random.father_extern }}<br />
-						{% endif %}
-						
-						{% if random.mother %}
-							{% trans "Mother" %}: <a href="/data/person/{{ random.mother.id }}/" class="link">{{ random.mother }}</a>
-						{% else %}
-							{% trans "Mother" %}: {{ random.mother_extern }}<br />
-						{% endif %}
-					</p>
-				</div>
-				<div>
-					<h2>Interesting</h2>
-					<p>
-						{% trans "Number of persons" %}: {{ number_of_persons }}
-					</p>
-					<p>
-						{% trans "Number of women" %}: {{ number_of_female_persons }}
-					</p>
-					<p>
-						{% trans "Number of men" %}: {{ number_of_male_persons }}
-					</p>
-				</div>
-			</div>
+			
 		</div>
 		<div class="featured">
 		
