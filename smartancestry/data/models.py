@@ -335,7 +335,7 @@ class Person(models.Model):
 		return Person.objects.filter(Q(father = self) | Q(mother = self))
 		
 	def children_extern_list(self):
-		if self.children_extern is not None:
+		if self.children_extern is not None and self.children_extern <> '':
 			return self.children_extern.split(',')
 			
 		return None
