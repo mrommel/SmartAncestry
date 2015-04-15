@@ -191,7 +191,9 @@ class PersonInfo(object):
 			return "♀"
 
 def name_of_ancestry(x):
-	return mark_safe(x.ancestry.name)
+	name = u'%s' % x.ancestry.name
+	name = name.replace(u'ä', '&auml;')
+	return mark_safe(name)
 
 """
 	class of persons
@@ -244,6 +246,21 @@ class Person(models.Model):
 			return "♂"
 		else:
 			return "♀"
+			
+	def birth(self):
+		birth_str = self.birth_location
+		if birth_str is None:
+			birth_str = '-'
+		return mark_safe('%s<br>%s' % (self.birth_date, birth_str))
+	
+	def death(self):
+		date_str = self.death_date
+		if date_str is None:
+			date_str = '-'
+		death_str = self.death_location
+		if death_str is None:
+			death_str = '-'
+		return mark_safe('%s<br>%s' % (date_str, death_str))
 	
 	def father_name(self):
 		if self.father is not None:
@@ -371,7 +388,17 @@ class Person(models.Model):
 		return AncestryRelation.objects.filter(person = self) 
 
 	def ancestry_names(self):
-		return map(name_of_ancestry, AncestryRelation.objects.filter(person = self))
+		str = ''
+		
+		for item in map(name_of_ancestry, AncestryRelation.objects.filter(person = self)):
+			str = '%s, %s' % (str, item)
+		
+		str = "$%s$" % (str)
+		str = str.replace("$, ", "")
+		str = str.replace(", $", "")
+		str = str.replace("$", "")
+		
+		return mark_safe(str)
 	
 	def has_ancestry(self, ancestry_id):
 		for ancestryRelation in AncestryRelation.objects.filter(person = self):

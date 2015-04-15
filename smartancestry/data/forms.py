@@ -109,13 +109,13 @@ class PersonAncestryListFilter(admin.SimpleListFilter):
 	parameter_name = 'ancestry'
 
 class PersonAdmin(admin.ModelAdmin):
-    list_display = ('user_name', 'thumbnail', 'birth_date', 'birth_location', 'death_date', 'death_location', 'father_name', 'mother_name', 'ancestry_names')
-    fieldsets = (
+    list_display = ('user_name', 'birth_name', 'thumbnail', 'birth', 'death', 'father_name', 'mother_name', 'ancestry_names')
+    fieldsets = ( 
         (None, {
             'fields': ('first_name', 'last_name', 'birth_name', 'sex')
         }),
         ('Dates/Locations', {
-            'classes': ('collapse',),
+            'classes': ('collapse', 'open',),
             'fields': ('birth_date', 'birth_location', 'death_date', 'death_location', 'already_died')
         }),
         ('Relations', {
