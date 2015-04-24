@@ -214,6 +214,14 @@
 						</ul>
 					</td>
 				</tr>
+				{% if member.person.notes %}
+				<tr class="{% if member.person.partner_relations|length|divisibleby:2 %}alternating{% else %}row{% endif %}">
+					<td width="20%" class="label">Notizen:</td>
+					<td width="30%" colspan="3">
+						{{ member.person.notes }}
+					</td>
+				</tr>
+				{% endif %}
 			</table>
 			</div>			
 		</para>
