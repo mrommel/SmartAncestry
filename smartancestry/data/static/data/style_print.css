@@ -428,3 +428,18 @@ td {
     margin-left: auto;
     margin-right: auto;
 }
+
+.document {
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+    
+    max-width: 650px;
+}
+
+.nolink {
+	font: 10pt/1.3 "Helvetica", serif;
+	text-decoration: none;
+	text-underline: none;
+	color: #000;
+}

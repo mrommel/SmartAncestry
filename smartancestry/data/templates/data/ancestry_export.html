@@ -51,6 +51,13 @@
 	{% endfor %}
 {% endif %}
 
+<item href="#chapter6">6. {% trans "Appendix" %}</item>
+{% if appendices %}
+	{% for appendix in appendices %}
+		<item href="#chapter6-{{ appendix.document.id }}" class="sub-chapter">{{ appendix.document.name }}</item>
+	{% endfor %}
+{% endif %}
+
 </list>
 </toc>
 
@@ -216,9 +223,21 @@
 				</tr>
 				{% if member.person.notes %}
 				<tr class="{% if member.person.partner_relations|length|divisibleby:2 %}alternating{% else %}row{% endif %}">
-					<td width="20%" class="label">Notizen:</td>
+					<td width="20%" class="label">{% trans "Notes" %}:</td>
 					<td width="30%" colspan="3">
 						{{ member.person.notes }}
+					</td>
+				</tr>
+				{% endif %}
+				{% if member.person.appendices %}
+				<tr class="{% if member.person.partner_relations|length|divisibleby:2 %}row{% else %}alternating{% endif %}">
+					<td width="20%" class="label">{% trans "Appendices" %}:</td>
+					<td width="30%" colspan="3">
+						<ul class="commalist">
+						{% for appendix in member.person.appendices %}
+							<li><a href="#chapter6-{{ appendix.document.id }}" class="nolink">{{ appendix.document.name }}</a></li>
+						{% endfor %}
+						</ul>
 					</td>
 				</tr>
 				{% endif %}
@@ -417,6 +436,31 @@
 			<h2>{{ distribution.distribution.family_name }}</h2>
 			<a id="chapter5-{{ distribution.distribution.id }}">&nbsp;</a>
 			<img src="{{ MEDIA_URL }}..{{ distribution.distribution.image.url }}" class="distribution" />
+			</div>
+		</para>
+	{% endfor %}
+{% else %}
+	<para>{% trans "No distributions are available." %}</para>
+{% endif %}
+
+</chapter>
+
+<!-- Chapter 6 -->
+
+<chapter id="chapter6">
+
+<chapheader>
+<chapnum>6. </chapnum>
+<title>{% trans "Appendix" %}</title>
+</chapheader>
+
+{% if appendices %}
+	{% for appendix in appendices %}
+		<para>
+			<div class="not_breaking">
+			<h2>{{ appendix.document.name }}</h2>
+			<a id="chapter6-{{ appendix.document.id }}">&nbsp;</a>
+			<img src="{{ MEDIA_URL }}..{{ appendix.document.image.url }}" class="document" />
 			</div>
 		</para>
 	{% endfor %}

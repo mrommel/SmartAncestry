@@ -559,6 +559,9 @@ class Person(models.Model):
 	"""
 	def export_pdf(self):
 		pass
+		
+	def appendices(self):
+		return DocumentRelation.objects.filter(person = self)
 	
 	def __unicode__(self):		
 		first = self.first_name
@@ -844,6 +847,16 @@ class Ancestry(models.Model):
 			final_list.append(GroupedTimelineInfo(grouped_item[0].date.year, grouped_item))
 		
 		return final_list
+		
+	def appendices(self):
+		appendix_list = []
+		for document in DocumentRelation.objects.all():
+			# check if document belongs to a person this ancestry
+			if AncestryRelation.objects.filter(ancestry = self, person = document.person) is not None:	
+				if document not in appendix_list:
+					appendix_list.append(document)
+	
+		return appendix_list
 	
 	def distributions(self):
 		return DistributionRelation.objects.filter(ancestry = self)
@@ -857,6 +870,20 @@ class DistributionRelation(models.Model):
 	
 	def __unicode__(self):			  
 		return '%s - %s' % (self.ancestry.name, self.distribution.family_name)
+
+class Document(models.Model):
+	name = models.CharField(max_length=50)
+	image = models.ImageField(upload_to='media/documents', blank=True, null=True)
+	
+	def __unicode__(self):			  
+		return '%s' % (self.name)
+
+class DocumentRelation(models.Model):
+	person = models.ForeignKey(Person)
+	document = models.ForeignKey(Document)
+	
+	def __unicode__(self):			  
+		return '%s - %s' % (self.person, self.document.name)
 
 class AncestryRelation(models.Model):
 	person = models.ForeignKey(Person)

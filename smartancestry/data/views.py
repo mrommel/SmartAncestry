@@ -82,6 +82,7 @@ def ancestry_export(request, ancestry_id):
 		'distributions': ancestry.distributions(),
 		'locations' : ancestry.locations,
 		'statistics' : ancestry.statistics,
+		'appendices' : ancestry.appendices,
 	})
 	return HttpResponse(template.render(context))
 
