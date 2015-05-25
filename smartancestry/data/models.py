@@ -703,6 +703,10 @@ class Ancestry(models.Model):
 		return '<a href="/data/export/ancestry/%d/%s.pdf" target="_blank">Export PDF</a>' % (self.id, self.name)
 	export.allow_tags = True
 	
+	def export_raw(self):
+		return '<a href="/data/ancestry_export/%d/" target="_blank">Export Raw</a>' % (self.id)
+	export_raw.allow_tags = True
+	
 	def members(self):
 		result_list = AncestryRelation.objects.filter(ancestry = self)
 		result_list = sorted(result_list, key=attrgetter('person.birth_date'), reverse=True)
@@ -873,6 +877,7 @@ class DistributionRelation(models.Model):
 
 class Document(models.Model):
 	name = models.CharField(max_length=50)
+	date = models.DateField('date of creation')
 	image = models.ImageField(upload_to='media/documents', blank=True, null=True)
 	
 	def __unicode__(self):			  

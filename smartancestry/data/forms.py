@@ -151,7 +151,7 @@ class AncestryRelationInline(admin.TabularInline):
 	extra = 1
 
 class AncestryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'thumbnail', 'number_of_members', 'featured_str', 'export']
+    list_display = ['name', 'thumbnail', 'number_of_members', 'featured_str', 'export', 'export_raw']
     ordering = ['name']
     inlines = [
 		AncestryRelationInline,
