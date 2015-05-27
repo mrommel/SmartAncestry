@@ -1,5 +1,5 @@
 from django.contrib import admin
-from data.models import Ancestry, AncestryRelation, FamilyStatusRelation, Person
+from data.models import Ancestry, AncestryRelation, FamilyStatusRelation, Person, DocumentRelation
 from django.forms import CheckboxSelectMultiple
 from django.db import models
 from django import forms
@@ -46,6 +46,19 @@ class PersonAncestryListFilter(admin.SimpleListFilter):
 class AncestryRelationInline(admin.TabularInline):
 	model = AncestryRelation
 	extra = 4
+	
+	def get_extra (self, request, obj=None, **kwargs):
+		"""Dynamically sets the number of extra forms. 0 if the related object
+		already exists or the extra configuration otherwise."""
+		if obj:
+			# Don't add any extra forms if the related object already exists.
+			return 1
+			
+		return self.extra
+
+class DocumentRelationInline(admin.TabularInline):
+	model = DocumentRelation
+	extra = 2
 	
 	def get_extra (self, request, obj=None, **kwargs):
 		"""Dynamically sets the number of extra forms. 0 if the related object
@@ -119,11 +132,11 @@ class PersonAdmin(admin.ModelAdmin):
             'fields': ('birth_date', 'birth_location', 'death_date', 'death_location', 'already_died')
         }),
         ('Relations', {
-        	'classes': ('collapse',),
+        	'classes': ('collapse', 'open',),
         	'fields': ('father', 'father_extern', 'mother', 'mother_extern', 'children_extern', 'childen_text', 'siblings_extern')
         }),
         ('Notes', {
-        	'classes': ('collapse',),
+        	'classes': ('collapse', 'open',),
         	'fields': ('profession', 'notes', 'image')
         }),
     )
@@ -134,6 +147,7 @@ class PersonAdmin(admin.ModelAdmin):
         AncestryRelationInline,
         HusbandFamilyStatusRelationInline,
         WifeFamilyStatusRelationInline,
+        DocumentRelationInline,
     ]
     actions_on_top = True
     actions_on_bottom = True
@@ -149,7 +163,7 @@ class AncestryRelationInline(admin.TabularInline):
 	model = AncestryRelation
 	fk_name = "ancestry"
 	extra = 1
-
+	
 class AncestryAdmin(admin.ModelAdmin):
     list_display = ['name', 'thumbnail', 'number_of_members', 'featured_str', 'export', 'export_raw']
     ordering = ['name']
