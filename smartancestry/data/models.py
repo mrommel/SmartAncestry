@@ -14,6 +14,12 @@ import logging
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
+def is_empty(any_structure):
+    if any_structure:
+        return False
+    else:
+        return True
+
 def ellipses(original_string, max_length):
     if len(original_string) <= max_length:
         return original_string
@@ -856,7 +862,7 @@ class Ancestry(models.Model):
 		appendix_list = []
 		for document in DocumentRelation.objects.all():
 			# check if document belongs to a person this ancestry
-			if AncestryRelation.objects.filter(ancestry = self, person = document.person) is not None:	
+			if not is_empty(AncestryRelation.objects.filter(ancestry = self, person = document.person)):	
 				if document not in appendix_list:
 					appendix_list.append(document)
 	
