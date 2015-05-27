@@ -131,6 +131,14 @@ toc item:after {
   content: leader('.') target-counter(attr(href), page);
 }
 
+appendix item {
+	display: inline;
+}
+
+appendix item:after {
+  content: target-counter(attr(href), page);
+}
+
 para {
   text-indent: 1em;
   padding-bottom: 2em;
@@ -438,7 +446,6 @@ td {
 }
 
 .nolink {
-	font: 10pt/1.3 "Helvetica", serif;
 	text-decoration: none;
 	text-underline: none;
 	color: #000;
