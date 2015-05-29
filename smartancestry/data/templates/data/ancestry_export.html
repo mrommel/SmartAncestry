@@ -108,9 +108,9 @@
 
 {% if appendices %}
 	{% for appendix in appendices %}
-		<item href="#chapter6-{{ appendix.document.id }}" class="sub-chapter">
-			<a href="#chapter6-{{ appendix.document.id }}" class="nolink">
-				{{ appendix.document.name }}
+		<item href="#chapter6-{{ appendix.id }}" class="sub-chapter">
+			<a href="#chapter6-{{ appendix.id }}" class="nolink">
+				{{ appendix.name }}
 			</a>
 		</item>
 	{% endfor %}
@@ -524,9 +524,9 @@
 	{% for appendix in appendices %}
 		<para>
 			<div class="not_breaking">
-			<h2>{{ appendix.document.name }}</h2>
-			<a id="chapter6-{{ appendix.document.id }}">&nbsp;</a>
-			<img src="{{ MEDIA_URL }}..{{ appendix.document.image.url }}" class="document" />
+			<h2>{{ appendix.name }}</h2>
+			<a id="chapter6-{{ appendix.id }}">&nbsp;</a>
+			<img src="{{ MEDIA_URL }}..{{ appendix.image.url }}" class="document" />
 			</div>
 		</para>
 	{% endfor %}

@@ -860,11 +860,11 @@ class Ancestry(models.Model):
 		
 	def appendices(self):
 		appendix_list = []
-		for document in DocumentRelation.objects.all():
+		for documentRelation in DocumentRelation.objects.all():
 			# check if document belongs to a person this ancestry
-			if not is_empty(AncestryRelation.objects.filter(ancestry = self, person = document.person)):	
-				if document not in appendix_list:
-					appendix_list.append(document)
+			if not is_empty(AncestryRelation.objects.filter(ancestry = self, person = documentRelation.person)):	
+				if documentRelation.document not in appendix_list:
+					appendix_list.append(documentRelation.document)
 	
 		return appendix_list
 	
@@ -887,14 +887,14 @@ class Document(models.Model):
 	image = models.ImageField(upload_to='media/documents', blank=True, null=True)
 	
 	def __unicode__(self):			  
-		return '%s' % (self.name)
+		return self.name
 
 class DocumentRelation(models.Model):
 	person = models.ForeignKey(Person)
 	document = models.ForeignKey(Document)
 	
 	def __unicode__(self):			  
-		return '%s - %s' % (self.person, self.document.name)
+		return mark_safe(u'%s - %s' % (self.person, self.document.name))
 
 class AncestryRelation(models.Model):
 	person = models.ForeignKey(Person)
@@ -902,7 +902,7 @@ class AncestryRelation(models.Model):
 	featured = models.NullBooleanField(default=False, blank=True, null=True)
 	
 	def __unicode__(self):			  
-		return '%s' % (self.ancestry.name)
+		return u'%s' % (self.ancestry.name)
 		
 class FamilyStatusRelation(models.Model): 
 	status = models.CharField(max_length=1, choices=(('M', 'Marriage'), ('D', 'Divorce'), ('P', 'Partnership')))
