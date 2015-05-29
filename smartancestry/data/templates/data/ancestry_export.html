@@ -20,7 +20,13 @@
 <toc>
 <title>{% trans "Contents" %}</title>
 <list class="toc">
-<item href="#chapter1"><a href="#chapter1" class="nolink">1. {% trans "Members" %}</a></item>
+
+<!-- index for chapter 1 -->
+
+<item href="#chapter1">
+	<a href="#chapter1" class="nolink">1. {% trans "Members" %}</a>
+</item>
+
 {% if sorted_members %}
 	{% for member in sorted_members %}
 		<item href="#chapter1-{{ member.person.id }}" class="sub-chapter">
@@ -31,17 +37,43 @@
 	{% endfor %}
 {% endif %}
 
-<item href="#chapter2"><a href="#chapter2" class="nolink">2. {% trans "Timeline" %}</a></item>
+<!-- index for chapter 2 -->
 
-<item href="#chapter3"><a href="#chapter3" class="nolink">3. {% trans "Statistics" %}</a></item>
-<item href="#chapter3-1" class="sub-chapter"><a href="#chapter3-1" class="nolink">{% trans "Specials" %}</a></item>
-<item href="#chapter3-2" class="sub-chapter"><a href="#chapter3-2" class="nolink">{% trans "Locations" %}</a></item>
-<item href="#chapter3-3" class="sub-chapter"><a href="#chapter3-3" class="nolink">{% trans "Births and Deaths per month" %}</a></item>
-<item href="#chapter3-4" class="sub-chapter"><a href="#chapter3-4" class="nolink">{% trans "Gender distribution" %}</a></item>
-<item href="#chapter3-5" class="sub-chapter"><a href="#chapter3-5" class="nolink">{% trans "Birth locations" %}</a></item>
-<item href="#chapter3-6" class="sub-chapter"><a href="#chapter3-6" class="nolink">{% trans "Children" %}</a></item>
+<item href="#chapter2">
+	<a href="#chapter2" class="nolink">2. {% trans "Timeline" %}</a>
+</item>
 
-<item href="#chapter4"><a href="#chapter4" class="nolink">4. {% trans "Family trees" %}</a></item>
+<!-- index for chapter 3 -->
+
+<item href="#chapter3">
+	<a href="#chapter3" class="nolink">3. {% trans "Statistics" %}</a>
+</item>
+
+<item href="#chapter3-1" class="sub-chapter">
+	<a href="#chapter3-1" class="nolink">{% trans "Specials" %}</a>
+</item>
+<item href="#chapter3-2" class="sub-chapter">
+	<a href="#chapter3-2" class="nolink">{% trans "Locations" %}</a>
+</item>
+<item href="#chapter3-3" class="sub-chapter">
+	<a href="#chapter3-3" class="nolink">{% trans "Births and Deaths per month" %}</a>
+</item>
+<item href="#chapter3-4" class="sub-chapter">
+	<a href="#chapter3-4" class="nolink">{% trans "Gender distribution" %}</a>
+</item>
+<item href="#chapter3-5" class="sub-chapter">
+	<a href="#chapter3-5" class="nolink">{% trans "Birth locations" %}</a>
+</item>
+<item href="#chapter3-6" class="sub-chapter">
+	<a href="#chapter3-6" class="nolink">{% trans "Children" %}</a>
+</item>
+
+<!-- index for chapter 4 -->
+
+<item href="#chapter4">
+	<a href="#chapter4" class="nolink">4. {% trans "Family trees" %}</a>
+</item>
+
 {% if featured %}
 	{% for member in featured %}
 		<item href="#chapter4-{{ member.person.id }}" class="sub-chapter">
@@ -52,7 +84,12 @@
 	{% endfor %}
 {% endif %}
 
-<item href="#chapter5"><a href="#chapter5" class="nolink">5. {% trans "Distributions" %}</a></item>
+<!-- index for chapter 5 -->
+
+<item href="#chapter5">
+	<a href="#chapter5" class="nolink">5. {% trans "Distributions" %}</a>
+</item>
+
 {% if distributions %}
 	{% for distribution in distributions %}
 		<item href="#chapter5-{{ distribution.distribution.id }}" class="sub-chapter">
@@ -63,7 +100,12 @@
 	{% endfor %}
 {% endif %}
 
-<item href="#chapter6"><a href="#chapter6" class="nolink">6. {% trans "Appendix" %}</a></item>
+<!-- index for chapter 6 -->
+
+<item href="#chapter6">
+	<a href="#chapter6" class="nolink">6. {% trans "Appendix" %}</a>
+</item>
+
 {% if appendices %}
 	{% for appendix in appendices %}
 		<item href="#chapter6-{{ appendix.document.id }}" class="sub-chapter">
