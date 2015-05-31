@@ -133,14 +133,15 @@ class PersonAdmin(admin.ModelAdmin):
         }),
         ('Relations', {
         	'classes': ('collapse', 'open',),
-        	'fields': ('father', 'father_extern', 'mother', 'mother_extern', 'children_extern', 'childen_text', 'siblings_extern')
+        	'fields': ('father', 'father_link', 'father_extern', 'mother', 'mother_link', 'mother_extern', 'children_extern', 'childen_text', 'siblings_extern')
         }),
         ('Notes', {
         	'classes': ('collapse', 'open',),
         	'fields': ('profession', 'notes', 'image')
         }),
     )
-    readonly_fields = ('childen_text',)
+    search_fields = ['first_name', 'last_name', ]
+    readonly_fields = ('childen_text', 'father_link', 'mother_link',)
     list_filter = ('birth_date', ) #PersonAncestryListFilter,
     ordering = ('-birth_date',)
     inlines = [

@@ -288,8 +288,22 @@ class Person(models.Model):
 	thumbnail.allow_tags = True
 	
 	def admin_url(self):
-		return '<a href="%s">%s</a>' % (self.id, self.full_name)
+		return mark_safe('<a href="%s">%s</a>' % (self.id, self.full_name))
 	admin_url.allow_tags = True
+	
+	def father_link(self):
+		if self.father is not None:
+			return '<a href="/admin/data/person/%s/">%s</a>' % (self.father.id, str(self.father))
+		else:
+			return ''
+	father_link.allow_tags = True
+	
+	def mother_link(self):
+		if self.mother is not None:
+			return '<a href="/admin/data/person/%s/">%s</a>' % (self.mother.id, str(self.mother))
+		else:
+			return ''
+	mother_link.allow_tags = True
 	
 	def age(self):
 		if self.death_date is None and self.already_died == False:
