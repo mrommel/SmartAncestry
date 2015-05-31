@@ -172,9 +172,63 @@ class AncestryAdmin(admin.ModelAdmin):
 	]
     actions = [export_pdf]
 
+class LocationBirthRelationInline(admin.TabularInline):
+	model = Person
+	fk_name = "birth_location"
+	
+	verbose_name_plural = _('List of Persons born here')
+	
+	can_delete = False
+	extra = 0
+	
+	fields = ('first_name', 'last_name', 'admin_url', )
+	readonly_fields = ('first_name', 'last_name', 'admin_url', )
+	
+	def admin_url(self, obj):
+		return '<a href="/admin/data/person/%s/" target="_blank">Admin</a>' % (obj.id)
+	admin_url.allow_tags = True
+	
+	def has_add_permission(self, request):
+		return False
+	
+class LocationDeathRelationInline(admin.TabularInline):
+	model = Person
+	fk_name = "death_location"
+	
+	verbose_name_plural = _('List of Persons died here')
+	
+	can_delete = False
+	extra = 0
+	
+	fields = ('first_name', 'last_name', 'admin_url', )
+	readonly_fields = ('first_name', 'last_name', 'admin_url', )
+	
+	def admin_url(self, obj):
+		return '<a href="/admin/data/person/%s/" target="_blank">Admin</a>' % (obj.id)
+	admin_url.allow_tags = True
+	
+	def has_add_permission(self, request):
+		return False
+
 class LocationAdmin(admin.ModelAdmin):
 	list_display = ('city', 'state', 'country', 'thumbnail', 'lon', 'lat')
+	fields = ('thumbnail', 'city', 'state', 'country', 'image', 'lon', 'lat', )
+	readonly_fields = ('thumbnail',)
+	
 	ordering = ('city',)
+	inlines = [
+        LocationBirthRelationInline,
+        LocationDeathRelationInline,
+    ]
+	actions_on_top = True
+	actions_on_bottom = True
+	
+class DocumentAdmin(admin.ModelAdmin):
+	list_display = ('thumbnail', 'name', 'person_names', )
+	readonly_fields = ('thumbnail',)
+	
+	ordering = ('name',)
+
 	actions_on_top = True
 	actions_on_bottom = True
     

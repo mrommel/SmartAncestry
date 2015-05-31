@@ -236,7 +236,7 @@ class Person(models.Model):
 		result_list = self.first_name.split(' ')
 		
 		for x in range(0, len(result_list)):
-			if not '_' in result_list[x]:
+			if not '_' in result_list[x] and len(result_list[x]) > 0:
 				result_list[x] = result_list[x][0] + '.'
 		
 		return ' '.join(result_list)
@@ -286,7 +286,11 @@ class Person(models.Model):
 		else:
 			return '<img border="0" alt="" src="/static/data/images/Person-icon-grey.JPG" height="40" />'
 	thumbnail.allow_tags = True
-		
+	
+	def admin_url(self):
+		return '<a href="%s">%s</a>' % (self.id, self.full_name)
+	admin_url.allow_tags = True
+	
 	def age(self):
 		if self.death_date is None and self.already_died == False:
 			return calculate_age(self.birth_date, date.today())
@@ -885,6 +889,23 @@ class Document(models.Model):
 	name = models.CharField(max_length=50)
 	date = models.DateField('date of creation')
 	image = models.ImageField(upload_to='media/documents', blank=True, null=True)
+	
+	def person_names(self):
+		str = ''
+		
+		for item in DocumentRelation.objects.filter(document = self):
+			str = '%s, %s' % (str, item.person)
+		
+		str = "$%s$" % (str)
+		str = str.replace("$, ", "")
+		str = str.replace(", $", "")
+		str = str.replace("$", "")
+		
+		return mark_safe(str)
+	
+	def thumbnail(self):
+		return '<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % ((self.image.name, self.image.name))
+	thumbnail.allow_tags = True
 	
 	def __unicode__(self):			  
 		return self.name
