@@ -210,8 +210,10 @@ class Person(models.Model):
 	birth_name = models.CharField(max_length=50, blank=True, null=True)
 	sex = models.CharField(max_length=1, choices=(('M', 'Male'), ('F', 'Female')))
 	birth_date = models.DateField('date of birth')
+	birth_date_only_year = models.BooleanField(default=False)
 	birth_location = models.ForeignKey(Location, blank=True, null=True, related_name="birth_location") 
 	death_date = models.DateField('date of death', null=True, blank=True)
+	death_date_only_year = models.BooleanField(default=False)
 	death_location = models.ForeignKey(Location, blank=True, null=True, related_name="death_location") 
 	already_died = models.NullBooleanField(default=False, blank=True, null=True)
 	profession = models.CharField(max_length=50, blank=True, null=True)
@@ -376,7 +378,9 @@ class Person(models.Model):
 		return None
 		
 	def children(self):
-		return Person.objects.filter(Q(father = self) | Q(mother = self))
+		children_list = Person.objects.filter(Q(father = self) | Q(mother = self))
+		children_list = sorted(children_list, key=attrgetter('birth_date'), reverse=False)
+		return children_list
 		
 	def children_extern_list(self):
 		if self.children_extern is not None and self.children_extern <> '':
@@ -899,6 +903,9 @@ class DistributionRelation(models.Model):
 	def __unicode__(self):			  
 		return '%s - %s' % (self.ancestry.name, self.distribution.family_name)
 
+def person_of_document_relation(x):
+	return x.person
+
 class Document(models.Model):
 	name = models.CharField(max_length=50)
 	date = models.DateField('date of creation')
@@ -916,6 +923,9 @@ class Document(models.Model):
 		str = str.replace("$", "")
 		
 		return mark_safe(str)
+	
+	def persons(self):
+		return map(person_of_document_relation, DocumentRelation.objects.filter(document = self))
 	
 	def thumbnail(self):
 		return '<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % ((self.image.name, self.image.name))

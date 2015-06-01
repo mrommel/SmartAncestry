@@ -161,7 +161,13 @@
 				</tr>
 				<tr class="alternating">
 					<td width="20%" class="label">{% trans "Birth date" %}:</td>
-					<td width="20%">{{ member.person.birth_date | date:"d.m.Y" }}</td>
+					<td width="20%">
+						{% if member.person.birth_date_only_year %}
+							{{ member.person.birth_date | date:"Y" }}
+						{% else %}
+							{{ member.person.birth_date | date:"d.m.Y" }}
+						{% endif %}
+					</td>
 					<td width="20%" class="label">{% trans "Birth place" %}:</td>
 					<td width="20%">
 						{% if member.person.birth_location %}
@@ -174,7 +180,15 @@
 				</tr>
 				<tr class="row">
 					<td width="20%" class="label">{% trans "Death date" %}:</td>
-					<td width="20%">{% if member.person.death_date %}{{ member.person.death_date | date:"d.m.Y" }}{% endif %}</td>
+					<td width="20%">
+						{% if member.person.death_date %}
+							{% if member.person.death_date_only_year %}
+								{{ member.person.death_date | date:"Y" }}
+							{% else %}
+								{{ member.person.death_date | date:"d.m.Y" }}
+							{% endif %}
+						{% endif %}
+					</td>
 					<td width="20%" class="label">{% trans "Death place" %}:</td>
 					<td width="20%">
 						{% if member.person.death_location %}
@@ -225,7 +239,7 @@
 					<td width="20%" class="label">{% trans "Father" %}:</td>
 					<td width="30%">
 						{% if member.person.father %}
-							{{ member.person.father }}
+							<a href="#chapter1-{{ member.person.father.id }}" class="nolink">{{ member.person.father }}</a>
 						{% else %}
 							{% if member.person.father_extern %}
 								{{ member.person.father_extern }}
@@ -235,7 +249,7 @@
 					<td width="20%" class="label">{% trans "Mother" %}:</td>
 					<td width="30%">
 						{% if member.person.mother %}
-							{{ member.person.mother }}
+							<a href="#chapter1-{{ member.person.mother.id }}" class="nolink">{{ member.person.mother }}</a>
 						{% else %}
 							{% if member.person.mother_extern %}
 								{{ member.person.mother_extern }}
@@ -249,7 +263,7 @@
 						<ul class="commalist">
 						{% if member.person.children %}
     						{% for child in member.person.children %}
-        						<li>{{ child.first_name|underline }}</li>
+        						<li><a href="#chapter1-{{ child.id }}" class="nolink">{{ child.full_name|underline }}</a></li>
     						{% endfor %}
 						{% else %}
 							{% if member.person.children_extern_list %}
@@ -267,7 +281,7 @@
 						<ul class="commalist">
 						{% if member.person.siblings %}
     						{% for child in member.person.siblings %}
-        						<li>{{ child.first_name|underline }}</li>
+        						<li><a href="#chapter1-{{ child.id }}" class="nolink">{{ child.full_name|underline }}</a></li>
     						{% endfor %}
 						{% else %}
 							{% if member.person.siblings_extern_list %}
@@ -526,6 +540,11 @@
 			<div class="not_breaking">
 			<h2>{{ appendix.name }}</h2>
 			<a id="chapter6-{{ appendix.id }}">&nbsp;</a>
+			<ul>
+				{% for person in appendix.persons %}
+					<li>{{ person }}</li>
+				{% endfor %}
+			</ul>
 			<img src="{{ MEDIA_URL }}..{{ appendix.image.url }}" class="document" />
 			</div>
 		</para>
