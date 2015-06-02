@@ -379,10 +379,12 @@ class Person(models.Model):
 			if sibling not in siblings_list and sibling.id <> self.id:
 				siblings_list.append(sibling)
 	
+		siblings_list = sorted(siblings_list, key=attrgetter('birth_date'), reverse=False)
+	
 		return siblings_list
 		
 	def siblings_extern_list(self):
-		if self.siblings_extern is not None:
+		if self.siblings_extern is not None and self.siblings_extern <> '':
 			return self.siblings_extern.split(',')
 			
 		return None
