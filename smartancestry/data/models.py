@@ -159,13 +159,23 @@ class TreeInfo(object):
 		return '{%d,%d,%d,\'%s %s\',%s,%s,%s}' % (id, self.level, selected, sign, name, indices, born, died)
 
 class PartnerInfo(object):
-	def __init__(self, status, partner, partner_name, location, date, state):
+	def __init__(self, status, partner, partner_name, location, date, date_year_only, state):
 		self.status = status
 		self.partner = partner
 		self.partner_name = partner_name
 		self.location = location
 		self.date = date
+		self.date_year_only = date_year_only
 		self.state = state
+		
+	def date_str(self):
+		if self.date_year_only:
+			return self.date.year
+		else:
+			return '%d.%d.%d' % (self.date.day, self.date.month, self.date.year) 
+		
+	def __unicode__(self):
+		return '[PartnerInfo: %s - dyo=%d,date:=%s' % (self.partner, self.date_year_only, self.date) 
 		
 class RelativesInfo(object):
 	def __init__(self, relatives, relations):
@@ -330,9 +340,9 @@ class Person(models.Model):
 				partners = []
 				for relation in FamilyStatusRelation.objects.filter(man = self):
 					if relation.woman is not None:
-						partners.append(PartnerInfo(relation.status_name, relation.woman, "", relation.location, relation.date, relation.status))
+						partners.append(PartnerInfo(relation.status_name, relation.woman, "", relation.location, relation.date, relation.date_only_year, relation.status))
 					else:
-						partners.append(PartnerInfo(relation.status_name, None, relation.wife_extern, relation.location, relation.date, relation.status))
+						partners.append(PartnerInfo(relation.status_name, None, relation.wife_extern, relation.location, relation.date, relation.date_only_year, relation.status))
 				return partners
 			except FamilyStatusRelation.DoesNotExist:
 				pass
@@ -342,9 +352,9 @@ class Person(models.Model):
 				partners = []
 				for relation in FamilyStatusRelation.objects.filter(woman = self):
 					if relation.man is not None:
-						partners.append(PartnerInfo(relation.status_name, relation.man, "", relation.location, relation.date, relation.status))
+						partners.append(PartnerInfo(relation.status_name, relation.man, "", relation.location, relation.date, relation.date_only_year, relation.status))
 					else:
-						partners.append(PartnerInfo(relation.status_name, None, relation.husband_extern, relation.location, relation.date, relation.status))
+						partners.append(PartnerInfo(relation.status_name, None, relation.husband_extern, relation.location, relation.date, relation.date_only_year, relation.status))
 				return partners
 			except FamilyStatusRelation.DoesNotExist:
 				pass
@@ -952,6 +962,7 @@ class AncestryRelation(models.Model):
 class FamilyStatusRelation(models.Model): 
 	status = models.CharField(max_length=1, choices=(('M', 'Marriage'), ('D', 'Divorce'), ('P', 'Partnership')))
 	date = models.DateField('date of marriage or divorce', null=True, blank=True)
+	date_only_year = models.BooleanField(default=False)
 	man = models.ForeignKey(Person, related_name = 'husband', blank=True, null=True)
 	woman = models.ForeignKey(Person, related_name = 'wife', blank=True, null=True)
 	husband_extern = models.CharField(max_length=50, blank=True, null=True)

@@ -219,10 +219,16 @@
 									{% trans "Partnership" %}:
 								{% endif %}
 							</td>
-							<td width="30%">{% if partner_relation.partner %}{{ partner_relation.partner }}{% else %}{{ partner_relation.partner_name }}{% endif %}</td>
+							<td width="30%">
+								{% if partner_relation.partner %}
+									{{ partner_relation.partner }}
+								{% else %}
+									{{ partner_relation.partner_name }}
+								{% endif %}
+							</td>
 							<td width="50%" colspan="2">
 								{% if partner_relation.date %}
-									{{ partner_relation.date | date:"d.m.Y" }}&nbsp;
+									{{ partner_relation.date_str }}&nbsp;
 								{% endif %}
 								{% if partner_relation.location %}
 									{% trans "in" %}&nbsp;
@@ -242,7 +248,7 @@
 							<a href="#chapter1-{{ member.person.father.id }}" class="nolink">{{ member.person.father }}</a>
 						{% else %}
 							{% if member.person.father_extern %}
-								{{ member.person.father_extern }}
+								{{ member.person.father_extern|underline }}
 							{% endif %}	
 						{% endif %}
 					</td>
@@ -252,7 +258,7 @@
 							<a href="#chapter1-{{ member.person.mother.id }}" class="nolink">{{ member.person.mother }}</a>
 						{% else %}
 							{% if member.person.mother_extern %}
-								{{ member.person.mother_extern }}
+								{{ member.person.mother_extern|underline }}
 							{% endif %}
 						{% endif %}
 					</td>
@@ -265,7 +271,8 @@
     						{% for child in member.person.children %}
         						<li><a href="#chapter1-{{ child.id }}" class="nolink">{{ child.full_name|underline }}</a></li>
     						{% endfor %}
-						{% else %}
+						{% endif %}
+						{% if member.person.children_extern_list %}
 							{% if member.person.children_extern_list %}
 								{% for child in member.person.children_extern_list %}
         							<li>{{ child }}</li>
@@ -283,13 +290,12 @@
     						{% for child in member.person.siblings %}
         						<li><a href="#chapter1-{{ child.id }}" class="nolink">{{ child.full_name|underline }}</a></li>
     						{% endfor %}
-						{% else %}
-							{% if member.person.siblings_extern_list %}
-								{% for child in member.person.siblings_extern_list %}
-        							<li>{{ child }}</li>
-    							{% endfor %}
-    						{% endif %}
 						{% endif %}
+						{% if member.person.siblings_extern_list %}
+							{% for child in member.person.siblings_extern_list %}
+        						<li>{{ child }}</li>
+    						{% endfor %}
+    					{% endif %}
 						</ul>
 					</td>
 				</tr>
