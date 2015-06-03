@@ -744,7 +744,7 @@ class Ancestry(models.Model):
 	export.allow_tags = True
 	
 	def export_raw(self):
-		return '<a href="/data/ancestry_export/%d/" target="_blank">Export Raw</a>' % (self.id)
+		return '<a href="/data/ancestry_export/%d/%s.html?with=style" target="_blank">Export Raw</a>' % (self.id, self.name)
 	export_raw.allow_tags = True
 	
 	def members(self):

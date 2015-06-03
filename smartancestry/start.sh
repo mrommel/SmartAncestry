@@ -4,6 +4,7 @@
 #
 bar_pidfile=./bar.pid
 tree_pidfile=./tree.pid
+ancestry_pidfile=./ancestry.pid
 python_pidfile=./python.pid
 
 if [ -f $bar_pidfile ]
@@ -14,6 +15,11 @@ fi
 if [ -f $tree_pidfile ]
 then
 	tree_pid=`cat $tree_pidfile`
+fi
+
+if [ -f $ancestry_pidfile ]
+then
+	ancestry_pid=`cat $ancestry_pidfile`
 fi
 
 if [ -f $python_pidfile ]
@@ -59,6 +65,24 @@ start() {
 				cd ../../../..
 				echo $! > $tree_pidfile
 		fi
+
+		if [ -f $ancestry_pidfile ] ; then
+				if test `ps -e | grep -c $ancestry_pid` = 2; then
+						echo "Not starting ancestry - instance already running with PID: $ancestry_pid"
+				else
+						echo "Starting ancestry"
+						cd data/static/data/js/
+						node ./ancestry.js &> ./../../../../ancestry.log &
+						cd ../../../..
+						echo $! > $ancestry_pidfile
+				fi
+		else
+				echo "Starting ancestry"
+				cd data/static/data/js/
+				node ./ancestry.js &> ./../../../../ancestry.log &
+				cd ../../../..
+				echo $! > $ancestry_pidfile
+		fi
 		
 		if [ -f $python_pidfile ] ; then
 				if test `ps -e | grep -c $python_pid` = 2; then
@@ -96,6 +120,13 @@ stop() {
 				echo "Cannot stop tree - no Pidfile found!"
 		fi
 		
+		if [ -f $ancestry_pidfile ] ; then
+				echo "stopping ancestry"
+				kill -9 $ancestry_pid
+		else
+				echo "Cannot stop ancestry - no Pidfile found!"
+		fi
+		
 		if [ -f $python_pidfile ] ; then
 				echo "stopping python"
 				kill -9 $python_pid
@@ -127,6 +158,16 @@ status() {
 				fi
 		else
 				echo "$tree_pidfile does not exist! Cannot process tree status!"
+		fi
+		
+		if [ -f $ancestry_pidfile ] ; then
+				if test `ps -e | grep -c $ancestry_pid` = 1; then
+						echo "ancestry not running"
+				else
+						echo "ancestry running with PID: [$ancestry_pid]"
+				fi
+		else
+				echo "$ancestry_pidfile does not exist! Cannot process ancestry status!"
 		fi
 		
 		if [ -f $python_pidfile ] ; then

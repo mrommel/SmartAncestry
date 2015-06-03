@@ -12,21 +12,21 @@ var Canvas = require('canvas'),
 var server = http.createServer(function(req,res) {
 	// parse url
 	var request = url.parse(req.url, true);
-	console.log("request: '" + request.pathname + "'");
+	//console.log("request: '" + request.pathname + "'");
 	var query = request.query;
 	
 	if (request.pathname == '/tree.png') {
 		ctx.fillStyle = '#fcfcfc';
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-		console.log("query: '" + request.search + "'");
+		//console.log("query: '" + request.search + "'");
 
 		var personData = [
 		];
 		
 		// query string: persons=[(4,3,0,"♂ Marcel Rommel",-1,-1,'Geb.: 13.11.2006 Berlin','Gest.:  ');(4,3,0,"♂ Marcel Rommel",-1,-1,'Geb.: 13.11.2006 Berlin','Gest.:  ')]
 		if (query.persons) {
-			console.log("got persons");
+			//console.log("got persons");
 			
 			var index = 0;
 			var trimmedParam = query.persons.replace('[', '');
@@ -47,23 +47,23 @@ var server = http.createServer(function(req,res) {
 				personObj.name = personObj.name.replace('Ã¤', 'ä');
 				personObj.name = personObj.name.replace('Ã¶', 'ö');
 				personObj.name = personObj.name.replace('\'', '');
-				console.log('name: ' + personObj.name);
+				//console.log('name: ' + personObj.name);
 				var underlineObj = { };
 				underlineObj.start = parts[4];
 				underlineObj.end = parts[5];
 				personObj.underline = underlineObj;
 				personObj.birth = parts[6];
-				console.log('birth: ' + personObj.birth);
+				//console.log('birth: ' + personObj.birth);
 				personObj.birth = personObj.birth.replace('/xc3/x9f', 'ß');
 				personObj.birth = personObj.birth.replace('/xc3/xbc', 'ü');
 				personObj.birth = personObj.birth.replace('/xc3/xa4', 'ä');
-				console.log('birth: ' + personObj.birth);
+				//console.log('birth: ' + personObj.birth);
 				personObj.death = parts[7];
-				console.log('death: ' + personObj.death);
+				//console.log('death: ' + personObj.death);
 				personObj.death = personObj.death.replace('/xc3/x9f', 'ß');
 				personObj.death = personObj.death.replace('/xc3/xbc', 'ü');
 				personObj.death = personObj.death.replace('/xc3/xa4', 'ä');
-				console.log('death: ' + personObj.death);
+				//console.log('death: ' + personObj.death);
 				personData.push(personObj);
 				//console.log("person: " + index + " => " + item);
 				index++;
@@ -75,7 +75,7 @@ var server = http.createServer(function(req,res) {
 		
 		// query string: relations=[(1,2);(3,1)]
 		if (query.relations) {
-			console.log("got relations");
+			//console.log("got relations");
 			
 			var index = 0;
 			var trimmedParam = query.relations.replace('[', '').replace(']', '');
@@ -91,12 +91,12 @@ var server = http.createServer(function(req,res) {
 
 		var ancestryTree = new AncestryTree.AncestryTree(ctx, personData, relationsData);
 		
-		for (var i = 0; i < 2000; i++) {
+		for (var i = 0; i < 1000; i++) {
 			ancestryTree.arrange();
 		}
 		ancestryTree.draw();
 	
-		console.log("deliver tree.png");
+		//console.log("deliver tree.png");
 		canvas.toBuffer(function (err, buf) {
 			res.writeHead(200, { 'Content-Type': 'image/png' });
 			res.write(buf);

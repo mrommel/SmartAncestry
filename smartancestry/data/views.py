@@ -86,6 +86,21 @@ def ancestry_export(request, ancestry_id):
 	})
 	return HttpResponse(template.render(context))
 
+def dot_tree(request, person_id):
+	try:
+		person = Person.objects.get(pk=person_id)
+	except Person.DoesNotExist:
+		raise Http404("Person does not exist")
+		
+	all_persons = Person.objects.all()
+		
+	template = loader.get_template('data/dot_tree.html')
+	context = RequestContext(request, {
+		'person': person,
+		'relatives': person.relatives(),
+	})
+	return HttpResponse(template.render(context))
+
 def distributions(request):
 	template = loader.get_template('data/distributions.html')
 	context = RequestContext(request, { })
