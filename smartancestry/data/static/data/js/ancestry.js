@@ -31,20 +31,17 @@ http.createServer(function (req, res) {
   	request.get(person_url, function (error, response, body) {
   		if (!error && response.statusCode == 200) {
   		
-  			console.log('---------------');
-  			console.log(body);
-  			console.log('---------------');
-  		
-    		jsdom.env({features:{QuerySelector:true}, html:htmlStub, scripts:scripts, 
-				done:function(errors, window) {
-					//graph_src = 'digraph G { subgraph cluster_0 { style=filled; color=lightgrey; node [style=filled,color=white]; a0 -> a1 -> a2 -> a3; label = "Michael Rommel"; } subgraph cluster_1 { node [style=filled]; b0 -> b1 -> b2 -> b3; label = "process #2"; color=blue } start -> a0; start -> b0; a1 -> b3; b2 -> a3; a3 -> a0; a3 -> end; b3 -> end; start [shape=Mdiamond]; end [shape=Msquare]; }';
-		
-    				// circo dot fdp neato nop nop1 nop2 osage patchwork twopi
-    				var svgsrc = viz.Viz(body, 'svg', "dot");
-    				convert.stdin.write(svgsrc);
-    				convert.stdin.end();
-  				}
-  			});
+  			//console.log('---------------');
+  			//console.log(body);
+  			//console.log('---------------');
+
+    		// circo dot fdp neato nop nop1 nop2 osage patchwork twopi
+    		var svgsrc = viz.Viz(body, 'svg', "dot");
+    		convert.stdin.write(svgsrc);
+    		convert.stdin.end();
+  		} else {
+  			console.log('error: ' + error + ', ' + response.statusCode);
+  			convert.stdin.end();
   		}
 	});
 }).listen(4446, '127.0.0.1');
