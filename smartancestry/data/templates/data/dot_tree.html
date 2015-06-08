@@ -4,13 +4,12 @@ digraph G {
 	graph [splines=ortho];
 	nodesep=0.8;
 	rankdir=LR;
-	node [shape=none, width=4];
+	node [width=5, style=filled, shape=box];
 
 	{% for relative in relatives.relatives %}
 	"node-{{ relative.person.id }}" [
-		#label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" width="250"><TR><TD PORT="1">{{ relative.person.first_name_short }} {{ relative.person.last_name }}</TD></TR><TR><TD>{% if relative.person.birth_date_only_year %}{{ relative.person.birth_date | date:"Y" }}{% else %}{{ relative.person.birth_date | date:"d.m.Y" }}{% endif %} {% if relative.person.birth_location %}{{ relative.person.birth_location|location_without_country }}{% endif %}</TD></TR><TR><TD>{% if relative.person.death_date_only_year %}{{ relative.person.death_date | date:"Y" }}{% else %}{{ relative.person.death_date | date:"d.m.Y" }}{% endif %} {% if relative.person.death_location %}{{ relative.person.death_location|location_without_country }}{% endif %}</TD></TR></TABLE>>
-		label="{{ relative.person.first_name_short }} {{ relative.person.last_name }}|<f0>{% if relative.person.birth_date_only_year %}{{ relative.person.birth_date | date:"Y" }}{% else %}{{ relative.person.birth_date | date:"d.m.Y" }}{% endif %} {% if relative.person.birth_location %}{{ relative.person.birth_location|location_without_country }}{% endif %}|{% if relative.person.death_date_only_year %}{{ relative.person.death_date | date:"Y" }}{% else %}{{ relative.person.death_date | date:"d.m.Y" }}{% endif %} {% if relative.person.death_location %}{{ relative.person.death_location|location_without_country }}{% endif %}",
-		shape=record
+		label="{{ relative.person.first_name_short }} {{ relative.person.last_name }}\l\n{% if relative.person.birth_date_only_year %}{{ relative.person.birth_date | date:"Y" }}{% else %}{{ relative.person.birth_date | date:"d.m.Y" }}{% endif %} {% if relative.person.birth_location %}{{ relative.person.birth_location|location_without_country }}{% endif %}\l\n{% if relative.person.death_date_only_year %}{{ relative.person.death_date | date:"Y" }}{% else %}{{ relative.person.death_date | date:"d.m.Y" }}{% endif %} {% if relative.person.death_location %}{{ relative.person.death_location|location_without_country }}{% endif %}\l",
+		{% if relative.person.sex = 'F'%}fillcolor="lightpink"{% else %}fillcolor="lightcyan"{% endif%}
 	];{% endfor %}
   	{% for relation in relatives.relations %}
   	"node-{{ relation.source }}":f0 -> "node-{{ relation.destination }}":f0;{% endfor %}

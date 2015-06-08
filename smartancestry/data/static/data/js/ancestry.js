@@ -40,7 +40,6 @@ http.createServer(function (req, res) {
     		convert.stdin.write(svgsrc);
     		convert.stdin.end();
   		} else {
-  			console.log('error: ' + error + ', ' + response.statusCode);
   			convert.stdin.end();
   		}
 	});
