@@ -14,5 +14,6 @@ urlpatterns = patterns('',
     url(r'^location/(?P<location_id>\d+)/', views.location, name='data.views.location'),
     url(r'^distributions/', views.distributions, name='data.views.distributions'),
     url(r'^export/ancestry/(?P<ancestry_id>\d+)/', views.export, name='data.views.export'),
-    url(r'^person/dot_tree/(?P<person_id>\d+)/', views.dot_tree, name='data.views.dot_tree'),
+    url(r'^person/dot_tree/(?P<person_id>\d+)/ancestry\.dot', views.dot_tree, name='data.views.dot_tree'),
+    url(r'^person/dot_tree/(?P<person_id>\d+)/images/(?P<person2_id>\d+)\.jpg$', views.person_image, name='data.views.person_image'),
 )

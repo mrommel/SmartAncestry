@@ -26,7 +26,7 @@ http.createServer(function (req, res) {
     	res.end();
   	});
   
-  	var person_url = "http://127.0.0.1:8000/data/person/dot_tree/1/";
+  	var person_url = "http://127.0.0.1:8000/data/person/dot_tree/1/ancestry.dot";
   
   	request.get(person_url, function (error, response, body) {
   		if (!error && response.statusCode == 200) {

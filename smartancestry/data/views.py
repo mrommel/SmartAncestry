@@ -6,6 +6,10 @@ from django.template import RequestContext, loader
 from django.utils import translation
 from random import randint
 from operator import attrgetter
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 def index(request):
     template = loader.get_template('data/index.html')
@@ -132,4 +136,19 @@ def export(request, ancestry_id):
 	image_data = open('tmp.pdf', "rb").read()
 	return HttpResponse(image_data, content_type='application/pdf')
 	
+def person_image(request, person_id, person2_id):
+	person_id = person2_id
+
+	try:
+		person = Person.objects.get(pk=person_id)
+	except Person.DoesNotExist:
+		raise Http404("Person does not exist")
+	
+	image_url = '/Users/mrommel/Prog/SmartAncestry/smartancestry/data%s' % (person.image.url)
+	image_url = image_url.replace('media/media', 'media')
+	logger.info('Load %s' % (image_url))
+	image_data = open(image_url, "rb").read()
+	response = HttpResponse(image_data, content_type="image/png")
+
+	return response
 		

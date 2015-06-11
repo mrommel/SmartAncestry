@@ -37,6 +37,18 @@ def underline(value):
 	val = val.replace(' _', ' <u>')
 	val = val.replace('_ ', '</u> ')
 	return mark_safe(val.strip())
+	
+@stringfilter
+@register.filter(name='remove_underlines')
+def remove_underlines(value):
+	value = value.replace('_', '')
+	value = value.replace('_', '')
+	return value.strip()
+	
+@stringfilter
+@register.filter(name='remove_media')
+def remove_media(value):
+	return value.replace('media/media', 'media')
     
 @stringfilter
 @register.filter(name='trim')
