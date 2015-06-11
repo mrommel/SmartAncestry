@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load app_filters %}
 digraph G {
+	imagepath="/Users/mrommel/Prog/SmartAncestry/smartancestry/data/media/persons/";
 	graph [splines=ortho];
 	nodesep=0.9;
 	rankdir=LR;
@@ -12,7 +13,7 @@ digraph G {
 	"node-{{ relative.person.id }}" [
 		color={% if relative.person.sex = 'F'%}"lightpink"{% else %}"lightblue"{% endif%},
 		label="{{ relative.person.first_name_short | remove_underlines }} {{ relative.person.last_name }}\n* {% if relative.person.birth_date_only_year %}{{ relative.person.birth_date | date:"Y" }}{% else %}{{ relative.person.birth_date | date:"d.m.Y" }}{% endif %} {% if relative.person.birth_location %}{{ relative.person.birth_location|location_without_country }}{% endif %}\n+ {% if relative.person.death_date_only_year %}{{ relative.person.death_date | date:"Y" }}{% else %}{{ relative.person.death_date | date:"d.m.Y" }}{% endif %} {% if relative.person.death_location %}{{ relative.person.death_location|location_without_country }}{% endif %}",
-		{% if relative.person.image %}image="images/{{ relative.person.id }}.jpg",{% endif%}
+		{% if relative.person.image %}image="{{ relative.person.image.url | remove_persons_folder }}",{% endif%}
 		labelloc=b];{% endfor %}
   	{% for relation in relatives.relations %}
   	"node-{{ relation.source }}" -> "node-{{ relation.destination }}";{% endfor %}

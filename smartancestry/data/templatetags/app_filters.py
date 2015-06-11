@@ -49,6 +49,11 @@ def remove_underlines(value):
 @register.filter(name='remove_media')
 def remove_media(value):
 	return value.replace('media/media', 'media')
+
+@stringfilter
+@register.filter(name='remove_persons_folder')	
+def remove_persons_folder(value):
+	return value.replace('/media/media/persons/', '')
     
 @stringfilter
 @register.filter(name='trim')
