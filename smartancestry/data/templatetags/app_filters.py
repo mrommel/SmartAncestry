@@ -53,7 +53,7 @@ def remove_media(value):
 @stringfilter
 @register.filter(name='remove_persons_folder')	
 def remove_persons_folder(value):
-	return value.replace('/media/media/persons/', '')
+	return value.replace('/media/media/persons/', '').replace('.JPG', '.jpg')
     
 @stringfilter
 @register.filter(name='trim')

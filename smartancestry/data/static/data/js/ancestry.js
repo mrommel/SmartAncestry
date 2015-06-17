@@ -6,9 +6,20 @@ var http = require('http'),
     exec = require('child_process').exec;
 
 http.createServer(function (req, res) {
+	// parse url
+	var request_helper = url.parse(req.url, true);
+	var query = request_helper.query;
+	var person = 1; // fallback
+
+	if (query.person) {
+		console.log("query: " + query.person);
+		person = query.person;
+	}
+
   	res.writeHead(200, {'Content-Type': 'image/png'});
   	
-  	var person_url = "http://127.0.0.1:8000/data/person/dot_tree/1/ancestry.dot";
+  	var person_url = "http://127.0.0.1:8000/data/person/dot_tree/" + person + "/ancestry.dot";
+  	console.log("person_url: " + person_url);
   
   	request.get(person_url, function (error, response, body) {
   		if (!error && response.statusCode == 200) {
@@ -47,4 +58,4 @@ http.createServer(function (req, res) {
 }).listen(4446, '127.0.0.1');
  
 console.log('Ancestry SVG server running at http://127.0.0.1:4446/');
-console.log('ex. http://127.0.0.1:4446/?values=.4,.3,.2,.1');
+console.log('ex. http://127.0.0.1:4446/?person=2');

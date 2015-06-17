@@ -494,9 +494,11 @@
 {% if featured %}
 	{% for member in featured %}
 		<para>
+			<div class="not_breaking">
 			<h2>{{ member.person }}</h2>
 			<a id="chapter4-{{ member.person.id }}">&nbsp;</a>
-			<img src="http://localhost:4445/tree.png?persons={{ member.person.relatives_str }}&relations={{ member.person.relations_str }}" width=550 class="distribution" />
+			<img src="http://127.0.0.1:4446/?person={{ member.person.id }}" class="distribution" />
+			</div>
 		</para>
 	{% endfor %}
 {% else %}

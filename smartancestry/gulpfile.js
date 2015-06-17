@@ -1,8 +1,9 @@
 // installation: 
 // * npm install gulp gulp-changed gulp-rename gulp-image-resize gulp-imagemin --save-dev
 // * npm install --save-dev gulp-using
-// 
-// * TODO: https://github.com/rvagg/through2
+// * npm install through2
+// * npm install gulp-util
+// * npm install lodash	
 
 var gulp = require('gulp');
 var imageResize = require('gulp-image-resize');
@@ -16,10 +17,12 @@ var fs          = require('fs');
 var path        = require('path');
 var through     = require('through2');
 var Canvas      = require('canvas');
+var gutil       = require('gulp-util');
+var _           = require('lodash');
 var PluginError = gutil.PluginError;
 
 // define paths
-var imgSrc = './data/media/persons/*',
+var imgSrc = './data/media/persons/*.{jpg,png,JPG}',
     imgDst = 'data/media/persons_tree/';
 
 gulp.task('default', function() {
@@ -33,10 +36,10 @@ gulp.task('resize', function() {
 
  	gulp.src(imgSrc)
  		.pipe(imageResize({ 
-            width : 100,
-            height : 100
+            width : 70,
+            height : 70
         }))
-        .pipe(gulpAncestryTree({ offsetX: 5 }))
+        .pipe(gulpAncestryTree({ offsetX: 0 }))
         .pipe(gulp.dest(imgDst));
 });
 
@@ -44,10 +47,12 @@ function gulpAncestryTree(opts) {
 
     // combine with default options
     opts = _.extend({
-        offsetX: 0,
-        offsetY: 0,
-        width: 150,
-        height: 70
+        imageOffsetX: 155,
+        imageOffsetY: 5,
+        imageWidth: 70,
+        imageHeight: 70,
+        width: 380,
+        height: 160,
     }, opts || {});
 
     return through.obj(function(file, enc, callback){
@@ -60,7 +65,7 @@ function gulpAncestryTree(opts) {
         }
         // User's should be using a compatible glob with plugin.
         // Example: gulp.src('images/**/*.{jpg,png}').pipe(watermark())
-        if (['.jpg', '.png'].indexOf(path.extname(file.path)) === -1) {
+        if (['.JPG', '.jpg', '.png'].indexOf(path.extname(file.path)) === -1) {
             this.emit('error', new PluginError({
                 plugin: 'AncestryTree',
                 message: 'Supported formats include JPG and PNG only.'
@@ -84,13 +89,14 @@ function gulpAncestryTree(opts) {
             img.src = file.contents;
             
             // make a new canvas with the same dimensions
-            var canvas = new Canvas(width, height);
+            var canvas = new Canvas(opts.width, opts.height);
             var ctx = canvas.getContext('2d');
             
-            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle="#FFFFE0";
+            ctx.fillRect(0, 0, opts.width, opts.height);
             
             // fill the canvas with the initial image
-            ctx.drawImage(img, offsetX, offsetY, height, height);
+            ctx.drawImage(img, opts.imageOffsetX, opts.imageOffsetY, opts.imageWidth, opts.imageHeight);
             
             // replace the file contents with our new image
             file.contents = canvas.toBuffer();
