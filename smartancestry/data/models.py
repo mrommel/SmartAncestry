@@ -321,7 +321,7 @@ class Person(models.Model):
 	mother_link.allow_tags = True
 	
 	def tree_link(self):
-		return '<a href="http://127.0.0.1:4446/?person=%s" target="_blank">Tree</a> <a href="view-source:http://127.0.0.1:8000/data/person/dot_tree/%s/ancestry.dot" target="_blank">Raw Tree</a>' % (self.id, self.id)
+		return '<a href="http://127.0.0.1:4446/?person=%s" target="_blank">Tree</a> / <a href="view-source:http://127.0.0.1:8000/data/person/dot_tree/%s/ancestry.dot" target="_blank">Raw Tree</a>' % (self.id, self.id)
 	tree_link.allow_tags = True
 	
 	def age(self):
