@@ -46,6 +46,12 @@ def remove_underlines(value):
 	return value.strip()
 	
 @stringfilter
+@register.filter(name='replace_umlauts')
+def replace_umlauts(value):
+	value = value.replace('&auml;', u'ä')
+	return value.strip()
+	
+@stringfilter
 @register.filter(name='remove_media')
 def remove_media(value):
 	return value.replace('media/media', 'media')
@@ -53,7 +59,7 @@ def remove_media(value):
 @stringfilter
 @register.filter(name='remove_persons_folder')	
 def remove_persons_folder(value):
-	return value.replace('/media/media/persons/', '').replace('.JPG', '.jpg')
+	return value.replace('/media/media/persons/', '').replace('.JPG', '.jpg').replace('%C3%A4', 'ä')
     
 @stringfilter
 @register.filter(name='trim')

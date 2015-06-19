@@ -200,6 +200,9 @@ class PersonInfo(object):
 	def full_name(self):
 		return self.name.strip()
 		
+	def last_name(self):
+		return self.name.strip()
+		
 	def gender_sign(self):
 		if self.sex == 'M':
 			return "♂"
@@ -316,6 +319,10 @@ class Person(models.Model):
 		else:
 			return ''
 	mother_link.allow_tags = True
+	
+	def tree_link(self):
+		return '<a href="http://127.0.0.1:4446/?person=%s" target="_blank">Tree</a> <a href="view-source:http://127.0.0.1:8000/data/person/dot_tree/%s/ancestry.dot" target="_blank">Raw Tree</a>' % (self.id, self.id)
+	tree_link.allow_tags = True
 	
 	def age(self):
 		if self.death_date is None and self.already_died == False:

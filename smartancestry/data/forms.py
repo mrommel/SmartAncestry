@@ -134,11 +134,11 @@ class PersonAdmin(admin.ModelAdmin):
         	'fields': ('father', 'father_link', 'father_extern', 'mother', 'mother_link', 'mother_extern', 'children_extern', 'childen_text', 'siblings_extern')
         }),
         ('Notes', {
-        	'fields': ('profession', 'notes', 'image')
+        	'fields': ('profession', 'notes', 'thumbnail', 'image', 'tree_link')
         }),
     )
     search_fields = ['first_name', 'last_name', ]
-    readonly_fields = ('childen_text', 'father_link', 'mother_link',)
+    readonly_fields = ('childen_text', 'father_link', 'mother_link', 'thumbnail', 'tree_link')
     raw_id_fields = ('father', 'mother',)
     list_filter = ('birth_date', ) #PersonAncestryListFilter,
     ordering = ('-birth_date',)
