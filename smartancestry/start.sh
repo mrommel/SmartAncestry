@@ -89,13 +89,13 @@ start() {
 						echo "Not starting python - instance already running with PID: $python_pid"
 				else
 						echo "Starting python"
-						python manage.py runserver &> ./python.log &
+						python manage.py runserver 127.0.0.1:7000 &> ./python.log &
 						echo $! > $python_pidfile
 						sleep 5
 				fi
 		else
 				echo "Starting python"
-				python manage.py runserver &> ./python.log &
+				python manage.py runserver 127.0.0.1:7000 &> ./python.log &
 				echo $! > $python_pidfile
 				sleep 5
 		fi
