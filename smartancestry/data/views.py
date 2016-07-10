@@ -131,7 +131,7 @@ def export(request, ancestry_id):
 		raise Http404("Ancestry does not exist")
 		
 	import os
-	os.system('prince --no-author-style --javascript -s http://127.0.0.1:8000/static/data/style_print.css http://127.0.0.1:8000/data/ancestry_export/%s/Kliemank -o tmp.pdf' % ancestry_id)
+	os.system('prince --no-author-style --javascript -s http://127.0.0.1:7000/static/data/style_print.css http://127.0.0.1:7000/data/ancestry_export/%s/Kliemank -o tmp.pdf' % ancestry_id)
 		
 	image_data = open('tmp.pdf', "rb").read()
 	return HttpResponse(image_data, content_type='application/pdf')

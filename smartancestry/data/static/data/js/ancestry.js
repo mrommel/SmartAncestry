@@ -18,7 +18,7 @@ http.createServer(function (req, res) {
 
   	res.writeHead(200, {'Content-Type': 'image/png'});
   	
-  	var person_url = "http://127.0.0.1:8000/data/person/dot_tree/" + person + "/ancestry.dot";
+  	var person_url = "http://127.0.0.1:7000/data/person/dot_tree/" + person + "/ancestry.dot";
   	console.log("person_url: " + person_url);
   
   	request.get(person_url, function (error, response, body) {
