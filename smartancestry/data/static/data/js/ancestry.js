@@ -33,7 +33,8 @@ http.createServer(function (req, res) {
     			console.log("downloaded");
     			
     			// executes `dot`
-				child = exec("dot -Tpng tmp.dot > tmp.png", function (error, stdout, stderr) {
+				// child = exec("dot -Tpng tmp.dot > tmp.png", function (error, stdout, stderr) {
+				child = exec("/Users/mrommel/Prog/SmartAncestry/smartancestry/data/static/data/js/dot.sh", function (error, stdout, stderr) {
 					if (error !== null) {
 						res.end();
 						return console.log('exec error: ' + error);
