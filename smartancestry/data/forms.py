@@ -77,7 +77,7 @@ class HusbandFamilyStatusRelationInline(admin.TabularInline):
 	def get_extra (self, request, obj=None, **kwargs):
 		""" hide all extra if the current user is having the wrong gender """
 		try:
-			person_id = request.path.replace('/admin/data/person/', '').replace('/', '')
+			person_id = request.path.replace('/admin/data/person/', '').replace('/', '').replace('change', '')
 			if person_id <> 'add':
 				person = Person.objects.get(id = person_id)
 				if person.sex == 'F':
@@ -100,7 +100,7 @@ class WifeFamilyStatusRelationInline(admin.TabularInline):
 	def get_extra (self, request, obj=None, **kwargs):
 		""" hide all extra if the current user is having the wrong gender """
 		try:
-			person_id = request.path.replace('/admin/data/person/', '').replace('/', '')
+			person_id = request.path.replace('/admin/data/person/', '').replace('/', '').replace('change', '')
 			if person_id <> 'add':
 				person = Person.objects.get(id = person_id)
 				if person.sex == 'M':
@@ -221,10 +221,14 @@ class LocationAdmin(admin.ModelAdmin):
 	actions = None
 	
 class DocumentAdmin(admin.ModelAdmin):
-	list_display = ('thumbnail', 'name', 'person_names', )
-	readonly_fields = ('thumbnail',)
+	list_display = ('thumbnail', 'name', 'person_names', 'admin_url', )
+	readonly_fields = ('thumbnail', 'admin_url',)
 	
 	ordering = ('name',)
 
 	actions = None
+	
+	def admin_url(self, obj):
+		return '<a href="/admin/data/document/%s/" target="_blank">Admin</a>' % (obj.id)
+	admin_url.allow_tags = True
     
