@@ -9,9 +9,11 @@ python manage.py runserver
 
 # data migration
 
+workon venv
 python manage.py makemigrations data
 python manage.py sqlmigrate data 0007
 python manage.py migrate
+deactivate
 
 # translations
 
