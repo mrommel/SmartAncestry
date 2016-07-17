@@ -89,6 +89,8 @@ start() {
 						echo "Not starting python - instance already running with PID: $python_pid"
 				else
 						echo "Starting python"
+						deactivate
+						workon venv
 						python manage.py runserver 127.0.0.1:7000 &> ./python.log &
 						echo $! > $python_pidfile
 						sleep 5
