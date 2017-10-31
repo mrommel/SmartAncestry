@@ -46,7 +46,7 @@
 			<div class="sidebar" style="width:600px;">
 				<div class="images">
 					{% if person.image %}
-						<img src="{{ MEDIA_URL }}..{{ person.image.url }}" alt="Img" width="205">
+						<img src="/{{ MEDIA_URL }}..{{ person.image.url }}" alt="Img" width="205">
 					{% else %}
 						<img src="/static/data/images/avatar_{{ person.sex}}.png" alt="Img{{ member.person.sex}}" width="205">
 					{% endif %}

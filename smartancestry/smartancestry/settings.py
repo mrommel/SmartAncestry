@@ -27,6 +27,8 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
+
 
 # Application definition
 
@@ -52,15 +54,23 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-	"django.contrib.auth.context_processors.auth",
-	"django.core.context_processors.debug",
-	"django.core.context_processors.i18n",
-	"django.core.context_processors.media",
-	"django.core.context_processors.static",
-	"django.core.context_processors.tz",
-	"django.contrib.messages.context_processors.messages",
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            os.path.join(PROJECT_PATH, 'template')
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
 ROOT_URLCONF = 'smartancestry.urls'
 
@@ -82,19 +92,19 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': '/Users/mrommel/Prog/SmartAncestry/smartancestry/debug.log',
+            'filename': '/Users/michael.rommel/Prog/SmartAncestry/smartancestry/debug.log',
             'formatter': 'verbose'
         },
         'file2': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': '/Users/mrommel/Prog/SmartAncestry/smartancestry/django.log',
+            'filename': '/Users/michael.rommel/Prog/SmartAncestry/smartancestry/django.log',
             'formatter': 'verbose'
         },
         'file_forms': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': '/Users/mrommel/Prog/SmartAncestry/smartancestry/forms.log',
+            'filename': '/Users/michael.rommel/Prog/SmartAncestry/smartancestry/forms.log',
             'formatter': 'verbose'
         },
     },
@@ -146,8 +156,9 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
-
 STATIC_URL = '/static/'
-STATIC_ROOT = '/Users/mrommel/Prog/SmartAncestry/smartancestry/smartancestry'
-MEDIA_ROOT = '/Users/mrommel/Prog/SmartAncestry/smartancestry/data'
+STATIC_ROOT = '/Users/michael.rommel/Prog/SmartAncestry/smartancestry/smartancestry'
+MEDIA_ROOT = '/Users/michael.rommel/Prog/SmartAncestry/smartancestry/data'
 MEDIA_URL = '/media/'
+
+

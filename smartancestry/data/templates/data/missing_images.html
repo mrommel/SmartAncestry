@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}Fehlende Bilder{% endblock %}
+
+{% block nav-ancestries %}<li class="active"><a href="/data/ancestries">{% trans "Ancestries" %}</a></li>{% endblock %}
+
+{% block content %}
+
+<div class="highlight">
+	<div class="clearfix">
+	
+	<h1>Ohne Bild</h1>
+	
+	{% if persons_list %}
+		<p>
+		<ul>
+		{% for person in persons_list %}
+			<li><a href="/data/person/{{ person.id }}/" class="link">{{ person.full_name| safe }}</a></li>
+		{% endfor %}
+		</ul>
+		</p>
+	{% else %}
+		<p>No persons are available.</p>
+	{% endif %}
+	</div>
+</div>
+
+{% endblock %}

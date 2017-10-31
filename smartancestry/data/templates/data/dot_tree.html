@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load app_filters %}
 digraph G {
-	imagepath="/Users/mrommel/Prog/SmartAncestry/smartancestry/data/media/persons_tree/";
+	imagepath="/Users/michael.rommel/Prog/SmartAncestry/smartancestry/data/media/persons_tree/";
 	graph [splines=ortho, label = "{% trans "Family tree" %} {{ person.first_name_short | remove_underlines }} {{ person.last_name }}", fontsize = 36, style = "bold"];
 	rankdir=LR;
 	node [width=4];
@@ -11,9 +11,9 @@ digraph G {
 	{% for relative in relatives.relatives %}
 	"node-{{ relative.person.id }}" [
 		# {{ relative.person }}
-		color={% if relative.person.sex = 'F'%}"lightpink"{% else %}"lightblue"{% endif%},
+		color={% if relative.person.sex == 'F'%}"lightpink"{% else %}"lightblue"{% endif%},
 		label="{{ relative.person.first_name_short | remove_underlines }} {{ relative.person.last_name | replace_umlauts }}\n* {% if relative.person.birth_date_only_year %}{{ relative.person.birth_date | date:"Y" }}{% else %}{{ relative.person.birth_date | date:"d.m.Y" }}{% endif %} {% if relative.person.birth_location %}{{ relative.person.birth_location|location_without_country }}{% endif %}\n+ {% if relative.person.death_date_only_year %}{{ relative.person.death_date | date:"Y" }}{% else %}{{ relative.person.death_date | date:"d.m.Y" }}{% endif %} {% if relative.person.death_location %}{{ relative.person.death_location|location_without_country }}{% endif %}\n\n",
-		{% if relative.person.image %}image="{{ relative.person.image.url | remove_persons_folder }}",{% else %}{% if relative.person.sex = 'F'%}image="avatar_f.png",{% else %}image="avatar_m.png",{% endif%}{% endif%}
+		{% if relative.person.image %}image="{{ relative.person.image.url | remove_persons_folder }}",{% else %}{% if relative.person.sex == 'F'%}image="avatar_f.png",{% else %}image="avatar_m.png",{% endif%}{% endif%}
 		labelloc=b];{% endfor %}
   	{% for relation in relatives.relations %}
   	"node-{{ relation.source }}" -> "node-{{ relation.destination }}";{% endfor %}

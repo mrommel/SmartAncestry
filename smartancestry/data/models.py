@@ -758,6 +758,20 @@ class Ancestry(models.Model):
 		result_list = AncestryRelation.objects.filter(ancestry = self)
 		result_list = sorted(result_list, key=attrgetter('person.birth_date'), reverse=True)
 		return result_list
+		
+	def noImage(self):
+		tmp_list = AncestryRelation.objects.filter(ancestry = self)
+		tmp_list = sorted(tmp_list, key=attrgetter('person.birth_date'), reverse=True)
+		
+		result_list = []
+		
+		for ancestryPerson in tmp_list:
+			person = ancestryPerson.person
+			
+			if person.image.name is None or person	.image.name == '':
+				result_list.append(person)
+			
+		return result_list
 	
 	def featured(self):
 		result_list = AncestryRelation.objects.filter(ancestry = self).filter(featured = True)

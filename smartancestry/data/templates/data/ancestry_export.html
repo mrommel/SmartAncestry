@@ -4,7 +4,7 @@
 <frontmatter>
 <titlepage>
 {% if ancestry.image %}
-	<img src="{{ MEDIA_URL }}..{{ ancestry.image.url }}" alt="Img" width="405">
+	<img src="/{{ MEDIA_URL }}..{{ ancestry.image.url }}" alt="Img" width="405">
 {% else %}
 	<img src="" alt="Img" height="637" width="405">
 {% endif %}
@@ -141,7 +141,7 @@
 				<tr class="row">
 					<td width="20%" rowspan="5">
 						{% if member.person.image %}
-							<img src="{{ MEDIA_URL }}..{{ member.person.image.url }}" alt="Img" class="portait">
+							<img src="/{{ MEDIA_URL }}..{{ member.person.image.url }}" alt="Img" class="portait">
 						{% else %}
 							<img src="/static/data/images/avatar_{{ member.person.sex}}.png" alt="Img{{ member.person.sex}}" class="portait">
 						{% endif %}
@@ -391,7 +391,7 @@
 <h2>{% trans "Locations" %}</h2>
 <a id="chapter3-2">&nbsp;</a>
 {% if ancestry.map %}
-	<img src="{{ MEDIA_URL }}..{{ ancestry.map.url }}" alt="Img" height="400" class="distribution"><br />
+	<img src="/{{ MEDIA_URL }}..{{ ancestry.map.url }}" alt="Img" height="400" class="distribution"><br />
 {% else %}
 	<img src="" alt="Img" height="400" width="500" class="distribution"><br />
 {% endif %}

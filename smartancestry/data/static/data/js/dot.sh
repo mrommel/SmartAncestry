@@ -1,3 +1,3 @@
 #!/bin/sh
 #
-/opt/local/bin/dot -Tpng tmp.dot > tmp.png
+/usr/local/bin/dot -Tpng tmp.dot > tmp.png

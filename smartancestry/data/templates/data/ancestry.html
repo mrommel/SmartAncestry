@@ -176,7 +176,7 @@
 		<div class="sidebar" style="width:400px;">
 			<div class="images">
 				{% if ancestry.image %}
-					<img src="{{ MEDIA_URL }}..{{ ancestry.image.url }}" alt="Img" width="205">
+					<img src="/{{ MEDIA_URL }}..{{ ancestry.image.url }}" alt="Img" width="205">
 				{% else %}
 					<img src="" alt="Img" height="237" width="205">
 				{% endif %}
@@ -201,6 +201,12 @@
 		</div>
 		<div class="main" style="width:400px;">
 			<div>
+				<h2>{% trans "Missing Items" %}</h2>
+				<p>
+					<ul>
+						<li><a href="/data/ancestry/{{ ancestry.id }}/missing/images">Personen ohne Bild</a></li>
+					</ul>
+				</p>
 				<br />
 				<h2>{% trans "Timeline" %}</h2>
 
