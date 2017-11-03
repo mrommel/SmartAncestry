@@ -59,3 +59,5 @@ smartancestry/data/media/persons_tree/Stavenhagen_Renate_ready.jpg
 smartancestry/data/media/persons_tree/Stavenhagen_Wolfgang_ready.jpg
 smartancestry/data/media/persons_tree/Vogtländer_Regina_ready.jpg
 smartancestry/venv
+smartancestry/db.sqlite3
+smartancestry/tmp.pdf
