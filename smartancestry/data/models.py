@@ -236,7 +236,8 @@ class Person(models.Model):
 	mother_extern = models.CharField(max_length=50, blank=True, null=True)
 	children_extern = models.CharField(max_length=200, blank=True, null=True)
 	siblings_extern = models.CharField(max_length=200, blank=True, null=True)
-	notes = models.CharField(max_length=500, blank=True, null=True)  
+	notes = models.CharField(max_length=500, blank=True, null=True) 
+	external_identifier = models.CharField(max_length=50, blank=True, null=True)  
 	image = models.ImageField(upload_to='media/persons', blank=True, null=True)  
 	
 	def user_name(self):
@@ -940,7 +941,7 @@ def person_of_document_relation(x):
 	return x.person
 
 class Document(models.Model):
-	name = models.CharField(max_length=80)
+	name = models.CharField(max_length=200)
 	date = models.DateField('date of creation')
 	image = models.ImageField(upload_to='media/documents', blank=True, null=True)
 	

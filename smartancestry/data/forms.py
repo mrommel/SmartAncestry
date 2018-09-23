@@ -134,7 +134,7 @@ class PersonAdmin(admin.ModelAdmin):
         	'fields': ('father', 'father_link', 'father_extern', 'mother', 'mother_link', 'mother_extern', 'children_extern', 'childen_text', 'siblings_extern')
         }),
         ('Notes', {
-        	'fields': ('profession', 'notes', 'thumbnail', 'image', 'tree_link')
+        	'fields': ('profession', 'notes', 'external_identifier', 'thumbnail', 'image', 'tree_link')
         }),
     )
     search_fields = ['first_name', 'last_name', ]

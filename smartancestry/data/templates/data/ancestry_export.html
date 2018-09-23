@@ -299,11 +299,12 @@
 						</ul>
 					</td>
 				</tr>
-				{% if member.person.notes %}
+				{% if member.person.notes or member.person.external_identifier %}
 				<tr class="{% if member.person.partner_relations|length|divisibleby:2 %}alternating{% else %}row{% endif %}">
 					<td width="20%" class="label">{% trans "Notes" %}:</td>
 					<td width="30%" colspan="3">
 						{{ member.person.notes }}
+						{{ member.person.external_identifier }}
 					</td>
 				</tr>
 				{% endif %}
@@ -553,7 +554,7 @@
 					<li>{{ person }}</li>
 				{% endfor %}
 			</ul>
-			<img src="{{ MEDIA_URL }}..{{ appendix.image.url }}" class="document" />
+			<img src="{{ appendix.image.url }}" class="document" />
 			</div>
 		</para>
 	{% endfor %}
