@@ -274,6 +274,10 @@ class Person(models.Model):
 		if birth_str is None:
 			birth_str = '-'
 		return mark_safe('%s<br>%s' % (self.birth_date, birth_str))
+		
+	def birth_year(self):
+		#return self.birth_date.strftime('%Y')
+		return '{0.year:4d}'.format(self.birth_date)
 	
 	def death(self):
 		date_str = self.death_date
@@ -283,6 +287,13 @@ class Person(models.Model):
 		if death_str is None:
 			death_str = '-'
 		return mark_safe('%s<br>%s' % (date_str, death_str))
+		
+	def death_year(self):
+		if self.death_date is None:
+			return '???'
+			
+		#return self.death_date.strftime('%Y')
+		return '{0.year:4d}'.format(self.death_date)
 	
 	def father_name(self):
 		if self.father is not None:
@@ -615,7 +626,7 @@ class Person(models.Model):
 		first = self.first_name
 		first = first.replace(u'\xfc', '&uuml;')
 		first = first.replace(u'\xf6', '&ouml;')
-		return mark_safe('%s %s' % ((' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip(), self.last_name))
+		return mark_safe('%s %s (%s-%s)' % ((' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip(), self.last_name, self.birth_year(), self.death_year()))
 
 class TimelineInfo(object):
 	def __init__(self, date, title):

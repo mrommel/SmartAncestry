@@ -139,7 +139,7 @@ class PersonAdmin(admin.ModelAdmin):
     )
     search_fields = ['first_name', 'last_name', ]
     readonly_fields = ('childen_text', 'father_link', 'mother_link', 'thumbnail', 'tree_link')
-    raw_id_fields = ('father', 'mother',)
+    #raw_id_fields = ('father', 'mother',)
     list_filter = ('birth_date', ) #PersonAncestryListFilter,
     ordering = ('-birth_date',)
     inlines = [
