@@ -221,7 +221,7 @@ class Person(models.Model):
 	first_name = models.CharField(max_length=50)
 	last_name = models.CharField(max_length=50)
 	birth_name = models.CharField(max_length=50, blank=True, null=True)
-	sex = models.CharField(max_length=1, choices=(('M', 'Male'), ('F', 'Female')))
+	sex = models.CharField(max_length=1, choices=(('M', 'Male'), ('F', 'Female')), verbose_name="Gender")
 	birth_date = models.DateField('date of birth')
 	birth_date_only_year = models.BooleanField(default=False)
 	birth_location = models.ForeignKey(Location, blank=True, null=True, related_name="birth_location") 
@@ -276,7 +276,8 @@ class Person(models.Model):
 		return mark_safe('%s<br>%s' % (self.birth_date, birth_str))
 		
 	def birth_year(self):
-		#return self.birth_date.strftime('%Y')
+		if self.birth_date is None:
+			return '---'
 		return '{0.year:4d}'.format(self.birth_date)
 	
 	def death(self):
