@@ -227,7 +227,8 @@ class Person(models.Model):
 	birth_location = models.ForeignKey(Location, blank=True, null=True, related_name="birth_location") 
 	death_date = models.DateField('date of death', null=True, blank=True)
 	death_date_only_year = models.BooleanField(default=False)
-	death_location = models.ForeignKey(Location, blank=True, null=True, related_name="death_location") 
+	death_location = models.ForeignKey(Location, blank=True, null=True, related_name="death_location")
+	cause_of_death = models.CharField(max_length=100, blank=True, null=True)
 	already_died = models.NullBooleanField(default=False, blank=True, null=True)
 	profession = models.CharField(max_length=50, blank=True, null=True)
 	father = models.ForeignKey('self', blank=True, null=True, related_name="children_father")
@@ -986,13 +987,24 @@ class DocumentRelation(models.Model):
 	
 	def __unicode__(self):			  
 		return mark_safe(u'%s - %s' % (self.person, self.document.name))
+		
+
+class Question(models.Model):
+	person = models.ForeignKey(Person)
+	question = models.CharField(max_length=100)
+	answer = models.CharField(max_length=100, null=True, blank=True)
+	date = models.DateField('date of answer', null=True, blank=True)
+	source = models.CharField(max_length=30, null=True, blank=True)
+	
+	def __unicode__(self):
+		return u'%s %s - %s' % (self.person.first_name, self.person.last_name, self.question)
 
 class AncestryRelation(models.Model):
 	person = models.ForeignKey(Person)
 	ancestry = models.ForeignKey(Ancestry)
 	featured = models.NullBooleanField(default=False, blank=True, null=True)
 	
-	def __unicode__(self):			  
+	def __unicode__(self):
 		return u'%s' % (self.ancestry.name)
 		
 class FamilyStatusRelation(models.Model): 

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from data.models import Ancestry, AncestryRelation, FamilyStatusRelation, Person, DocumentRelation
+from data.models import Ancestry, AncestryRelation, FamilyStatusRelation, Person, DocumentRelation, Question
 from django.forms import CheckboxSelectMultiple
 from django.db import models
 from django import forms
@@ -120,6 +120,11 @@ class PersonAncestryListFilter(admin.SimpleListFilter):
 	
 	# Parameter for the filter that will be used in the URL query.
 	parameter_name = 'ancestry'
+	
+class QuestionInline(admin.TabularInline):
+	model = Question
+	fk_name = "person"
+	extra = 1
 
 class PersonAdmin(admin.ModelAdmin):
     list_display = ('user_name', 'birth_name', 'thumbnail', 'birth', 'death', 'father_name', 'mother_name', 'ancestry_names')
@@ -128,7 +133,7 @@ class PersonAdmin(admin.ModelAdmin):
             'fields': ('first_name', 'last_name', 'birth_name', 'sex')
         }),
         ('Dates/Locations', {
-            'fields': ('birth_date', 'birth_date_only_year', 'birth_location', 'death_date', 'death_date_only_year', 'death_location', 'already_died')
+            'fields': ('birth_date', 'birth_date_only_year', 'birth_location', 'death_date', 'death_date_only_year', 'death_location', 'cause_of_death', 'already_died')
         }),
         ('Relations', {
         	'fields': ('father', 'father_link', 'father_extern', 'mother', 'mother_link', 'mother_extern', 'children_extern', 'childen_text', 'siblings_extern')
@@ -147,6 +152,7 @@ class PersonAdmin(admin.ModelAdmin):
         HusbandFamilyStatusRelationInline,
         WifeFamilyStatusRelationInline,
         DocumentRelationInline,
+        QuestionInline,
     ]
     actions = None
     

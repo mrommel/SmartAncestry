@@ -1,10 +1,11 @@
 from django.contrib import admin
 
 # Register your models here.
-from data.models import Person, Ancestry, AncestryRelation, FamilyStatusRelation, Location, Distribution, DistributionRelation, Document, DocumentRelation
+from data.models import Person, Ancestry, AncestryRelation, FamilyStatusRelation, Location, Distribution, DistributionRelation, Document, DocumentRelation, Question
 from data.forms import PersonAdmin, LocationAdmin, AncestryAdmin, DocumentAdmin
 
 admin.site.register(Person, PersonAdmin)
+admin.site.register(Question)
 admin.site.register(Ancestry, AncestryAdmin)
 admin.site.register(FamilyStatusRelation)
 admin.site.register(Location, LocationAdmin)
