@@ -114,12 +114,6 @@ class WifeFamilyStatusRelationInline(admin.TabularInline):
 			# Don't add any extra forms if the related object already exists.
 			return 1
 		return self.extra
-
-class PersonAncestryListFilter(admin.SimpleListFilter):
-	title = _('Family - Father')
-	
-	# Parameter for the filter that will be used in the URL query.
-	parameter_name = 'ancestry'
 	
 class QuestionInline(admin.TabularInline):
 	model = Question
@@ -127,7 +121,7 @@ class QuestionInline(admin.TabularInline):
 	extra = 1
 
 class PersonAdmin(admin.ModelAdmin):
-    list_display = ('user_name', 'birth_name', 'thumbnail', 'birth', 'death', 'father_name', 'mother_name', 'ancestry_names')
+    list_display = ('user_name', 'birth_name', 'thumbnail', 'birth', 'death', 'father_name', 'mother_name', 'ancestry_names', 'number_of_questions', )
     fieldsets = ( 
         (None, {
             'fields': ('first_name', 'last_name', 'birth_name', 'sex')
@@ -145,7 +139,8 @@ class PersonAdmin(admin.ModelAdmin):
     search_fields = ['first_name', 'last_name', ]
     readonly_fields = ('childen_text', 'father_link', 'mother_link', 'thumbnail', 'tree_link')
     #raw_id_fields = ('father', 'mother',)
-    list_filter = ('birth_date', ) #PersonAncestryListFilter,
+    #list_filter = ('birth_date', 'ancestries', ) #PersonAncestryListFilter,
+    list_filter = PersonAncestryListFilter,
     ordering = ('-birth_date',)
     inlines = [
         AncestryRelationInline,

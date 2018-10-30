@@ -623,6 +623,9 @@ class Person(models.Model):
 		
 	def appendices(self):
 		return DocumentRelation.objects.filter(person = self)
+		
+	def number_of_questions(self):
+		return '%d / %d' % (len(Question.objects.filter(person = self).exclude(answer = None)), len(Question.objects.filter(person = self)))
 	
 	def __unicode__(self):		
 		first = self.first_name
@@ -996,8 +999,16 @@ class Question(models.Model):
 	date = models.DateField('date of answer', null=True, blank=True)
 	source = models.CharField(max_length=30, null=True, blank=True)
 	
+	def open(self):
+		if len(self.answer) == 0:
+			return True
+		else:
+			return False
+	
 	def __unicode__(self):
-		return u'%s %s - %s' % (self.person.first_name, self.person.last_name, self.question)
+		first = mark_safe(u' %s ' % self.person.first_name)
+		first = mark_safe(first.replace(" _", " <u>").replace("_ ", "</u> "))
+		return mark_safe((u' %s %s - %s' % (first, self.person.last_name, self.question)).strip())
 
 class AncestryRelation(models.Model):
 	person = models.ForeignKey(Person)
