@@ -10,6 +10,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from sets import Set
 import logging
+from django.core.urlresolvers import reverse
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -291,8 +292,11 @@ class Person(models.Model):
 		return mark_safe('%s<br>%s' % (date_str, death_str))
 		
 	def death_year(self):
-		if self.death_date is None:
+		if self.death_date is None and self.already_died:
 			return '???'
+			
+		if self.death_date is None:
+			return ''
 			
 		#return self.death_date.strftime('%Y')
 		return '{0.year:4d}'.format(self.death_date)
@@ -410,6 +414,23 @@ class Person(models.Model):
 			
 		return None
 		
+	def siblings_text(self):
+		str = ''
+		
+		for sibling_item in self.siblings():
+			str = "%s, %s" % (str, sibling_item.get_admin_url())
+			
+		if self.siblings_extern is not None:
+			str = "%s, %s" % (str, self.siblings_extern)
+		
+		str = "$%s$" % (str)
+		str = str.replace("$, ", "")
+		str = str.replace(", $", "")
+		str = str.replace("$", "")
+		
+		return str
+	siblings_text.allow_tags = True
+		
 	def children(self):
 		children_list = Person.objects.filter(Q(father = self) | Q(mother = self))
 		children_list = sorted(children_list, key=attrgetter('birth_date'), reverse=False)
@@ -425,7 +446,7 @@ class Person(models.Model):
 		str = ''
 		
 		for children_item in self.children():
-			str = "%s, %s" % (str, children_item.full_name())
+			str = "%s, %s" % (str, children_item.get_admin_url())
 			
 		if self.children_extern is not None:
 			str = "%s, %s" % (str, self.children_extern)
@@ -436,6 +457,7 @@ class Person(models.Model):
 		str = str.replace("$", "")
 		
 		return str
+	childen_text.allow_tags = True
 		
 	def children_count(self):
 		count = len(self.children())
@@ -614,6 +636,10 @@ class Person(models.Model):
 	@models.permalink
 	def get_absolute_url(self):
 		return ('data.views.person', [str(self.id)])
+		
+	def get_admin_url(self):
+		url = reverse('admin:%s_%s_change' % (self._meta.app_label,  self._meta.model_name),  args=[self.id] )
+		return u'<a href="%s">%s</a>' % (url,  self.__unicode__())
 	
 	"""
 		todo: return a pdf of the persons cv
