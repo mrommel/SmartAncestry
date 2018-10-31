@@ -18,8 +18,12 @@ deactivate
 
 ## translations
 
+### installation
+brew install gettext
+brew link gettext --force
+
 cd ~/Prog/SmartAncestry/smartancestry/data/
-python ../manage.py makemessages -l de -e html,txt -e xml
+python ../manage.py makemessages -l de -e html,txt,py -e xml
 python ../manage.py compilemessages
 
 ## node js scripts

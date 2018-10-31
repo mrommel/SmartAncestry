@@ -222,19 +222,19 @@ class Person(models.Model):
 	first_name = models.CharField(max_length=50)
 	last_name = models.CharField(max_length=50)
 	birth_name = models.CharField(max_length=50, blank=True, null=True)
-	sex = models.CharField(max_length=1, choices=(('M', 'Male'), ('F', 'Female')), verbose_name="Gender")
-	birth_date = models.DateField('date of birth')
+	sex = models.CharField(max_length=1, choices=(('M', _('Male')), ('F', _('Female'))), verbose_name=_('Gender'))
+	birth_date = models.DateField(_('date of birth'))
 	birth_date_only_year = models.BooleanField(default=False)
-	birth_location = models.ForeignKey(Location, blank=True, null=True, related_name="birth_location") 
-	death_date = models.DateField('date of death', null=True, blank=True)
+	birth_location = models.ForeignKey(Location, blank=True, null=True, related_name=_('birth_location')) 
+	death_date = models.DateField(_('date of death'), null=True, blank=True)
 	death_date_only_year = models.BooleanField(default=False)
-	death_location = models.ForeignKey(Location, blank=True, null=True, related_name="death_location")
+	death_location = models.ForeignKey(Location, blank=True, null=True, related_name=_('death_location'))
 	cause_of_death = models.CharField(max_length=100, blank=True, null=True)
 	already_died = models.NullBooleanField(default=False, blank=True, null=True)
 	profession = models.CharField(max_length=50, blank=True, null=True)
-	father = models.ForeignKey('self', blank=True, null=True, related_name="children_father")
+	father = models.ForeignKey('self', blank=True, null=True, related_name=_('children_father'))
 	father_extern = models.CharField(max_length=50, blank=True, null=True)
-	mother = models.ForeignKey('self', blank=True, null=True, related_name="children_mother")
+	mother = models.ForeignKey('self', blank=True, null=True, related_name=_('children_mother'))
 	mother_extern = models.CharField(max_length=50, blank=True, null=True)
 	children_extern = models.CharField(max_length=200, blank=True, null=True)
 	siblings_extern = models.CharField(max_length=200, blank=True, null=True)
@@ -245,7 +245,7 @@ class Person(models.Model):
 	def user_name(self):
 		return str(self)
 	
-	user_name.short_description = 'Name'
+	user_name.short_description = _('Name')
 	
 	def first_name_short(self):
 		if not ' ' in self.first_name:
@@ -984,7 +984,7 @@ def person_of_document_relation(x):
 
 class Document(models.Model):
 	name = models.CharField(max_length=200)
-	date = models.DateField('date of creation')
+	date = models.DateField(_('date of creation'))
 	image = models.ImageField(upload_to='media/documents', blank=True, null=True)
 	
 	def person_names(self):
@@ -1022,7 +1022,7 @@ class Question(models.Model):
 	person = models.ForeignKey(Person)
 	question = models.CharField(max_length=100)
 	answer = models.CharField(max_length=100, null=True, blank=True)
-	date = models.DateField('date of answer', null=True, blank=True)
+	date = models.DateField(_('date of answer'), null=True, blank=True)
 	source = models.CharField(max_length=30, null=True, blank=True)
 	
 	def open(self):
@@ -1045,11 +1045,11 @@ class AncestryRelation(models.Model):
 		return u'%s' % (self.ancestry.name)
 		
 class FamilyStatusRelation(models.Model): 
-	status = models.CharField(max_length=1, choices=(('M', 'Marriage'), ('D', 'Divorce'), ('P', 'Partnership')))
-	date = models.DateField('date of marriage or divorce', null=True, blank=True)
+	status = models.CharField(max_length=1, choices=(('M', _('Marriage')), ('D', _('Divorce')), ('P', _('Partnership'))))
+	date = models.DateField(_('date of marriage or divorce'), null=True, blank=True)
 	date_only_year = models.BooleanField(default=False)
-	man = models.ForeignKey(Person, related_name = 'husband', blank=True, null=True)
-	woman = models.ForeignKey(Person, related_name = 'wife', blank=True, null=True)
+	man = models.ForeignKey(Person, related_name = _('husband'), blank=True, null=True)
+	woman = models.ForeignKey(Person, related_name = _('wife'), blank=True, null=True)
 	husband_extern = models.CharField(max_length=50, blank=True, null=True)
 	wife_extern = models.CharField(max_length=50, blank=True, null=True)
 	location = models.ForeignKey(Location, blank=True, null=True) 
