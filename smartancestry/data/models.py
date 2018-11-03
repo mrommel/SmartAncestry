@@ -225,16 +225,16 @@ class Person(models.Model):
 	sex = models.CharField(max_length=1, choices=(('M', _('Male')), ('F', _('Female'))), verbose_name=_('Gender'))
 	birth_date = models.DateField(_('date of birth'))
 	birth_date_only_year = models.BooleanField(default=False)
-	birth_location = models.ForeignKey(Location, blank=True, null=True, related_name=_('birth_location')) 
+	birth_location = models.ForeignKey(Location, blank=True, null=True, related_name='birth_location') 
 	death_date = models.DateField(_('date of death'), null=True, blank=True)
 	death_date_only_year = models.BooleanField(default=False)
-	death_location = models.ForeignKey(Location, blank=True, null=True, related_name=_('death_location'))
+	death_location = models.ForeignKey(Location, blank=True, null=True, related_name='death_location')
 	cause_of_death = models.CharField(max_length=100, blank=True, null=True)
 	already_died = models.NullBooleanField(default=False, blank=True, null=True)
 	profession = models.CharField(max_length=50, blank=True, null=True)
-	father = models.ForeignKey('self', blank=True, null=True, related_name=_('children_father'))
+	father = models.ForeignKey('self', blank=True, null=True, related_name='children_father')
 	father_extern = models.CharField(max_length=50, blank=True, null=True)
-	mother = models.ForeignKey('self', blank=True, null=True, related_name=_('children_mother'))
+	mother = models.ForeignKey('self', blank=True, null=True, related_name='children_mother')
 	mother_extern = models.CharField(max_length=50, blank=True, null=True)
 	children_extern = models.CharField(max_length=200, blank=True, null=True)
 	siblings_extern = models.CharField(max_length=200, blank=True, null=True)
@@ -263,7 +263,14 @@ class Person(models.Model):
 		first = self.first_name_short()
 		first = first.replace(u'\xfc', '&uuml;')
 		first = first.replace(u'\xf6', '&ouml;')
+		first = first.replace(u'\xe4', '&auml;')
 		return ('%s %s' % ((' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> "), self.last_name)).strip()
+	
+	def female(self):
+		return self.sex == 'F'
+		
+	def male(self):
+		return self.sex == 'M'
 	
 	def gender_sign(self):
 		if self.sex == 'M':
@@ -491,6 +498,9 @@ class Person(models.Model):
 		return False
 	
 	def married_to(self):
+		"""
+			TODO: FIXME - no divorce handling here
+		"""
 		if self.sex == 'M':
 			try:
 				for husbandRelation in FamilyStatusRelation.objects.get(man = self):
@@ -505,6 +515,26 @@ class Person(models.Model):
 			except FamilyStatusRelation.DoesNotExist:
 				pass
 		
+		return None
+		
+	def wife(self):
+		"""
+			FIXME: divorce not handled
+		"""
+		if self.sex == 'M':
+			for husbandRelation in FamilyStatusRelation.objects.filter(Q(man = self) & Q(status = 'M')):
+				return husbandRelation.woman
+				
+		return None
+	
+	def husband(self):
+		"""
+			FIXME: divorce not handled
+		"""
+		if self.sex == 'F':
+			for husbandRelation in FamilyStatusRelation.objects.filter(Q(woman = self) & Q(status = 'M')):
+				return husbandRelation.man
+				
 		return None
 	
 	def married_at(self):
@@ -657,6 +687,7 @@ class Person(models.Model):
 		first = self.first_name
 		first = first.replace(u'\xfc', '&uuml;')
 		first = first.replace(u'\xf6', '&ouml;')
+		first = first.replace(u'\xe4', '&auml;')
 		return mark_safe('%s %s (%s-%s)' % ((' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip(), self.last_name, self.birth_year(), self.death_year()))
 
 class TimelineInfo(object):
@@ -1036,16 +1067,185 @@ class Question(models.Model):
 		first = mark_safe(first.replace(" _", " <u>").replace("_ ", "</u> "))
 		return mark_safe((u' %s %s - %s' % (first, self.person.last_name, self.question)).strip())
 
+def ancestry_relation(from_person, to_person):
+	"""
+		derives the relation status from person from_person to to_person
+	"""
+	#return '%s -> %s' % (from_person, to_person)
+	
+	if from_person.father == to_person or from_person.mother == to_person:
+		if from_person.female(): 
+			return _('daugther')
+		else: 
+			return _('son')
+	
+	if from_person.father is not None:
+		if from_person.father.mother == to_person or from_person.father.father == to_person:
+			if from_person.female(): 
+				return _('granddaugther')
+			else: 
+				return _('grandson')
+				
+	if from_person.mother is not None:
+		if from_person.mother.mother == to_person or from_person.mother.father == to_person:
+			if from_person.female(): 
+				return _('granddaugther')
+			else: 
+				return _('grandson')
+	
+	if to_person.wife() == from_person:
+		return _('wife')
+	
+	if to_person.wife() is not None:
+		if to_person.wife().father == from_person:
+			return _('father in law')
+		
+		if to_person.wife().mother == from_person:
+			return _('mother in law')
+	
+	if to_person.husband() == from_person:
+		return _('husband')
+	
+	if to_person.husband() is not None:
+		if to_person.husband().father == from_person:
+			return _('father in law')
+		
+		if to_person.husband().mother == from_person:
+			return _('mother in law')
+	
+	if to_person.father == from_person:
+		return _('father')
+		
+	if to_person.father is not None:
+		for fathers_sibling in to_person.father.siblings():
+			if fathers_sibling == from_person:
+				if from_person.female(): 
+					return _('aunt')
+				else: 
+					return _('uncle')
+			
+			if fathers_sibling.wife() == from_person:
+				return _('aunt')
+			
+			if fathers_sibling.husband() == from_person:
+				return _('uncle')
+			
+			for fathers_sibling_child in fathers_sibling.children():
+				if fathers_sibling_child == from_person:
+					if from_person.female(): 
+						return _('girl cousin')
+					else: 
+						return _('boy cousin')
+					
+				for fathers_sibling_child_child in fathers_sibling_child.children():
+					if fathers_sibling_child_child == from_person:
+						if from_person.female() and fathers_sibling_child.female(): 
+							return _('girl cousins daugther')
+						if from_person.female() and fathers_sibling_child.male():
+							return _('boy cousins daugther')
+						if from_person.male() and fathers_sibling_child.female():
+							return _('girl cousins son')
+						else: 
+							return _('boy cousins son')
+		
+		if to_person.father.father == from_person:
+			return _('grandfather')
+		
+		if to_person.father.mother == from_person:
+			return _('grandmother')
+	
+	if to_person.mother == from_person:
+		return _('mother')
+	
+	if to_person.mother is not None:
+		for mothers_sibling in to_person.mother.siblings():
+			if mothers_sibling == from_person:
+				if from_person.female(): 
+					return _('aunt')
+				else: 
+					return _('uncle')
+			
+			if mothers_sibling.wife() == from_person:
+				return _('aunt')
+			
+			if mothers_sibling.husband() == from_person:
+				return _('uncle')
+			
+			for mothers_sibling_child in mothers_sibling.children():
+				if mothers_sibling_child == from_person:
+					if from_person.female(): 
+						return _('girl cousin')
+					else: 
+						return _('boy cousin')
+				
+				for mothers_sibling_child_child in mothers_sibling_child.children():
+					if mothers_sibling_child_child == from_person:
+						if from_person.female() and mothers_sibling_child.female(): 
+							return _('girl cousins daugther')
+						if from_person.female() and mothers_sibling_child.male():
+							return _('boy cousins daugther')
+						if from_person.male() and mothers_sibling_child.female():
+							return _('girl cousins son')
+						else: 
+							return _('boy cousins son')
+		
+		if to_person.mother.father == from_person:
+			return _('grandfather')
+		
+		if to_person.mother.mother == from_person:
+			return _('grandmother')
+	
+	if from_person.wife() is not None:
+		if from_person.wife().father == to_person or from_person.wife().mother == to_person:
+			return _('son in law')
+	
+	if from_person.husband() is not None:
+		if from_person.husband().father == to_person or from_person.husband().mother == to_person:
+			return _('daugther in law')
+	
+	if from_person in to_person.siblings():
+		if from_person.female(): 
+			return _('sister')
+		else: 
+			return _('brother')
+	
+	for sibling in to_person.siblings():
+		if sibling.wife() == from_person:
+			return _('sister in law')
+		
+		if sibling.husband() == from_person:
+			return _('brother in law')
+		
+		for sibling_child in sibling.children():
+			if sibling_child == from_person:
+				if from_person.female(): 
+					return _('niece')
+				else: 
+					return _('nephew')
+			
+			for sibling_child_child in sibling_child.children():
+				if sibling_child_child == from_person:
+					if from_person.female(): 
+						return _('great niece')
+					else: 
+						return _('great nephew')
+	
+	return '---'
+
 class AncestryRelation(models.Model):
 	person = models.ForeignKey(Person)
 	ancestry = models.ForeignKey(Ancestry)
 	featured = models.NullBooleanField(default=False, blank=True, null=True)
 	
+	def relation(self):
+		featured_person = self.ancestry.featured()[0]
+		return ancestry_relation(self.person, featured_person.person)
+	
 	def __unicode__(self):
 		return u'%s' % (self.ancestry.name)
 		
 class FamilyStatusRelation(models.Model): 
-	status = models.CharField(max_length=1, choices=(('M', _('Marriage')), ('D', _('Divorce')), ('P', _('Partnership'))))
+	status = models.CharField(max_length=1, choices=(('M', _('Marriage')), ('D', _('Divorce')), ('P', _('Partnership')), ('A', _('Adoption'))))
 	date = models.DateField(_('date of marriage or divorce'), null=True, blank=True)
 	date_only_year = models.BooleanField(default=False)
 	man = models.ForeignKey(Person, related_name = _('husband'), blank=True, null=True)

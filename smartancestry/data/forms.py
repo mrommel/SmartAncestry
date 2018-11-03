@@ -169,8 +169,15 @@ class AncestryRelationInline(admin.TabularInline):
 	fk_name = "ancestry"
 	extra = 1
 	
+	list_display = ['person', 'featured']
+	fields = ('person', 'featured', 'relation',)
+	readonly_fields = ('relation',)
+	
 class AncestryAdmin(admin.ModelAdmin):
     list_display = ['name', 'thumbnail', 'number_of_members', 'featured_str', 'export', 'export_raw']
+    fields = ('name', 'thumbnail', 'image', 'map', 'featured_str', )
+    readonly_fields = ('thumbnail', 'featured_str', )
+    
     ordering = ['name']
     inlines = [
 		AncestryRelationInline,
