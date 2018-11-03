@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-31 13:24+0000\n"
-"PO-Revision-Date: 2018-10-31 14:27+0100\n"
+"POT-Creation-Date: 2018-11-03 22:19+0000\n"
+"PO-Revision-Date: 2018-11-03 23:23+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -26,11 +26,11 @@ msgstr "Stammbaum"
 msgid "Create pdfs"
 msgstr "PDFs erstellen"
 
-#: forms.py:184
+#: forms.py:191
 msgid "List of Persons born here"
 msgstr "Personen, die hier geboren sind"
 
-#: forms.py:203
+#: forms.py:210
 msgid "List of Persons died here"
 msgstr "Personen, die hier gestorben sind"
 
@@ -58,157 +58,257 @@ msgstr "Geschlecht"
 msgid "date of birth"
 msgstr "Geburtsdatum"
 
-#: models.py:228
-msgid "birth_location"
-msgstr "Geburtsort"
-
 #: models.py:229
 msgid "date of death"
 msgstr "Sterbbedatum"
-
-#: models.py:231
-msgid "death_location"
-msgstr "Sterbeort"
-
-#: models.py:235
-msgid "children_father"
-msgstr "Kinder des Vaters"
-
-#: models.py:237
-msgid "children_mother"
-msgstr "Kinder der Mutter"
 
 #: models.py:248
 msgid "Name"
 msgstr "Name"
 
-#: models.py:713
+#: models.py:744
 msgid "Rest"
 msgstr "Rest"
 
-#: models.py:880
+#: models.py:911
 msgid "Women"
 msgstr "Frauen"
 
-#: models.py:882
+#: models.py:913
 msgid "Men"
 msgstr "Männer"
 
-#: models.py:909
+#: models.py:940
 msgid "Youngest person"
 msgstr "Jüngste Person"
 
-#: models.py:910
+#: models.py:941
 msgid "Oldest person"
 msgstr "Älteste Person"
 
-#: models.py:911
+#: models.py:942
 msgid "Lastest marriage"
 msgstr "Späteste Heirat"
 
-#: models.py:912
+#: models.py:943
 msgid "Youngest marriage"
 msgstr "Jüngste Heirat"
 
-#: models.py:913
+#: models.py:944
 msgid "Most Children"
 msgstr "Meiste Kinder"
 
-#: models.py:928
+#: models.py:959
 #, python-format
 msgid "%s %s (born %s) was born in %s"
 msgstr "%s %s (geb. %s) wurde in %s geboren"
 
-#: models.py:930
+#: models.py:961
 #, python-format
 msgid "%s %s was born in %s"
 msgstr "%s %s wurde in %s geboren"
 
-#: models.py:932
+#: models.py:963
 #, python-format
 msgid "%s %s was born"
 msgstr "%s %s wurde geboren"
 
-#: models.py:936
+#: models.py:967
 #, python-format
 msgid "%s %s has died in %s"
 msgstr "%s %s starb in %s"
 
-#: models.py:938
+#: models.py:969
 #, python-format
 msgid "%s %s has died"
 msgstr "%s %s starb"
 
-#: models.py:944
+#: models.py:975
 #, python-format
 msgid "marriage of %s and %s in %s"
 msgstr "Hochzeit von %s und %s in %s"
 
-#: models.py:946
+#: models.py:977
 #, python-format
 msgid "marriage of %s and %s"
 msgstr "Hochzeit von %s und %s"
 
-#: models.py:948
+#: models.py:979
 #, python-format
 msgid "divorce of %s and %s"
 msgstr "Scheidung von %s und %s"
 
-#: models.py:987
+#: models.py:1018
 msgid "date of creation"
 msgstr "Erstellungsdatum"
 
-#: models.py:1025
+#: models.py:1056
 msgid "date of answer"
 msgstr "Datum der Antwort"
 
-#: models.py:1048 templates/data/ancestry_export.html:213
-msgid "Marriage"
-msgstr "Heirat"
+#: models.py:1078
+msgid "daugther"
+msgstr "Tochter"
 
-#: models.py:1048 templates/data/ancestry_export.html:216
-msgid "Divorce"
-msgstr "Scheidung"
+#: models.py:1080
+msgid "son"
+msgstr "Sohn"
 
-#: models.py:1048 templates/data/ancestry_export.html:219
-msgid "Partnership"
-msgstr "Partnerschaft"
+#: models.py:1085 models.py:1092
+msgid "granddaugther"
+msgstr "Enkeltochter"
 
-#: models.py:1049
-msgid "date of marriage or divorce"
-msgstr "Datum der Heirat oder der Scheidung"
+#: models.py:1087 models.py:1094
+msgid "grandson"
+msgstr "Enkel"
 
-#: models.py:1051
-msgid "husband"
-msgstr "Ehemann"
-
-#: models.py:1052
+#: models.py:1097 models.py:1252
 msgid "wife"
 msgstr "Ehefrau"
 
-#: models.py:1071
+#: models.py:1101 models.py:1111
+msgid "father in law"
+msgstr "Schwiegervater"
+
+#: models.py:1104 models.py:1114
+msgid "mother in law"
+msgstr "Schwiegermutter"
+
+#: models.py:1107 models.py:1251
+msgid "husband"
+msgstr "Ehemann"
+
+#: models.py:1117
+msgid "father"
+msgstr "Vater"
+
+#: models.py:1123 models.py:1128 models.py:1164 models.py:1169
+msgid "aunt"
+msgstr "Tante"
+
+#: models.py:1125 models.py:1131 models.py:1166 models.py:1172
+msgid "uncle"
+msgstr "Onkel"
+
+#: models.py:1136 models.py:1177
+msgid "girl cousin"
+msgstr "Cousine"
+
+#: models.py:1138 models.py:1179
+msgid "boy cousin"
+msgstr "Cousin"
+
+#: models.py:1143 models.py:1184
+msgid "girl cousins daugther"
+msgstr "Nichte 2ten Grades"
+
+#: models.py:1145 models.py:1186
+msgid "boy cousins daugther"
+msgstr "Nichte 2ten Grades"
+
+#: models.py:1147 models.py:1188
+msgid "girl cousins son"
+msgstr "Neffe 2ten Grades"
+
+#: models.py:1149 models.py:1190
+msgid "boy cousins son"
+msgstr "Neffe 2ten Grades"
+
+#: models.py:1152 models.py:1193
+msgid "grandfather"
+msgstr "Großvater"
+
+#: models.py:1155 models.py:1196
+msgid "grandmother"
+msgstr "Großmutter"
+
+#: models.py:1158
+msgid "mother"
+msgstr "Mutter"
+
+#: models.py:1200
+msgid "son in law"
+msgstr "Schwiegersohn"
+
+#: models.py:1204
+msgid "daugther in law"
+msgstr "Schwiegertochter"
+
+#: models.py:1208
+msgid "sister"
+msgstr "Schwester"
+
+#: models.py:1210
+msgid "brother"
+msgstr "Bruder"
+
+#: models.py:1214
+msgid "sister in law"
+msgstr "Schwägerin"
+
+#: models.py:1217
+msgid "brother in law"
+msgstr "Schwager"
+
+#: models.py:1222
+msgid "niece"
+msgstr "Nichte"
+
+#: models.py:1224
+msgid "nephew"
+msgstr "Neffe"
+
+#: models.py:1229
+msgid "great niece"
+msgstr "Großnichte"
+
+#: models.py:1231
+msgid "great nephew"
+msgstr "Großneffe"
+
+#: models.py:1248 templates/data/ancestry_export.html:213
+msgid "Marriage"
+msgstr "Heirat"
+
+#: models.py:1248 templates/data/ancestry_export.html:216
+msgid "Divorce"
+msgstr "Scheidung"
+
+#: models.py:1248 templates/data/ancestry_export.html:219
+msgid "Partnership"
+msgstr "Partnerschaft"
+
+#: models.py:1248
+msgid "Adoption"
+msgstr "Adoption"
+
+#: models.py:1249
+msgid "date of marriage or divorce"
+msgstr "Datum der Heirat oder der Scheidung"
+
+#: models.py:1271
 msgid "married"
 msgstr "Verheirated"
 
-#: models.py:1074
+#: models.py:1274
 msgid "partnership"
 msgstr "Partnerschaft"
 
-#: models.py:1076
+#: models.py:1276
 msgid "divorced"
 msgstr "Geschieden"
 
-#: models.py:1093
+#: models.py:1293
 #, python-format
 msgid "Marriage %s and %s"
 msgstr "Hochzeit von %s und %s"
 
-#: models.py:1096
+#: models.py:1296
 #, python-format
 msgid "Partnership %s and %s"
 msgstr "Partnerschaft zwischen %s und %s"
 
-#: models.py:1098
+#: models.py:1298
 #, python-format
 msgid "Divorce %s and %s"
 msgstr "Scheidung von %s und %s"
@@ -461,6 +561,12 @@ msgstr "Keine Geschwister vorhanden."
 #: templates/data/person.html:162
 msgid "No ancestries are available."
 msgstr "Keine Stammbäume vorhanden."
+
+#~ msgid "birth_location"
+#~ msgstr "Geburtsort"
+
+#~ msgid "death_location"
+#~ msgstr "Sterbeort"
 
 #~ msgid "Family - Father"
 #~ msgstr "Familie - Vater"
