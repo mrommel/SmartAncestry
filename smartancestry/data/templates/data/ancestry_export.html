@@ -161,26 +161,24 @@
 				</tr>
 				<tr class="alternating">
 					<td width="20%" class="label">{% trans "Birth date" %}:</td>
-					<td width="20%">
+					<td width="60%" colspan="3">
 						{% if member.person.birth_date_only_year %}
 							{{ member.person.birth_date | date:"Y" }}
 						{% else %}
 							{{ member.person.birth_date | date:"d.m.Y" }}
 						{% endif %}
-					</td>
-					<td width="20%" class="label">{% trans "Birth place" %}:</td>
-					<td width="20%">
 						{% if member.person.birth_location %}
+							{% trans "in" %}
 							{% if member.person.birth_location.image %}
-								<img src="{{ MEDIA_URL }}..{{ member.person.birth_location.image.url }}" class="location" />
+								<img src="/{{ MEDIA_URL }}..{{ member.person.birth_location.image.url }}" class="location" />
 							{% endif %}
-							&nbsp;{{ member.person.birth_location|location_without_country }}
+							{{ member.person.birth_location|location_without_country }}
 						{% endif %}
 					</td>
 				</tr>
 				<tr class="row">
 					<td width="20%" class="label">{% trans "Death date" %}:</td>
-					<td width="20%">
+					<td width="60%" colspan="3">
 						{% if member.person.death_date %}
 							{% if member.person.death_date_only_year %}
 								{{ member.person.death_date | date:"Y" }}
@@ -188,14 +186,12 @@
 								{{ member.person.death_date | date:"d.m.Y" }}
 							{% endif %}
 						{% endif %}
-					</td>
-					<td width="20%" class="label">{% trans "Death place" %}:</td>
-					<td width="20%">
 						{% if member.person.death_location %}
+							{% trans "in" %}
 							{% if member.person.death_location.image %}
 								<img src="/{{ MEDIA_URL }}..{{ member.person.death_location.image.url }}" class="location" />
 							{% endif %}
-							&nbsp;{{ member.person.death_location|location_without_country }}
+							{{ member.person.death_location|location_without_country }}
 						{% endif %}
 					</td>
 				</tr>
@@ -203,7 +199,7 @@
 			<table>
 				<tr class="alternating">
 					<td width="20%" class="label first">{% trans "Profession" %}:</td>
-					<td width="30%" colspan="3" class="first">{% if member.person.profession %}{{ member.person.profession }}{% endif %}</td>
+					<td width="80%" colspan="3" class="first">{% if member.person.profession %}{{ member.person.profession }}{% endif %}</td>
 				</tr>
 				{% if member.person.partner_relations %}
 					{% for partner_relation in member.person.partner_relations %}
@@ -219,19 +215,18 @@
 									{% trans "Partnership" %}:
 								{% endif %}
 							</td>
-							<td width="30%">
+							<td width="80%" colspan="3">
 								{% if partner_relation.partner %}
 									{{ partner_relation.partner }}
 								{% else %}
 									{{ partner_relation.partner_name }}
 								{% endif %}
-							</td>
-							<td width="50%" colspan="2">
+								{% trans "at" %}
 								{% if partner_relation.date %}
-									{{ partner_relation.date_str }}&nbsp;
+									{{ partner_relation.date_str }}
 								{% endif %}
 								{% if partner_relation.location %}
-									{% trans "in" %}&nbsp;
+									{% trans "in" %}
 									{% if partner_relation.location.image %}
 										<img src="/{{ MEDIA_URL }}..{{ partner_relation.location.image.url }}" class="location" />
 									{% endif %}
