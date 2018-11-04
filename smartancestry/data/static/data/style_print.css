@@ -142,6 +142,7 @@ appendix item:after {
 para {
   text-indent: 1em;
   padding-bottom: 2em;
+  clear: left;
 }
 
 chapheader title {

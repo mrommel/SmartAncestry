@@ -1,8 +1,6 @@
 var http = require('http');
 var url = require('url');
 var Canvas = require('canvas'),
-    canvas = new Canvas(600, 450),
-    ctx = canvas.getContext('2d'),
     Chart = require('../'),
     fs = require('fs');
 
@@ -79,6 +77,9 @@ var server = http.createServer(function(req,res) {
 				index++;
 			});
 		}
+		
+		canvas = new Canvas(600, 450);
+    	ctx = canvas.getContext('2d');
 
 		ctx.fillStyle = '#fff';
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -148,6 +149,9 @@ var server = http.createServer(function(req,res) {
 		/*pieData.forEach(function (pieItem) {
 			console.log("pie data: value=" + pieItem.value + ", color=" + pieItem.color);
 		});*/
+		
+		canvas = new Canvas(600, 450);
+    	ctx = canvas.getContext('2d');
 	
 		ctx.fillStyle = '#fff';
 		ctx.fillRect(0, 0, canvas.width, canvas.height);

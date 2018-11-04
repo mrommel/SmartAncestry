@@ -399,17 +399,16 @@
 <a id="chapter3-3">&nbsp;</a>
 
 <div class="chartContainer">
-	<a id="chapter3-3">&nbsp;</a>
-	<img src="http://127.0.0.1:4444/bar.png?data1={{ statistics.birthPerMonthStr|encodeSpaces }}&data2={{ statistics.deathPerMonthStr|encodeSpaces }}&axis={% trans "January" %},{% trans "February" %},{% trans "March" %},{% trans "April" %},{% trans "May" %},{% trans "June" %},{% trans "July" %},{% trans "August" %},{% trans "September" %},{% trans "October" %},{% trans "November" %},{% trans "December" %}" id="birthsPerMonthChart" width="450" />
+	<img src="http://127.0.0.1:4444/bar.png?data1={{ statistics.birthPerMonthStr|encodeSpaces }}&data2={{ statistics.deathPerMonthStr|encodeSpaces }}&axis={% trans 'January' %},{% trans 'February' %},{% trans 'March' %},{% trans 'April' %},{% trans 'May' %},{% trans 'June' %},{% trans 'July' %},{% trans 'August' %},{% trans 'September' %},{% trans 'October' %},{% trans 'November' %},{% trans 'December' %}" id="birthsPerMonthChart" width="600" height="450" />
 	
 	<div id="birthsPerMonthChartLegend">
 		<ul class="bar-legend">
 			<li>
-				<span class="color color1"></span>
+				<span class="color color1">&nbsp;</span>
 				<span class="title">Geburten pro Monat</span>
 			</li>
 			<li>
-				<span class="color color2"></span>
+				<span class="color color2">&nbsp;</span>
 				<span class="title">Todesfälle pro Monat</span>
 			</li>
 		</ul>
@@ -423,17 +422,16 @@
 <a id="chapter3-4">&nbsp;</a>
 
 <div class="chartContainer">
-	<a id="chapter3-4">&nbsp;</a>
-	<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.genderValuesStr|encodeSpaces }}" id="genderChart" width="450" />
+	<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.genderValuesStr|encodeSpaces }}" id="genderChart" width="600" height="450" />
 	
 	<div id="genderLegend">
 		<ul class="pie-legend">
 			<li>
-				<span class="color color1"></span>
+				<span class="color color1">&nbsp;</span>
 				<span class="title">M&auml;nner</span>
 			</li>
 			<li>
-				<span class="color color2"></span>
+				<span class="color color2">&nbsp;</span>
 				<span class="title">Frauen</span>
 			</li>
 		</ul>
@@ -446,14 +444,13 @@
 <a id="chapter3-5">&nbsp;</a>
 			
 <div class="chartContainer">
-	<a id="chapter3-5">&nbsp;</a>
-    <img src="http://127.0.0.1:4444/pie.png?data={{ statistics.birthLocationsValuesStr|encodeSpaces }}&colors={{ statistics.birthLocationsColorsStr|trimHash|encodeSpaces }}" id="birthLocationsChart" width="450" />
+    <img src="http://127.0.0.1:4444/pie.png?data={{ statistics.birthLocationsValuesStr|encodeSpaces }}&colors={{ statistics.birthLocationsColorsStr|trimHash|encodeSpaces }}" id="birthLocationsChart" width="600" height="450" />
 	
     <div id="birthLocationsLegend">
 		<ul class="pie-legend">
 			{% for birthLocations in statistics.birthLocations.list %}
 			<li>
-				<span class="color color-{{ birthLocations.color|trimHash }}"></span>
+				<span class="color color-{{ birthLocations.color|trimHash }}">&nbsp;</span>
 				<span class="title">{{ birthLocations.name }}</span>
 			</li>
 			{% endfor %}
@@ -467,8 +464,7 @@
 <a id="chapter3-6">&nbsp;</a>
 
 <div class="chartContainer">
-	<a id="chapter3-6">&nbsp;</a>
-	<img src="http://127.0.0.1:4444/bar.png?data={{ statistics.childrenValuesStr|encodeSpaces }}&axis=0,1,2,3,4,5,6,7,8,9,10" id="childrenChart" width="450" />
+	<img src="http://127.0.0.1:4444/bar.png?data={{ statistics.childrenValuesStr|encodeSpaces }}&axis=0,1,2,3,4,5,6,7,8,9,10" id="childrenChart" width="600" height="450" />
 	
     <div id="childrenLegend">
     </div>

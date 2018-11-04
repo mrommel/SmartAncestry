@@ -10,7 +10,6 @@ digraph G {
 
 	{% for relative in relatives.relatives %}
 	"node-{{ relative.person.id }}" [
-		# {{ relative.person }}
 		color={% if relative.person.sex == 'F'%}"lightpink"{% else %}"lightblue"{% endif%},
 		label="{{ relative.person.first_name_short | remove_underlines }} {{ relative.person.last_name | replace_umlauts }}\n* {% if relative.person.birth_date_only_year %}{{ relative.person.birth_date | date:"Y" }}{% else %}{{ relative.person.birth_date | date:"d.m.Y" }}{% endif %} {% if relative.person.birth_location %}{{ relative.person.birth_location|location_without_country }}{% endif %}\n+ {% if relative.person.death_date_only_year %}{{ relative.person.death_date | date:"Y" }}{% else %}{{ relative.person.death_date | date:"d.m.Y" }}{% endif %} {% if relative.person.death_location %}{{ relative.person.death_location|location_without_country }}{% endif %}\n\n",
 		{% if relative.person.image %}image="{{ relative.person.image.url | remove_persons_folder }}",{% else %}{% if relative.person.sex == 'F'%}image="avatar_f.png",{% else %}image="avatar_m.png",{% endif%}{% endif%}
