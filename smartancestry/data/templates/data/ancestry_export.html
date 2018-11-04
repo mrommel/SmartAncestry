@@ -193,7 +193,7 @@
 					<td width="20%">
 						{% if member.person.death_location %}
 							{% if member.person.death_location.image %}
-								<img src="{{ MEDIA_URL }}..{{ member.person.death_location.image.url }}" class="location" />
+								<img src="/{{ MEDIA_URL }}..{{ member.person.death_location.image.url }}" class="location" />
 							{% endif %}
 							&nbsp;{{ member.person.death_location|location_without_country }}
 						{% endif %}
@@ -233,7 +233,7 @@
 								{% if partner_relation.location %}
 									{% trans "in" %}&nbsp;
 									{% if partner_relation.location.image %}
-										<img src="{{ MEDIA_URL }}..{{ partner_relation.location.image.url }}" class="location" />
+										<img src="/{{ MEDIA_URL }}..{{ partner_relation.location.image.url }}" class="location" />
 									{% endif %}
 									{{ partner_relation.location|location_without_country }}
 								{% endif %}
@@ -524,7 +524,7 @@
 			<div class="not_breaking">
 			<h2>{{ distribution.distribution.family_name }}</h2>
 			<a id="chapter5-{{ distribution.distribution.id }}">&nbsp;</a>
-			<img src="{{ MEDIA_URL }}..{{ distribution.distribution.image.url }}" class="distribution" />
+			<img src="/{{ MEDIA_URL }}..{{ distribution.distribution.image.url }}" class="distribution" />
 			</div>
 		</para>
 	{% endfor %}
