@@ -139,7 +139,7 @@
 			<div class="not_breaking">
 			<table>
 				<tr class="row">
-					<td width="20%" rowspan="5">
+					<td width="20%" rowspan="5" class="portrait">
 						{% if member.person.image %}
 							<img src="/{{ MEDIA_URL }}..{{ member.person.image.url }}" alt="Img" class="portait">
 						{% else %}
@@ -197,9 +197,15 @@
 				</tr>
 			</table>
 			<table>
+				{% if member.person.template_value1 %}
+					<tr class="row">		
+						<td width="20%" class="label">{% trans "Relation" %}:</td>
+						<td width="80%" colspan="3" class="first">{{ member.person.template_value1 }}</td>
+					</tr>
+				{% endif %}
 				<tr class="alternating">
 					<td width="20%" class="label first">{% trans "Profession" %}:</td>
-					<td width="80%" colspan="3" class="first">{% if member.person.profession %}{{ member.person.profession }}{% endif %}</td>
+					<td width="80%" colspan="3">{% if member.person.profession %}{{ member.person.profession }}{% endif %}</td>
 				</tr>
 				{% if member.person.partner_relations %}
 					{% for partner_relation in member.person.partner_relations %}

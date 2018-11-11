@@ -66,10 +66,16 @@ def ancestry_export(request, ancestry_id):
 	sorted_members = sorted(sorted_members, key=attrgetter('person.first_name'))
 	sorted_members = sorted(sorted_members, key=attrgetter('person.last_name'))
 		
+	members = []
+	for member in ancestry.members():
+		member.person.template_value1 = member.person.relation_in_str(ancestry)
+		
+		members.append(member)
+		
 	return HttpResponse(render_to_string('data/ancestry_export.html', {
 		'ancestry': ancestry,
 		'sorted_members': sorted_members,
-		'member_list': ancestry.members(),
+		'member_list': members,
 		'featured': ancestry.featured(),
 		'distributions': ancestry.distributions(),
 		'locations' : ancestry.locations,

@@ -136,14 +136,14 @@ class PersonAdmin(admin.ModelAdmin):
             'fields': ('birth_date', 'birth_date_only_year', 'birth_location', 'death_date', 'death_date_only_year', 'death_location', 'cause_of_death', 'already_died')
         }),
         ('Relations', {
-        	'fields': ('father', 'father_link', 'father_extern', 'mother', 'mother_link', 'mother_extern', 'children_extern', 'childen_text', 'siblings_extern', 'siblings_text')
+        	'fields': ('father', 'father_link', 'father_extern', 'mother', 'mother_link', 'mother_extern', 'children_extern', 'childen_text', 'siblings_extern', 'siblings_text', 'relation_str')
         }),
         ('Notes', {
         	'fields': ('profession', 'notes', 'external_identifier', 'thumbnail', 'image', 'tree_link')
         }),
     )
     search_fields = ['first_name', 'last_name', ]
-    readonly_fields = ('childen_text', 'father_link', 'mother_link', 'thumbnail', 'tree_link', 'siblings_text')
+    readonly_fields = ('childen_text', 'father_link', 'mother_link', 'thumbnail', 'tree_link', 'siblings_text', 'relation_str')
     #raw_id_fields = ('father', 'mother',)
     #list_filter = ('birth_date', 'ancestries', ) #PersonAncestryListFilter,
     list_filter = PersonAncestryListFilter,
