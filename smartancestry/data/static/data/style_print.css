@@ -210,6 +210,10 @@ td {
     text-indent: 0em;
 }
 
+.portrait {
+	text-align: center; 
+}
+
 .row {
 	background-color: #ededed;
 }
