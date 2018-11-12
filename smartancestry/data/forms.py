@@ -1,5 +1,5 @@
 from django.contrib import admin
-from data.models import Ancestry, AncestryRelation, FamilyStatusRelation, Person, DocumentRelation, Question
+from data.models import Ancestry, AncestryRelation, FamilyStatusRelation, Person, DocumentRelation, Question, PersonEventRelation
 from django.forms import CheckboxSelectMultiple
 from django.db import models
 from django import forms
@@ -125,6 +125,14 @@ class QuestionInline(admin.TabularInline):
 	model = Question
 	fk_name = "person"
 	extra = 1
+	
+class EventRelationInline(admin.TabularInline):
+	model = PersonEventRelation
+	fk_name = "person"
+	extra = 1
+	
+	list_display = ['date', 'event', 'location']
+	fields = ('date', 'event', 'location',)
 
 class PersonAdmin(admin.ModelAdmin):
     list_display = ('user_name', 'birth_name', 'thumbnail', 'birth', 'death', 'father_name', 'mother_name', 'ancestry_names', 'number_of_questions', )
@@ -154,6 +162,7 @@ class PersonAdmin(admin.ModelAdmin):
         WifeFamilyStatusRelationInline,
         DocumentRelationInline,
         QuestionInline,
+        EventRelationInline,
     ]
     actions = None
     

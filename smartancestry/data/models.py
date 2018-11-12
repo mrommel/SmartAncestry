@@ -832,6 +832,19 @@ class StatisticsInfo(object):
 	def childrenValuesStr(self):			
 		return str(self.children.values())
 
+class PersonEventRelation(models.Model):
+	event = models.CharField(max_length=512)
+	date = models.DateField()
+	person = models.ForeignKey(Person)
+	location = models.ForeignKey(Location, blank=True, null=True) 
+	
+	def thumbnail(self):
+		return '<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % ((self.image.name, self.image.name))
+	thumbnail.allow_tags = True
+	
+	def __unicode__(self):			  
+		return '%s - %s - %s' % (self.date, self.person, self.event)
+
 class Ancestry(models.Model):
 	name = models.CharField(max_length=50)
 	image = models.ImageField(upload_to='media/ancestries', blank=True, null=True)
