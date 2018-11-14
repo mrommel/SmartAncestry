@@ -138,7 +138,7 @@
 		<para>
 			<div class="not_breaking">
 			<table>
-				<tr class="row">
+				<tr class="{% cycle 'row' 'alternating' as row_style %}">
 					<td width="20%" rowspan="5" class="portrait">
 						{% if member.person.image %}
 							<img src="/{{ MEDIA_URL }}..{{ member.person.image.url }}" alt="Img" class="portait">
@@ -151,15 +151,15 @@
 					<td width="20%" class="label">{% trans "Age" %}:</td>
 					<td width="20%">{% if member.person.age %}{{ member.person.age }} {% trans "Years" %}{% endif %}</td>
 				</tr>
-				<tr class="alternating">
+				<tr class="{% cycle row_style %}">
 					<td width="20%" class="label">{% trans "First name" %}:</td>
 					<td colspan="3">{{ member.person.first_name|underline }}</td>
 				</tr>
-				<tr class="row">
+				<tr class="{% cycle row_style %}">
 					<td width="20%" class="label">{% trans "Birth name" %}:</td>
 					<td colspan="3">{% if member.person.birth_name %}{{ member.person.birth_name }}{% endif %}</td>
 				</tr>
-				<tr class="alternating">
+				<tr class="{% cycle row_style %}">
 					<td width="20%" class="label">{% trans "Birth date" %}:</td>
 					<td width="60%" colspan="3">
 						{% if member.person.birth_date_only_year %}
@@ -176,7 +176,7 @@
 						{% endif %}
 					</td>
 				</tr>
-				<tr class="row">
+				<tr class="{% cycle row_style %}">
 					<td width="20%" class="label">{% trans "Death date" %}:</td>
 					<td width="60%" colspan="3">
 						{% if member.person.death_date %}
@@ -198,18 +198,18 @@
 			</table>
 			<table>
 				{% if member.person.template_value1 %}
-					<tr class="row">		
+					<tr class="{% cycle row_style %}">		
 						<td width="20%" class="label">{% trans "Relation" %}:</td>
 						<td width="80%" colspan="3" class="first">{{ member.person.template_value1 }}</td>
 					</tr>
 				{% endif %}
-				<tr class="alternating">
+				<tr class="{% cycle row_style %}">
 					<td width="20%" class="label first">{% trans "Profession" %}:</td>
 					<td width="80%" colspan="3">{% if member.person.profession %}{{ member.person.profession }}{% endif %}</td>
 				</tr>
 				{% if member.person.partner_relations %}
 					{% for partner_relation in member.person.partner_relations %}
-						<tr class="{% if forloop.counter|divisibleby:2 %}alternating{% else %}row{% endif %}">
+						<tr class="{% cycle row_style %}">
 							<td width="20%" class="label">
 								{% if partner_relation.state == 'M' %}
 									{% trans "Marriage" %}:
@@ -223,12 +223,12 @@
 							</td>
 							<td width="80%" colspan="3">
 								{% if partner_relation.partner %}
-									{{ partner_relation.partner }}
+									<a href="#chapter1-{{ partner_relation.partner.id }}" class="nolink">{{ partner_relation.partner }}</a>
 								{% else %}
 									{{ partner_relation.partner_name }}
 								{% endif %}
-								{% trans "at" %}
 								{% if partner_relation.date %}
+									{% trans "at" %}
 									{{ partner_relation.date_str }}
 								{% endif %}
 								{% if partner_relation.location %}
@@ -242,9 +242,9 @@
 						</tr>
 					{% endfor %}
 				{% endif %}
-				<tr class="{% if member.person.partner_relations|length|divisibleby:2 %}row{% else %}alternating{% endif %}">
+				<tr class="{% cycle row_style %}">
 					<td width="20%" class="label">{% trans "Father" %}:</td>
-					<td width="30%">
+					<td width="80%" colspan="3">
 						{% if member.person.father %}
 							<a href="#chapter1-{{ member.person.father.id }}" class="nolink">{{ member.person.father }}</a>
 						{% else %}
@@ -253,8 +253,10 @@
 							{% endif %}	
 						{% endif %}
 					</td>
+				</tr>
+				<tr class="{% cycle row_style %}">
 					<td width="20%" class="label">{% trans "Mother" %}:</td>
-					<td width="30%">
+					<td width="80%" colspan="3">
 						{% if member.person.mother %}
 							<a href="#chapter1-{{ member.person.mother.id }}" class="nolink">{{ member.person.mother }}</a>
 						{% else %}
@@ -264,9 +266,9 @@
 						{% endif %}
 					</td>
 				</tr>
-				<tr class="{% if member.person.partner_relations|length|divisibleby:2 %}alternating{% else %}row{% endif %}">
+				<tr class="{% cycle row_style %}">
 					<td width="20%" class="label">{% trans "Children" %}:</td>
-					<td width="30%" colspan="3">
+					<td width="80%" colspan="3">
 						<ul class="commalist">
 						{% if member.person.children %}
     						{% for child in member.person.children %}
@@ -283,9 +285,9 @@
 						</ul>
 					</td>
 				</tr>
-				<tr class="{% if member.person.partner_relations|length|divisibleby:2 %}row{% else %}alternating{% endif %}">
+				<tr class="{% cycle row_style %}">
 					<td width="20%" class="label">{% trans "Siblings" %}:</td>
-					<td width="30%" colspan="3">
+					<td width="80%" colspan="3">
 						<ul class="commalist">
 						{% if member.person.siblings %}
     						{% for child in member.person.siblings %}
@@ -301,18 +303,20 @@
 					</td>
 				</tr>
 				{% if member.person.notes or member.person.external_identifier %}
-				<tr class="{% if member.person.partner_relations|length|divisibleby:2 %}alternating{% else %}row{% endif %}">
+				<tr class="{% cycle row_style %}">
 					<td width="20%" class="label">{% trans "Notes" %}:</td>
-					<td width="30%" colspan="3">
+					<td width="80%" colspan="3">
 						{{ member.person.notes }}
-						{{ member.person.external_identifier }}
+						{% if member.person.external_identifier %}
+							{{ member.person.external_identifier }}
+						{% endif %}
 					</td>
 				</tr>
 				{% endif %}
 				{% if member.person.appendices %}
-				<tr class="{% if member.person.partner_relations|length|divisibleby:2 %}row{% else %}alternating{% endif %}">
+				<tr class="{% cycle row_style %}">
 					<td width="20%" class="label">{% trans "Appendices" %}:</td>
-					<td width="30%" colspan="3">
+					<td width="80%" colspan="3">
 						<ul class="commalist">
 						{% for appendix in member.person.appendices %}
 							<li><a href="#chapter6-{{ appendix.document.id }}" class="nolink">{{ appendix.document.name }}</a> ({% trans "Page" %} <appendix><item href="#chapter6-{{ appendix.document.id }}"></item></appendix>)</li>
@@ -324,6 +328,8 @@
 			</table>
 			</div>			
 		</para>
+		
+		{% resetcycle %}
 	{% endfor %}
 {% else %}
 	<para>{% trans "No members are available." %}</para>
