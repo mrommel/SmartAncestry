@@ -166,6 +166,12 @@ class PersonAdmin(admin.ModelAdmin):
     ]
     actions = None
     
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        formfield = super(PersonAdmin, self).formfield_for_dbfield(db_field, **kwargs)
+        if db_field.name == 'notes':
+            formfield.widget = forms.Textarea(attrs=formfield.widget.attrs)
+        return formfield
+    
 def export_pdf(modeladmin, request, queryset):
     selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
     ct = ContentType.objects.get_for_model(queryset.model)
