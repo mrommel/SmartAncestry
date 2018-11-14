@@ -707,12 +707,27 @@ class Person(models.Model):
 	def number_of_questions(self):
 		return '%d / %d' % (len(Question.objects.filter(person = self).exclude(answer = None)), len(Question.objects.filter(person = self)))
 	
+	def is_alive(self):
+		if self.already_died:
+			return False
+			
+		if self.death_date is not None:
+			return False
+			
+		return True
+	
 	def __unicode__(self):		
 		first = self.first_name
 		first = first.replace(u'\xfc', '&uuml;')
 		first = first.replace(u'\xf6', '&ouml;')
 		first = first.replace(u'\xe4', '&auml;')
-		return mark_safe('%s %s (%s-%s)' % ((' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip(), self.last_name, self.birth_year(), self.death_year()))
+		
+		if self.is_alive():
+			date_str = '(geb. %s)' % self.birth_year()
+		else:
+			date_str = '(%s-%s)' % (self.birth_year(), self.death_year())
+		
+		return mark_safe('%s %s %s' % ((' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip(), self.last_name, date_str))
 
 class TimelineInfo(object):
 	def __init__(self, date, title):
@@ -1031,7 +1046,9 @@ class Ancestry(models.Model):
 			if not is_empty(AncestryRelation.objects.filter(ancestry = self, person = documentRelation.person)):	
 				if documentRelation.document not in appendix_list:
 					appendix_list.append(documentRelation.document)
-	
+		
+		appendix_list = sorted(appendix_list, key=attrgetter('date'), reverse=True)
+		
 		return appendix_list
 	
 	def distributions(self):
