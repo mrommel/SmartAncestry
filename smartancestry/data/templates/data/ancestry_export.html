@@ -306,7 +306,7 @@
 				<tr class="{% cycle row_style %}">
 					<td width="20%" class="label">{% trans "Notes" %}:</td>
 					<td width="80%" colspan="3">
-						{% if member.person.notes % }
+						{% if member.person.notes %}
 							{{ member.person.notes }}
 						{% endif %}
 						{% if member.person.external_identifier %}

@@ -11,6 +11,7 @@ admin.site.register(FamilyStatusRelation)
 admin.site.register(Location, LocationAdmin)
 admin.site.register(Distribution)
 admin.site.register(DistributionRelation)
+
 admin.site.register(Document, DocumentAdmin)
 admin.site.register(DocumentRelation)
 admin.site.register(PersonEventRelation)
