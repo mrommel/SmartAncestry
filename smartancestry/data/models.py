@@ -464,14 +464,14 @@ class Person(models.Model):
 		"""
 		if self.sex == 'M':
 			try:
-				for husbandRelation in FamilyStatusRelation.objects.get(man = self):
+				for husbandRelation in FamilyStatusRelation.objects.get(Q(man = self) & Q(status = 'M') & (Q(ended = False) | Q(ended = None))):
 					return husbandRelation.woman
 			except FamilyStatusRelation.DoesNotExist:
 				pass
 		
 		if self.sex == 'F':
 			try:
-				for wifeRelation in FamilyStatusRelation.objects.get(woman = self):
+				for wifeRelation in FamilyStatusRelation.objects.get(Q(woman = self) & Q(status = 'M') & (Q(ended = False) | Q(ended = None))):
 					return wifeRelation.man
 			except FamilyStatusRelation.DoesNotExist:
 				pass
@@ -480,20 +480,20 @@ class Person(models.Model):
 		
 	def wife(self):
 		"""
-			FIXME: divorce not handled
+			Returns the current wife of the person or None
 		"""
 		if self.sex == 'M':
-			for husbandRelation in FamilyStatusRelation.objects.filter(Q(man = self) & Q(status = 'M')):
+			for husbandRelation in FamilyStatusRelation.objects.filter(Q(man = self) & Q(status = 'M') & (Q(ended = False) | Q(ended = None))):
 				return husbandRelation.woman
 				
 		return None
 	
 	def husband(self):
 		"""
-			FIXME: divorce not handled
+			Returns the current husband of the person or None
 		"""
 		if self.sex == 'F':
-			for husbandRelation in FamilyStatusRelation.objects.filter(Q(woman = self) & Q(status = 'M')):
+			for husbandRelation in FamilyStatusRelation.objects.filter(Q(woman = self) & Q(status = 'M') & (Q(ended = False) | Q(ended = None))):
 				return husbandRelation.man
 				
 		return None
@@ -1094,7 +1094,7 @@ class AncestryRelation(models.Model):
 		return u'%s' % (self.ancestry.name)
 		
 class FamilyStatusRelation(models.Model): 
-	status = models.CharField(max_length=1, choices=(('M', _('Marriage')), ('D', _('Divorce')), ('P', _('Partnership')), ('A', _('Adoption'))))
+	status = models.CharField(max_length=1, choices=(('M', _('Marriage')), ('P', _('Partnership')), ('A', _('Adoption'))))
 	date = models.DateField(_('date of marriage or divorce'), null=True, blank=True)
 	date_only_year = models.BooleanField(default=False)
 	man = models.ForeignKey(Person, related_name = _('husband'), blank=True, null=True)
@@ -1102,19 +1102,33 @@ class FamilyStatusRelation(models.Model):
 	husband_extern = models.CharField(max_length=50, blank=True, null=True)
 	wife_extern = models.CharField(max_length=50, blank=True, null=True)
 	location = models.ForeignKey(Location, blank=True, null=True) 
-	#ended = models.NullBooleanField(default=False, blank=True, null=True)
+	ended = models.NullBooleanField(default=False, blank=True, null=True)
 
 	def husband_name(self):
 		if self.man is not None:
 			return '%s %s' % (self.man.first_name, self.man.last_name)
 		else:
 			return self.husband_extern
-			
+	
+	def husband_link(self):
+		if self.man is not None:
+			return '<a href="/admin/data/person/%s/">%s</a>' % (self.man.id, str(self.man))
+
+		return ''
+	husband_link.allow_tags = True
+	
 	def wife_name(self):
 		if self.woman is not None:
 			return '%s %s' % (self.woman.first_name, self.woman.last_name)
 		else:
 			return self.wife_extern
+			
+	def wife_link(self):
+		if self.woman is not None:
+			return '<a href="/admin/data/person/%s/">%s</a>' % (self.woman.id, str(self.woman))
+		
+		return ''
+	wife_link.allow_tags = True
 			
 	def status_name(self):
 		"""
@@ -1123,7 +1137,6 @@ class FamilyStatusRelation(models.Model):
 		switcher = {
         	'M': _("married"),
         	'P': _("partnership"),
-        	'D': _("divorced"),
         	'A': _("adopted"),
     	}
 
@@ -1132,15 +1145,12 @@ class FamilyStatusRelation(models.Model):
 	def __unicode__(self):  
 		husbandStr = self.husband_name()
 		wifeStr = self.wife_name()
-			
-		str = ''
-		if self.status == 'M':			
-			str = _('Marriage %s and %s') % (husbandStr, wifeStr)
-		else:
-			if self.status == 'P':			
-				str = _('Partnership %s and %s') % (husbandStr, wifeStr)
-			else:
-				str = _('Divorce %s and %s') % (husbandStr, wifeStr)
-				
-		return mark_safe((' ' + str + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip())
+		
+		switcher = {
+        	'M': _('Marriage %s and %s') % (husbandStr, wifeStr),
+        	'P': _('Partnership %s and %s') % (husbandStr, wifeStr),
+        	'A': _('Adoption of %s and %s') % (husbandStr, wifeStr),
+    	}	
+
+		return mark_safe((' ' + switcher.get(self.status, '') + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip())
 			

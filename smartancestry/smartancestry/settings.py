@@ -145,7 +145,7 @@ LANGUAGES = (
   ('en', _('English')),
 )
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Berlin'
 
 USE_I18N = True
 

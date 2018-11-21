@@ -76,6 +76,8 @@ class HusbandFamilyStatusRelationInline(admin.TabularInline):
 	exclude = ['husband_extern']
 	verbose_name = u'Wife'
 	verbose_name_plural = u'Wifes'
+	fields = ('status', 'date', 'date_only_year', 'woman', 'wife_link', 'wife_extern', 'location', 'ended')
+	readonly_fields = ('wife_link', )
 	
 	def get_extra (self, request, obj=None, **kwargs):
 		""" hide all extra if the current user is having the wrong gender """
@@ -102,6 +104,8 @@ class WifeFamilyStatusRelationInline(admin.TabularInline):
 	exclude = ['wife_extern']
 	verbose_name = u'Husband'
 	verbose_name_plural = u'Husbands'
+	fields = ('status', 'date', 'date_only_year', 'man', 'husband_link', 'husband_extern', 'location', 'ended')
+	readonly_fields = ('husband_link', )
 	
 	def get_extra (self, request, obj=None, **kwargs):
 		""" hide all extra if the current user is having the wrong gender """
