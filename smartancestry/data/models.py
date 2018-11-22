@@ -94,7 +94,7 @@ class TreeInfo(object):
 		self.selected = selected
 		
 	# {4,3,0,%22%E2%99%82%20Marcel%20Rommel%22,-1,-1,%27Geb.:%2013.11.2006%20Berlin%27,%27Gest.:%20%27}	
-	def info(self):			  
+	def info(self):
 		id = self.person.id
 		selected = self.selected
 		sign = self.person.gender_sign()
@@ -460,7 +460,7 @@ class Person(models.Model):
 	
 	def married_to(self):
 		"""
-			TODO: FIXME - no divorce handling here
+			Returns the current partner (wife or husband) or None
 		"""
 		if self.sex == 'M':
 			try:
@@ -499,15 +499,18 @@ class Person(models.Model):
 		return None
 	
 	def married_at(self):
+		"""
+			Returns the date of the current partner relation
+		"""
 		relation = None
 		
 		if self.sex == 'M':
-			relationList = FamilyStatusRelation.objects.filter(man = self)
+			relationList = FamilyStatusRelation.objects.filter(Q(man = self) & Q(status = 'M') & (Q(ended = False) | Q(ended = None)))
 			if len(relationList) > 0:
 				relation = relationList[0]
 		
 		if self.sex == 'F':
-			relationList = FamilyStatusRelation.objects.filter(woman = self)
+			relationList = FamilyStatusRelation.objects.filter(Q(woman = self) & Q(status = 'M') & (Q(ended = False) | Q(ended = None)))
 			if len(relationList) > 0:
 				relation = relationList[0]
 			
@@ -516,10 +519,10 @@ class Person(models.Model):
 			
 		return None
 	
-	""" 
-		provides a list of relative as well as links between them
-	""" 
 	def relatives(self):
+		""" 
+			provides a list of relative as well as links between them
+		""" 
 		relatives_list = []
 		relations_list = []
 		external_id = 1000
@@ -562,7 +565,6 @@ class Person(models.Model):
 		
 			if partner.partner is None:
 				relatives_list.append(TreeInfo(2, PersonInfo(external_id, partner.partner_name, 'M'), 0))
-				#relations_list.append(RelationsInfo(external_id, self.id))
 				external_id = external_id + 1
 			else:
 				relatives_list.append(TreeInfo(2, partner.partner, 0))
@@ -656,10 +658,10 @@ class Person(models.Model):
 		url = reverse('admin:%s_%s_change' % (self._meta.app_label,  self._meta.model_name),  args=[self.id] )
 		return u'<a href="%s">%s</a>' % (url,  self.__unicode__())
 	
-	"""
-		todo: return a pdf of the persons cv
-	"""
 	def export_pdf(self):
+		"""
+			todo: return a pdf of the persons cv
+		"""
 		pass
 		
 	def appendices(self):
@@ -743,7 +745,7 @@ class StatisticsListInfo(object):
 			rest_value = rest_value + item.value
 		result_list.append(StatisticsItemInfo(_('Rest'), rest_value, COLORS[len(self.list)]))
 		
-		# reapply colors
+		# re-apply colors
 		index = 0
 		for item in result_list:
 			item.color = COLORS[index]
@@ -814,10 +816,6 @@ class PersonEventRelation(models.Model):
 	person = models.ForeignKey(Person)
 	location = models.ForeignKey(Location, blank=True, null=True) 
 	
-	def thumbnail(self):
-		return '<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % ((self.image.name, self.image.name))
-	thumbnail.allow_tags = True
-	
 	def __unicode__(self):			  
 		return '%s - %s - %s' % (self.date, self.person, self.event)
 
@@ -842,11 +840,17 @@ class Ancestry(models.Model):
 	export_raw.allow_tags = True
 	
 	def members(self):
+		"""
+			Returns a list of persons in order of birth desc
+		"""
 		result_list = AncestryRelation.objects.filter(ancestry = self)
 		result_list = sorted(result_list, key=attrgetter('person.birth_date'), reverse=True)
 		return result_list
 		
 	def noImage(self):
+		"""
+			Returns a list of persons without an image assigned in order of birth desc
+		"""
 		tmp_list = AncestryRelation.objects.filter(ancestry = self)
 		tmp_list = sorted(tmp_list, key=attrgetter('person.birth_date'), reverse=True)
 		
@@ -855,17 +859,23 @@ class Ancestry(models.Model):
 		for ancestryPerson in tmp_list:
 			person = ancestryPerson.person
 			
-			if person.image.name is None or person	.image.name == '':
+			if person.image.name is None or person.image.name == '':
 				result_list.append(person)
 			
 		return result_list
 	
 	def featured(self):
+		"""
+			Returns the list of featured persons in this ancestry
+		"""
 		result_list = AncestryRelation.objects.filter(ancestry = self).filter(featured = True)
 		result_list = sorted(result_list, key=attrgetter('person.birth_date'), reverse=True)
 		return result_list
 		
 	def featured_str(self):
+		"""
+			Returns the list of featured person 
+		"""
 		str = '<ul>'
 		for item in self.featured():
 			str = '%s<li>%s</li>' % (str, item.person)
@@ -874,6 +884,9 @@ class Ancestry(models.Model):
 		return mark_safe(str)
 	
 	def locations(self):
+		"""
+			Returns the locations of this ancestry (with duplicates)
+		"""
 		result_list = []
 		
 		for ancestryPerson in AncestryRelation.objects.filter(ancestry = self):
@@ -888,6 +901,9 @@ class Ancestry(models.Model):
 		return result_list
 		
 	def statistics(self):
+		"""
+			Returns the statistics of this ancestry
+		"""
 		birthPerMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 		deathPerMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 		gender = StatisticsListInfo()
@@ -959,6 +975,9 @@ class Ancestry(models.Model):
 		return StatisticsInfo(birthPerMonth, deathPerMonth, gender, birthLocations, children, specials)
 	
 	def timeline(self):
+		"""
+			Returns timeline events of this ancestry
+		"""
 		result_list = []
 		partner = None
 		
@@ -999,6 +1018,9 @@ class Ancestry(models.Model):
 		return final_list
 		
 	def appendices(self):
+		"""
+			Returns appendices (documents that are related to persons) of this ancestry
+		"""
 		appendix_list = []
 		for documentRelation in DocumentRelation.objects.all():
 			# check if document belongs to a person this ancestry
@@ -1011,12 +1033,19 @@ class Ancestry(models.Model):
 		return appendix_list
 	
 	def distributions(self):
+		"""
+			Returns the list of distributions of this ancestry
+			- basically images of distributions
+		"""
 		return DistributionRelation.objects.filter(ancestry = self)
 	
 	def __unicode__(self):			  
 		return self.name
 
 class DistributionRelation(models.Model):
+	"""
+		class that links ancestry with distribution
+	"""
 	distribution = models.ForeignKey(Distribution)
 	ancestry = models.ForeignKey(Ancestry)
 	
@@ -1028,7 +1057,7 @@ def person_of_document_relation(x):
 
 class Document(models.Model):
 	name = models.CharField(max_length=200)
-	# maybe add a description here
+	description = models.CharField(max_length=200, null=True, blank=True)
 	date = models.DateField(_('date of creation'))
 	image = models.ImageField(upload_to='media/documents', blank=True, null=True)
 	
