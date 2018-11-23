@@ -548,18 +548,21 @@
 <title>{% trans "Appendix" %}</title>
 </chapheader>
 
-{% if appendices %}
-	{% for appendix in appendices %}
+{% if documents %}
+	{% for document in documents %}
 		<para>
 			<div class="not_breaking">
-			<h2>{{ appendix.name }}</h2>
-			<a id="chapter6-{{ appendix.id }}">&nbsp;</a>
+			<h2>{{ document.name }}</h2>
+			{% if document.description %}
+				{{ document.description }}
+			{% endif %}
+			<a id="chapter6-{{ document.id }}">&nbsp;</a>
 			<ul>
-				{% for person in appendix.persons %}
-					<li>{{ person }}</li>
+				{% for person in document.persons %}
+					<li><a href="#chapter1-{{ person.id }}" class="nolink">{{ person }}</a></li>
 				{% endfor %}
 			</ul>
-			<img src="{{ appendix.image.url }}" class="document" />
+			<img src="{{ document.image.url }}" class="document" />
 			</div>
 		</para>
 	{% endfor %}

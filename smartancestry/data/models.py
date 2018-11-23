@@ -1017,20 +1017,21 @@ class Ancestry(models.Model):
 		
 		return final_list
 		
-	def appendices(self):
+	def documents(self):
 		"""
 			Returns appendices (documents that are related to persons) of this ancestry
+			- newest documents first
 		"""
-		appendix_list = []
+		document_list = []
 		for documentRelation in DocumentRelation.objects.all():
 			# check if document belongs to a person this ancestry
 			if not is_empty(AncestryRelation.objects.filter(ancestry = self, person = documentRelation.person)):	
 				if documentRelation.document not in appendix_list:
-					appendix_list.append(documentRelation.document)
+					document_list.append(documentRelation.document)
 		
-		appendix_list = sorted(appendix_list, key=attrgetter('date'), reverse=True)
+		document_list = sorted(document_list, key=attrgetter('date'), reverse=True)
 		
-		return appendix_list
+		return document_list
 	
 	def distributions(self):
 		"""
@@ -1052,39 +1053,47 @@ class DistributionRelation(models.Model):
 	def __unicode__(self):			  
 		return '%s - %s' % (self.ancestry.name, self.distribution.family_name)
 
-def person_of_document_relation(x):
-	return x.person
-
 class Document(models.Model):
+	"""
+		class that holds a document (as image) along with a date and a description
+		- persons can be linked via DocumentRelation
+	"""
 	name = models.CharField(max_length=200)
 	description = models.CharField(max_length=200, null=True, blank=True)
 	date = models.DateField(_('date of creation'))
 	image = models.ImageField(upload_to='media/documents', blank=True, null=True)
-	
-	def person_names(self):
-		str = ''
 		
-		for item in DocumentRelation.objects.filter(document = self):
-			str = '%s, %s' % (str, item.person)
-		
-		str = "$%s$" % (str)
-		str = str.replace("$, ", "")
-		str = str.replace(", $", "")
-		str = str.replace("$", "")
-		
-		return mark_safe(str)
-	
 	def persons(self):
-		return map(person_of_document_relation, DocumentRelation.objects.filter(document = self))
+		"""
+			Returns a list of person linked to this document
+		"""
+		personArr = []
+		
+		for documentRelation in DocumentRelation.objects.filter(document = self):
+			personArr.append(documentRelation.person)
+		
+		return personArr
+	
+	def person_names(self):	
+		"""
+			Returns a comma seperated list of person related to this document
+		"""
+		return mark_safe(','.join(map(str, self.persons())))
 	
 	def thumbnail(self):
-		return '<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % ((self.image.name, self.image.name))
+		"""
+			Returns a clickable thumbnail of the document for the admin area
+		"""
+		return mark_safe('<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % ((self.image.name, self.image.name)))
 	thumbnail.allow_tags = True
 	
 	def __unicode__(self):			  
 		return self.name
 
 class DocumentRelation(models.Model):
+	"""
+		class that links a Document with a person
+	"""
 	person = models.ForeignKey(Person)
 	document = models.ForeignKey(Document)
 	
