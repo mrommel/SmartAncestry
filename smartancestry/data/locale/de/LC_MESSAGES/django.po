@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-11 13:05+0000\n"
-"PO-Revision-Date: 2018-11-11 14:07+0100\n"
+"POT-Creation-Date: 2018-11-23 16:44+0100\n"
+"PO-Revision-Date: 2018-11-23 16:46+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -22,322 +22,188 @@ msgstr ""
 msgid "Ancestry"
 msgstr "Stammbaum"
 
-#: forms.py:165
+#: forms.py:184
 msgid "Create pdfs"
 msgstr "PDFs erstellen"
 
-#: forms.py:191
+#: forms.py:210
 msgid "List of Persons born here"
 msgstr "Personen, die hier geboren sind"
 
-#: forms.py:210
+#: forms.py:229
 msgid "List of Persons died here"
 msgstr "Personen, die hier gestorben sind"
 
-#: models.py:145 models.py:147 templates/data/person.html:192
+#: models.py:108 models.py:110 templates/data/person.html:192
 msgid "Born"
 msgstr "Geboren"
 
-#: models.py:153 templates/data/person.html:193
+#: models.py:116 templates/data/person.html:193
 msgid "Died"
 msgstr "Gestorben"
 
-#: models.py:225
+#: models.py:188
 msgid "Male"
 msgstr "Männlich"
 
-#: models.py:225
+#: models.py:188
 msgid "Female"
 msgstr "Weiblich"
 
-#: models.py:225 templates/data/ancestry.html:299
+#: models.py:188 templates/data/ancestry.html:299
 msgid "Gender"
 msgstr "Geschlecht"
 
-#: models.py:226
+#: models.py:189
 msgid "date of birth"
 msgstr "Geburtsdatum"
 
-#: models.py:229
+#: models.py:192
 msgid "date of death"
 msgstr "Sterbbedatum"
 
-#: models.py:248
+#: models.py:210
 msgid "Name"
 msgstr "Name"
 
-#: models.py:667 models.py:671 models.py:679
+#: models.py:639 models.py:648 models.py:657
 msgid "of"
 msgstr "von"
 
-#: models.py:679
+#: models.py:657
 msgid "ancestry"
 msgstr "Stammbaum"
 
-#: models.py:762
+#: models.py:755
 msgid "Rest"
 msgstr "Rest"
 
-#: models.py:929
+#: models.py:949 templates/data/ancestry_export.html:454
 msgid "Women"
 msgstr "Frauen"
 
-#: models.py:931
+#: models.py:951 templates/data/ancestry_export.html:450
 msgid "Men"
 msgstr "Männer"
 
-#: models.py:958
+#: models.py:978
 msgid "Youngest person"
 msgstr "Jüngste Person"
 
-#: models.py:959
+#: models.py:979
 msgid "Oldest person"
 msgstr "Älteste Person"
 
-#: models.py:960
+#: models.py:980
 msgid "Lastest marriage"
 msgstr "Späteste Heirat"
 
-#: models.py:961
+#: models.py:981
 msgid "Youngest marriage"
 msgstr "Jüngste Heirat"
 
-#: models.py:962
+#: models.py:982
 msgid "Most Children"
 msgstr "Meiste Kinder"
 
-#: models.py:977
+#: models.py:998
 #, python-format
 msgid "%s %s (born %s) was born in %s"
 msgstr "%s %s (geb. %s) wurde in %s geboren"
 
-#: models.py:979
+#: models.py:1000
 #, python-format
 msgid "%s %s was born in %s"
 msgstr "%s %s wurde in %s geboren"
 
-#: models.py:981
+#: models.py:1002
 #, python-format
 msgid "%s %s was born"
 msgstr "%s %s wurde geboren"
 
-#: models.py:985
+#: models.py:1006
 #, python-format
 msgid "%s %s has died in %s"
 msgstr "%s %s starb in %s"
 
-#: models.py:987
+#: models.py:1008
 #, python-format
 msgid "%s %s has died"
 msgstr "%s %s starb"
 
-#: models.py:993
+#: models.py:1014
 #, python-format
 msgid "marriage of %s and %s in %s"
 msgstr "Hochzeit von %s und %s in %s"
 
-#: models.py:995
+#: models.py:1016
 #, python-format
 msgid "marriage of %s and %s"
 msgstr "Hochzeit von %s und %s"
 
-#: models.py:997
+#: models.py:1018
 #, python-format
 msgid "divorce of %s and %s"
 msgstr "Scheidung von %s und %s"
 
-#: models.py:1036
+#: models.py:1072
 msgid "date of creation"
 msgstr "Erstellungsdatum"
 
-#: models.py:1074
+#: models.py:1117
 msgid "date of answer"
 msgstr "Datum der Antwort"
 
-#: models.py:1096
-msgid "daugther"
-msgstr "Tochter"
-
-#: models.py:1098
-msgid "son"
-msgstr "Sohn"
-
-#: models.py:1103 models.py:1110
-msgid "granddaugther"
-msgstr "Enkeltochter"
-
-#: models.py:1105 models.py:1112
-msgid "grandson"
-msgstr "Enkel"
-
-#: models.py:1115 models.py:1354
-msgid "wife"
-msgstr "Ehefrau"
-
-#: models.py:1119 models.py:1129
-msgid "father in law"
-msgstr "Schwiegervater"
-
-#: models.py:1122 models.py:1132
-msgid "mother in law"
-msgstr "Schwiegermutter"
-
-#: models.py:1125 models.py:1353
-msgid "husband"
-msgstr "Ehemann"
-
-#: models.py:1135
-msgid "father"
-msgstr "Vater"
-
-#: models.py:1141 models.py:1146 models.py:1224 models.py:1229
-msgid "aunt"
-msgstr "Tante"
-
-#: models.py:1143 models.py:1149 models.py:1226 models.py:1232
-msgid "uncle"
-msgstr "Onkel"
-
-#: models.py:1154 models.py:1237
-msgid "girl cousin"
-msgstr "Cousine"
-
-#: models.py:1156 models.py:1239
-msgid "boy cousin"
-msgstr "Cousin"
-
-#: models.py:1161 models.py:1244
-msgid "girl cousins daugther"
-msgstr "Nichte 2ten Grades"
-
-#: models.py:1163 models.py:1246
-msgid "boy cousins daugther"
-msgstr "Nichte 2ten Grades"
-
-#: models.py:1165 models.py:1248
-msgid "girl cousins son"
-msgstr "Neffe 2ten Grades"
-
-#: models.py:1167 models.py:1250
-msgid "boy cousins son"
-msgstr "Neffe 2ten Grades"
-
-#: models.py:1170 models.py:1253
-msgid "grandfather"
-msgstr "Großvater"
-
-#: models.py:1175 models.py:1199 models.py:1258 models.py:1282
-msgid "greatgrandfather"
-msgstr "Urgroßvater"
-
-#: models.py:1178 models.py:1188 models.py:1202 models.py:1212 models.py:1261
-#: models.py:1271 models.py:1285 models.py:1295
-msgid "greatgreatgrandfather"
-msgstr "Ururgroßvater"
-
-#: models.py:1181 models.py:1191 models.py:1205 models.py:1215 models.py:1264
-#: models.py:1274 models.py:1288 models.py:1298
-msgid "greatgreatgrandmother"
-msgstr "Ururgroßmutter"
-
-#: models.py:1185 models.py:1209 models.py:1268 models.py:1292
-msgid "greatgrandmother"
-msgstr "Urgroßmutter"
-
-#: models.py:1194 models.py:1277
-msgid "grandmother"
-msgstr "Großmutter"
-
-#: models.py:1218
-msgid "mother"
-msgstr "Mutter"
-
-#: models.py:1302
-msgid "son in law"
-msgstr "Schwiegersohn"
-
-#: models.py:1306
-msgid "daugther in law"
-msgstr "Schwiegertochter"
-
-#: models.py:1310
-msgid "sister"
-msgstr "Schwester"
-
-#: models.py:1312
-msgid "brother"
-msgstr "Bruder"
-
-#: models.py:1316
-msgid "sister in law"
-msgstr "Schwägerin"
-
-#: models.py:1319
-msgid "brother in law"
-msgstr "Schwager"
-
-#: models.py:1324
-msgid "niece"
-msgstr "Nichte"
-
-#: models.py:1326
-msgid "nephew"
-msgstr "Neffe"
-
-#: models.py:1331
-msgid "great niece"
-msgstr "Großnichte"
-
-#: models.py:1333
-msgid "great nephew"
-msgstr "Großneffe"
-
-#: models.py:1350 templates/data/ancestry_export.html:213
+#: models.py:1144 templates/data/ancestry_export.html:220
 msgid "Marriage"
 msgstr "Heirat"
 
-#: models.py:1350 templates/data/ancestry_export.html:216
-msgid "Divorce"
-msgstr "Scheidung"
-
-#: models.py:1350 templates/data/ancestry_export.html:219
+#: models.py:1144 templates/data/ancestry_export.html:226
 msgid "Partnership"
 msgstr "Partnerschaft"
 
-#: models.py:1350
+#: models.py:1144
 msgid "Adoption"
 msgstr "Adoption"
 
-#: models.py:1351
+#: models.py:1145
 msgid "date of marriage or divorce"
 msgstr "Datum der Heirat oder der Scheidung"
 
-#: models.py:1373
+#: models.py:1147 tools.py:85
+msgid "husband"
+msgstr "Ehemann"
+
+#: models.py:1148 tools.py:75
+msgid "wife"
+msgstr "Ehefrau"
+
+#: models.py:1185
 msgid "married"
 msgstr "Verheirated"
 
-#: models.py:1376
+#: models.py:1186
 msgid "partnership"
 msgstr "Partnerschaft"
 
-#: models.py:1378
-msgid "divorced"
-msgstr "Geschieden"
+#: models.py:1187
+msgid "adopted"
+msgstr "Adoptiert"
 
-#: models.py:1395
+#: models.py:1197
 #, python-format
 msgid "Marriage %s and %s"
 msgstr "Hochzeit von %s und %s"
 
-#: models.py:1398
+#: models.py:1198
 #, python-format
 msgid "Partnership %s and %s"
 msgstr "Partnerschaft zwischen %s und %s"
 
-#: models.py:1400
+#: models.py:1199
 #, python-format
-msgid "Divorce %s and %s"
-msgstr "Scheidung von %s und %s"
+msgid "Adoption of %s and %s"
+msgstr "Adoption von %s und %s"
 
 #: templates/base.html:20 templates/data/index.html:6
 msgid "Home"
@@ -355,7 +221,7 @@ msgid "Ancestries"
 msgstr "Stammbäume"
 
 #: templates/base.html:23 templates/data/ancestry_export.html:90
-#: templates/data/ancestry_export.html:512 templates/data/distributions.html:7
+#: templates/data/ancestry_export.html:527 templates/data/distributions.html:7
 msgid "Distributions"
 msgstr "Verteilung"
 
@@ -364,12 +230,12 @@ msgstr "Verteilung"
 msgid "Members"
 msgstr "Mitglieder"
 
-#: templates/data/ancestry.html:193 templates/data/ancestry_export.html:156
+#: templates/data/ancestry.html:193 templates/data/ancestry_export.html:157
 msgid "Years"
 msgstr "Jahre"
 
-#: templates/data/ancestry.html:198 templates/data/ancestry_export.html:327
-#: templates/data/ancestry_export.html:501
+#: templates/data/ancestry.html:198 templates/data/ancestry_export.html:342
+#: templates/data/ancestry_export.html:516
 msgid "No members are available."
 msgstr "Keine Stammbäume vorhanden."
 
@@ -378,70 +244,70 @@ msgid "Missing Items"
 msgstr "Fehlende Einträge"
 
 #: templates/data/ancestry.html:211 templates/data/ancestry_export.html:43
-#: templates/data/ancestry_export.html:338
+#: templates/data/ancestry_export.html:353
 msgid "Timeline"
 msgstr "Zeitstrahl"
 
 #: templates/data/ancestry.html:233 templates/data/ancestry_export.html:53
-#: templates/data/ancestry_export.html:375
+#: templates/data/ancestry_export.html:390
 msgid "Specials"
 msgstr "Besonderheiten"
 
 #: templates/data/ancestry.html:243 templates/data/ancestry_export.html:56
-#: templates/data/ancestry_export.html:391
+#: templates/data/ancestry_export.html:406
 msgid "Locations"
 msgstr "Orte"
 
 #: templates/data/ancestry.html:249 templates/data/ancestry_export.html:59
-#: templates/data/ancestry_export.html:402
+#: templates/data/ancestry_export.html:417
 msgid "Births and Deaths per month"
 msgstr "Geburten und Todesfälle pro Monat"
 
-#: templates/data/ancestry.html:257 templates/data/ancestry_export.html:406
+#: templates/data/ancestry.html:257 templates/data/ancestry_export.html:421
 msgid "January"
 msgstr "Januar"
 
-#: templates/data/ancestry.html:257 templates/data/ancestry_export.html:406
+#: templates/data/ancestry.html:257 templates/data/ancestry_export.html:421
 msgid "February"
 msgstr "Februar"
 
-#: templates/data/ancestry.html:257 templates/data/ancestry_export.html:406
+#: templates/data/ancestry.html:257 templates/data/ancestry_export.html:421
 msgid "March"
 msgstr "März"
 
-#: templates/data/ancestry.html:258 templates/data/ancestry_export.html:406
+#: templates/data/ancestry.html:258 templates/data/ancestry_export.html:421
 msgid "April"
 msgstr "April"
 
-#: templates/data/ancestry.html:258 templates/data/ancestry_export.html:406
+#: templates/data/ancestry.html:258 templates/data/ancestry_export.html:421
 msgid "May"
 msgstr "Mai"
 
-#: templates/data/ancestry.html:258 templates/data/ancestry_export.html:406
+#: templates/data/ancestry.html:258 templates/data/ancestry_export.html:421
 msgid "June"
 msgstr "Juni"
 
-#: templates/data/ancestry.html:259 templates/data/ancestry_export.html:406
+#: templates/data/ancestry.html:259 templates/data/ancestry_export.html:421
 msgid "July"
 msgstr "Juli"
 
-#: templates/data/ancestry.html:259 templates/data/ancestry_export.html:406
+#: templates/data/ancestry.html:259 templates/data/ancestry_export.html:421
 msgid "August"
 msgstr "August"
 
-#: templates/data/ancestry.html:259 templates/data/ancestry_export.html:406
+#: templates/data/ancestry.html:259 templates/data/ancestry_export.html:421
 msgid "September"
 msgstr "September"
 
-#: templates/data/ancestry.html:260 templates/data/ancestry_export.html:406
+#: templates/data/ancestry.html:260 templates/data/ancestry_export.html:421
 msgid "October"
 msgstr "Oktober"
 
-#: templates/data/ancestry.html:260 templates/data/ancestry_export.html:406
+#: templates/data/ancestry.html:260 templates/data/ancestry_export.html:421
 msgid "November"
 msgstr "November"
 
-#: templates/data/ancestry.html:260 templates/data/ancestry_export.html:406
+#: templates/data/ancestry.html:260 templates/data/ancestry_export.html:421
 msgid "December"
 msgstr "Dezember"
 
@@ -454,14 +320,14 @@ msgid "Deaths per month"
 msgstr "Todesfälle pro Monat"
 
 #: templates/data/ancestry.html:329 templates/data/ancestry_export.html:65
-#: templates/data/ancestry_export.html:447
+#: templates/data/ancestry_export.html:462
 msgid "Birth locations"
 msgstr "Geburtsorte"
 
 #: templates/data/ancestry.html:359 templates/data/ancestry.html:370
 #: templates/data/ancestry_export.html:68
-#: templates/data/ancestry_export.html:266
-#: templates/data/ancestry_export.html:467 templates/data/person.html:116
+#: templates/data/ancestry_export.html:275
+#: templates/data/ancestry_export.html:482 templates/data/person.html:116
 msgid "Children"
 msgstr "Kinder"
 
@@ -475,98 +341,114 @@ msgid "Contents"
 msgstr "Inhaltsverzeichnis"
 
 #: templates/data/ancestry_export.html:49
-#: templates/data/ancestry_export.html:369
+#: templates/data/ancestry_export.html:384
 msgid "Statistics"
 msgstr "Statistiken"
 
 #: templates/data/ancestry_export.html:62
-#: templates/data/ancestry_export.html:425
+#: templates/data/ancestry_export.html:440
 msgid "Gender distribution"
 msgstr "Geschlechterverteilung"
 
 #: templates/data/ancestry_export.html:74
-#: templates/data/ancestry_export.html:486
+#: templates/data/ancestry_export.html:501
 msgid "Family trees"
 msgstr "Stammbäume"
 
 #: templates/data/ancestry_export.html:106
-#: templates/data/ancestry_export.html:538
+#: templates/data/ancestry_export.html:553
 msgid "Appendix"
 msgstr "Anhang"
 
-#: templates/data/ancestry_export.html:149
-msgid "Relation"
-msgstr "Beziehung"
-
-#: templates/data/ancestry_export.html:153
+#: templates/data/ancestry_export.html:154
 msgid "Last name"
 msgstr "Familienname"
 
-#: templates/data/ancestry_export.html:155 templates/data/person.html:78
+#: templates/data/ancestry_export.html:156 templates/data/person.html:78
 msgid "Age"
 msgstr "Alter"
 
-#: templates/data/ancestry_export.html:159
+#: templates/data/ancestry_export.html:160
 msgid "First name"
 msgstr "Vorname"
 
-#: templates/data/ancestry_export.html:163
+#: templates/data/ancestry_export.html:164
 msgid "Birth name"
 msgstr "Geburtsname"
 
-#: templates/data/ancestry_export.html:167
+#: templates/data/ancestry_export.html:168
 msgid "Birth date"
 msgstr "Geburtsdatum"
 
-#: templates/data/ancestry_export.html:175
-#: templates/data/ancestry_export.html:194
-#: templates/data/ancestry_export.html:233
+#: templates/data/ancestry_export.html:176
+#: templates/data/ancestry_export.html:195
+#: templates/data/ancestry_export.html:240
 msgid "in"
 msgstr "in"
 
-#: templates/data/ancestry_export.html:184
+#: templates/data/ancestry_export.html:185
 msgid "Death date"
 msgstr "Todesdatum"
 
-#: templates/data/ancestry_export.html:205 templates/data/person.html:113
+#: templates/data/ancestry_export.html:207
+msgid "Relation"
+msgstr "Beziehung"
+
+#: templates/data/ancestry_export.html:212 templates/data/person.html:113
 msgid "Profession"
 msgstr "Beruf"
 
-#: templates/data/ancestry_export.html:228
+#: templates/data/ancestry_export.html:223
+msgid "Divorce"
+msgstr "Scheidung"
+
+#: templates/data/ancestry_export.html:236
 msgid "at"
 msgstr "am"
 
-#: templates/data/ancestry_export.html:244 templates/data/person.html:100
+#: templates/data/ancestry_export.html:251 templates/data/person.html:100
 #: templates/data/person.html:102
 msgid "Father"
 msgstr "Vater"
 
-#: templates/data/ancestry_export.html:254 templates/data/person.html:106
+#: templates/data/ancestry_export.html:263 templates/data/person.html:106
 #: templates/data/person.html:108
 msgid "Mother"
 msgstr "Mutter"
 
-#: templates/data/ancestry_export.html:285 templates/data/person.html:134
+#: templates/data/ancestry_export.html:294 templates/data/person.html:134
 msgid "Siblings"
 msgstr "Geschwister"
 
-#: templates/data/ancestry_export.html:303
+#: templates/data/ancestry_export.html:312
 msgid "Notes"
 msgstr "Notizen"
 
-#: templates/data/ancestry_export.html:312
+#: templates/data/ancestry_export.html:325
 msgid "Appendices"
 msgstr "Anhänge"
 
-#: templates/data/ancestry_export.html:316
+#: templates/data/ancestry_export.html:329
 msgid "Page"
 msgstr "Seite"
 
-#: templates/data/ancestry_export.html:527
+#: templates/data/ancestry_export.html:427
+#, fuzzy
+#| msgid "Births per month"
+msgid "Birth per month"
+msgstr "Geburten pro Monat"
+
+#: templates/data/ancestry_export.html:431
+#, fuzzy
+#| msgid "Deaths per month"
+msgid "Death per month"
+msgstr "Todesfälle pro Monat"
+
+#: templates/data/ancestry_export.html:542
 msgid "No distributions are available."
 msgstr "Keine Verteilungen vorhanden."
 
-#: templates/data/ancestry_export.html:557
+#: templates/data/ancestry_export.html:575
 msgid "No appendices are available."
 msgstr "Keine Anhänge vorhanden."
 
@@ -589,6 +471,142 @@ msgstr "Keine Geschwister vorhanden."
 #: templates/data/person.html:162
 msgid "No ancestries are available."
 msgstr "Keine Stammbäume vorhanden."
+
+#: tools.py:56
+msgid "daugther"
+msgstr "Tochter"
+
+#: tools.py:58
+msgid "son"
+msgstr "Sohn"
+
+#: tools.py:63 tools.py:70
+msgid "granddaugther"
+msgstr "Enkeltochter"
+
+#: tools.py:65 tools.py:72
+msgid "grandson"
+msgstr "Enkel"
+
+#: tools.py:79 tools.py:89
+msgid "father in law"
+msgstr "Schwiegervater"
+
+#: tools.py:82 tools.py:92
+msgid "mother in law"
+msgstr "Schwiegermutter"
+
+#: tools.py:95
+msgid "father"
+msgstr "Vater"
+
+#: tools.py:101 tools.py:106 tools.py:184 tools.py:189
+msgid "aunt"
+msgstr "Tante"
+
+#: tools.py:103 tools.py:109 tools.py:186 tools.py:192
+msgid "uncle"
+msgstr "Onkel"
+
+#: tools.py:114 tools.py:197
+msgid "girl cousin"
+msgstr "Cousine"
+
+#: tools.py:116 tools.py:199
+msgid "boy cousin"
+msgstr "Cousin"
+
+#: tools.py:121 tools.py:204
+msgid "girl cousins daugther"
+msgstr "Nichte 2ten Grades"
+
+#: tools.py:123 tools.py:206
+msgid "boy cousins daugther"
+msgstr "Nichte 2ten Grades"
+
+#: tools.py:125 tools.py:208
+msgid "girl cousins son"
+msgstr "Neffe 2ten Grades"
+
+#: tools.py:127 tools.py:210
+msgid "boy cousins son"
+msgstr "Neffe 2ten Grades"
+
+#: tools.py:130 tools.py:213
+msgid "grandfather"
+msgstr "Großvater"
+
+#: tools.py:135 tools.py:159 tools.py:218 tools.py:242
+msgid "greatgrandfather"
+msgstr "Urgroßvater"
+
+#: tools.py:138 tools.py:148 tools.py:162 tools.py:172 tools.py:221
+#: tools.py:231 tools.py:245 tools.py:255
+msgid "greatgreatgrandfather"
+msgstr "Ururgroßvater"
+
+#: tools.py:141 tools.py:151 tools.py:165 tools.py:175 tools.py:224
+#: tools.py:234 tools.py:248 tools.py:258
+msgid "greatgreatgrandmother"
+msgstr "Ururgroßmutter"
+
+#: tools.py:145 tools.py:169 tools.py:228 tools.py:252
+msgid "greatgrandmother"
+msgstr "Urgroßmutter"
+
+#: tools.py:154 tools.py:237
+msgid "grandmother"
+msgstr "Großmutter"
+
+#: tools.py:178
+msgid "mother"
+msgstr "Mutter"
+
+#: tools.py:262
+msgid "son in law"
+msgstr "Schwiegersohn"
+
+#: tools.py:266
+msgid "daugther in law"
+msgstr "Schwiegertochter"
+
+#: tools.py:270
+msgid "sister"
+msgstr "Schwester"
+
+#: tools.py:272
+msgid "brother"
+msgstr "Bruder"
+
+#: tools.py:276
+msgid "sister in law"
+msgstr "Schwägerin"
+
+#: tools.py:279
+msgid "brother in law"
+msgstr "Schwager"
+
+#: tools.py:284
+msgid "niece"
+msgstr "Nichte"
+
+#: tools.py:286
+msgid "nephew"
+msgstr "Neffe"
+
+#: tools.py:291
+msgid "great niece"
+msgstr "Großnichte"
+
+#: tools.py:293
+msgid "great nephew"
+msgstr "Großneffe"
+
+#~ msgid "divorced"
+#~ msgstr "Geschieden"
+
+#~ msgid "Divorce %s and %s"
+#~ msgstr "Scheidung von %s und %s"
 
 #~ msgid "Birth place"
 #~ msgstr "Geburtsort"
