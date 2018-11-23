@@ -106,11 +106,11 @@
 	<a href="#chapter6" class="nolink">6. {% trans "Appendix" %}</a>
 </item>
 
-{% if appendices %}
-	{% for appendix in appendices %}
-		<item href="#chapter6-{{ appendix.id }}" class="sub-chapter">
-			<a href="#chapter6-{{ appendix.id }}" class="nolink">
-				{{ appendix.name }}
+{% if documents %}
+	{% for document in documents %}
+		<item href="#chapter6-{{ document.id }}" class="sub-chapter">
+			<a href="#chapter6-{{ document.id }}" class="nolink">
+				{{ document.name }}
 			</a>
 		</item>
 	{% endfor %}
@@ -140,11 +140,16 @@
 			<table>
 				<tr class="{% cycle 'row' 'alternating' as row_style %}">
 					<td width="20%" rowspan="5" class="portrait">
-						{% if member.person.image %}
-							<img src="/{{ MEDIA_URL }}..{{ member.person.image.url }}" alt="Img" class="portait">
-						{% else %}
-							<img src="/static/data/images/avatar_{{ member.person.sex}}.png" alt="Img{{ member.person.sex}}" class="portait">
-						{% endif %}
+						<div class="pngcontainer">
+							{% if member.person.image %}
+								<img src="/{{ MEDIA_URL }}..{{ member.person.image.url }}" alt="Img" class="portait_person">
+							{% else %}
+								<img src="/static/data/images/avatar_{{ member.person.sex}}.png" alt="Img{{ member.person.sex}}" class="portait_template">
+							{% endif %}
+							{% if member.person.show_dead %}
+								<img src="/static/data/images/avatar_died.png" alt="Died" class="portait_died">
+							{% endif %}
+						</div>
 					</td>
 					<td width="20%" class="label">{% trans "Last name" %}:</td>
 					<td width="20%">{% autoescape off %}{{ member.person.last_name }}{% endautoescape %}<a id="chapter1-{{ member.person.id }}" name="#chapter1-{{ member.person.id }}">&nbsp;</a></td>

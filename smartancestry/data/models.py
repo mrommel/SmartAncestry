@@ -269,6 +269,15 @@ class Person(models.Model):
 			
 		return '{0.year:4d}'.format(self.death_date)
 	
+	def show_dead(self):
+		if self.already_died:
+			return True
+			
+		if self.death_date is not None:
+			return True
+			
+		return False
+	
 	def father_name(self):
 		if self.father is not None:
 			return str(self.father)
@@ -1026,7 +1035,7 @@ class Ancestry(models.Model):
 		for documentRelation in DocumentRelation.objects.all():
 			# check if document belongs to a person this ancestry
 			if not is_empty(AncestryRelation.objects.filter(ancestry = self, person = documentRelation.person)):	
-				if documentRelation.document not in appendix_list:
+				if documentRelation.document not in document_list:
 					document_list.append(documentRelation.document)
 		
 		document_list = sorted(document_list, key=attrgetter('date'), reverse=True)

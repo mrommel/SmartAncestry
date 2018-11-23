@@ -214,6 +214,29 @@ td {
 	text-align: center; 
 }
 
+.pngcontainer {
+	text-align: center; 
+  	position: relative;
+  	height: 80px;
+	width: 98px;
+}
+
+.portait_person, .portait_template, .portait_died {
+	position: absolute;
+  	top: 0;
+  	left: 18px;
+	height: 80px;
+	width: 80px;
+}
+
+.portait_person, .portait_template {
+	z-index: 100;
+}
+
+.portait_died {
+	z-index: 101;
+}
+
 .row {
 	background-color: #ededed;
 }
