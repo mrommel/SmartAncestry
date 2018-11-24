@@ -217,24 +217,28 @@ td {
 .pngcontainer {
 	text-align: center; 
   	position: relative;
-  	height: 80px;
-	width: 98px;
+  	height: 116px;
+	width: 116px;
 }
 
 .portait_person, .portait_template, .portait_died {
 	position: absolute;
-  	top: 0;
-  	left: 18px;
-	height: 80px;
-	width: 80px;
 }
 
 .portait_person, .portait_template {
 	z-index: 100;
+	top: 3px;
+  	left: 3px;
+	height: 110px;
+	width: 110px;
 }
 
 .portait_died {
 	z-index: 101;
+	top: 0px;
+  	left: 0px;
+	height: 116px;
+	width: 116px;
 }
 
 .row {
