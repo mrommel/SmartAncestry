@@ -231,6 +231,7 @@ td {
   	left: 3px;
 	height: 110px;
 	width: 110px;
+	border: 1px solid #666;
 }
 
 .portait_died {

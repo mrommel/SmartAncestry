@@ -142,9 +142,10 @@ class PartnerInfo(object):
 		return '[PartnerInfo: %s - dyo=%d,date:=%s' % (self.partner, self.date_year_only, self.date) 
 		
 class RelativesInfo(object):
-	def __init__(self, relatives, relations):
+	def __init__(self, relatives, relations, connections):
 		self.relatives = relatives
 		self.relations = relations
+		self.connections = connections
 		
 class RelationsInfo(object):
 	def __init__(self, source, destination):
@@ -172,6 +173,12 @@ class PersonInfo(object):
 			return "♂"
 		else:
 			return "♀"
+
+class MarriageInfo(object):
+	def __init__(self, level, id, text):
+		self.id = id
+		self.level = level
+		self.text = text
 
 def name_of_ancestry(x):
 	name = u'%s' % x.ancestry.name
@@ -507,6 +514,18 @@ class Person(models.Model):
 				
 		return None
 	
+	def partnership(self, partner):
+		"""
+			Returns the partnership to partner or None if none exists
+		"""
+		for partnerRelation in FamilyStatusRelation.objects.filter(Q(woman = self) & Q(man = partner)):
+			return partnerRelation
+			
+		for partnerRelation in FamilyStatusRelation.objects.filter(Q(woman = partner) & Q(man = self)):
+			return partnerRelation
+				
+		return None
+	
 	def married_at(self):
 		"""
 			Returns the date of the current partner relation
@@ -528,44 +547,98 @@ class Person(models.Model):
 			
 		return None
 	
+	def relatives2(self, level, relatives_list, relations_list, connection_list):
+		"""
+			end recursion
+		"""
+		relatives_list.append(TreeInfo(level, self, 0))
+		
+		for partner in self.partner_relations():
+			if partner.partner is not None and (len(filter (lambda x : x.person == partner.partner, relatives_list)) == 0):
+				partner.partner.relatives2(level, relatives_list, relations_list, connection_list)
+				
+				if self.sex == 'M':
+					marriage_id = "marriage_%s_%s" % (self.id, partner.partner.id)
+				else:
+					marriage_id = "marriage_%s_%s" % (partner.partner.id, self.id)
+
+				partnership = self.partnership(partner.partner)
+				
+				if partnership.date is not None:
+					relations_list.append(MarriageInfo(level, marriage_id, "∞ %s" % partnership.date))
+				else:
+					relations_list.append(MarriageInfo(level, marriage_id, ""))
+					
+				if (len(filter (lambda x : x.source == self.id and x.destination == marriage_id, connection_list)) == 0):
+					connection_list.append(RelationsInfo(self.id, marriage_id))
+					
+				if (len(filter (lambda x : x.source == partner.partner.id and x.destination == marriage_id, connection_list)) == 0):
+					connection_list.append(RelationsInfo(partner.partner.id, marriage_id))
+		
+		if self.father is not None:
+			self.father.relatives2(level + 1, relatives_list, relations_list, connection_list)
+
+		if self.mother is not None:
+			self.mother.relatives2(level + 1, relatives_list, relations_list, connection_list)
+		
+		if self.mother is not None and self.father is not None:
+			marriage_id = "marriage_%s_%s" % (self.father.id, self.mother.id)
+			
+			if (len(filter (lambda x : x.source == marriage_id and x.destination == self.id, connection_list)) == 0):
+				connection_list.append(RelationsInfo(marriage_id, self.id))
+		
+		return RelativesInfo(relatives_list, relations_list, connection_list)
+	
+	def relatives3(self, level, relatives_list, relations_list, connection_list):
+		"""
+			end recursion
+		"""
+		relatives_list.append(TreeInfo(level, self, 0))
+		
+		for child in self.children():
+			child.relatives3(level - 1, relatives_list, relations_list, connection_list)
+		
+		return RelativesInfo(relatives_list, relations_list, connection_list)
+	
 	def relatives(self):
 		""" 
 			provides a list of relative as well as links between them
 		""" 
-		relatives_list = []
-		relations_list = []
+		relatives_list = [] # persons
+		relations_list = [] # marriages
+		connection_list = [] # links
 		external_id = 1000
 		
 		if self.father is not None:
 			if self.father.father is not None:
 				relatives_list.append(TreeInfo(0, self.father.father, 0))	
-				relations_list.append(RelationsInfo(self.father.father.id, self.father.id))
+				connection_list.append(RelationsInfo(self.father.father.id, self.father.id))
 			if self.father.mother is not None:
 				relatives_list.append(TreeInfo(0, self.father.mother, 0))
-				relations_list.append(RelationsInfo(self.father.mother.id, self.father.id))
+				connection_list.append(RelationsInfo(self.father.mother.id, self.father.id))
 				
 			relatives_list.append(TreeInfo(1, self.father, 0))
-			relations_list.append(RelationsInfo(self.father.id, self.id))
+			connection_list.append(RelationsInfo(self.father.id, self.id))
 		
 		if self.mother is not None:
 			if self.mother.father is not None:
 				relatives_list.append(TreeInfo(0, self.mother.father, 0))	
-				relations_list.append(RelationsInfo(self.mother.father.id, self.mother.id))	
+				connection_list.append(RelationsInfo(self.mother.father.id, self.mother.id))	
 			if self.mother.mother is not None:
 				relatives_list.append(TreeInfo(0, self.mother.mother, 0))
-				relations_list.append(RelationsInfo(self.mother.mother.id, self.mother.id))
+				connection_list.append(RelationsInfo(self.mother.mother.id, self.mother.id))
 				
 			relatives_list.append(TreeInfo(1, self.mother, 0))
-			relations_list.append(RelationsInfo(self.mother.id, self.id))
+			connection_list.append(RelationsInfo(self.mother.id, self.id))
 		
 		if self.mother_extern is not None and self.mother_extern <> '':
 			relatives_list.append(TreeInfo(1, PersonInfo(external_id, self.mother_extern, 'F'), 0))
-			relations_list.append(RelationsInfo(external_id, self.id))
+			connection_list.append(RelationsInfo(external_id, self.id))
 			external_id = external_id + 1
 			
 		if self.father_extern is not None and self.father_extern <> '':
 			relatives_list.append(TreeInfo(1, PersonInfo(external_id, self.father_extern, 'M'), 0))
-			relations_list.append(RelationsInfo(external_id, self.id))
+			connection_list.append(RelationsInfo(external_id, self.id))
 			external_id = external_id + 1
 		
 		relatives_list.append(TreeInfo(2, self, 1))
@@ -584,39 +657,39 @@ class Person(models.Model):
 				for partner_child in partner.partner.children():
 					for child in self.children():
 						if partner_child.id == child.id:
-							relations_list.append(RelationsInfo(partner.partner.id, child.id))
+							connection_list.append(RelationsInfo(partner.partner.id, child.id))
 				
 				if partner.partner.mother is not None:
 					if partner.partner.mother.father is not None:
 						relatives_list.append(TreeInfo(0, partner.partner.mother.father, 0))	
-						relations_list.append(RelationsInfo(partner.partner.mother.father.id, partner.partner.mother.id))	
+						connection_list.append(RelationsInfo(partner.partner.mother.father.id, partner.partner.mother.id))	
 					if partner.partner.mother.mother is not None:
 						relatives_list.append(TreeInfo(0, partner.partner.mother.mother, 0))
-						relations_list.append(RelationsInfo(partner.partner.mother.mother.id, partner.partner.mother.id))
+						connection_list.append(RelationsInfo(partner.partner.mother.mother.id, partner.partner.mother.id))
 				
 					relatives_list.append(TreeInfo(1, partner.partner.mother, 0))
-					relations_list.append(RelationsInfo(partner.partner.mother.id, partner.partner.id))
+					connection_list.append(RelationsInfo(partner.partner.mother.id, partner.partner.id))
 				
 				if partner.partner.father is not None:
 					if partner.partner.father.father is not None:
 						relatives_list.append(TreeInfo(0, partner.partner.father.father, 0))	
-						relations_list.append(RelationsInfo(partner.partner.father.father.id, partner.partner.father.id))
+						connection_list.append(RelationsInfo(partner.partner.father.father.id, partner.partner.father.id))
 					if partner.partner.father.mother is not None:
 						relatives_list.append(TreeInfo(0, partner.partner.father.mother, 0))
-						relations_list.append(RelationsInfo(partner.partner.father.mother.id, partner.partner.father.id))
+						connection_list.append(RelationsInfo(partner.partner.father.mother.id, partner.partner.father.id))
 				
 					relatives_list.append(TreeInfo(1, partner.partner.father, 0))
-					relations_list.append(RelationsInfo(partner.partner.father.id, partner.partner.id))
+					connection_list.append(RelationsInfo(partner.partner.father.id, partner.partner.id))
 		
 		for child in self.children():
 			relatives_list.append(TreeInfo(3, child, 0))
-			relations_list.append(RelationsInfo(self.id, child.id))
+			connection_list.append(RelationsInfo(self.id, child.id))
 			
 			for grandchild in child.children():
 				relatives_list.append(TreeInfo(4, grandchild, 0))
-				relations_list.append(RelationsInfo(child.id, grandchild.id))
+				connection_list.append(RelationsInfo(child.id, grandchild.id))
 		
-		return RelativesInfo(relatives_list, relations_list)
+		return RelativesInfo(relatives_list, relations_list, connection_list)
 	
 	# create list of relations for tree
 	# [(1,2);(3,1)]

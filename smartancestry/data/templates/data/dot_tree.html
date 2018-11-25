@@ -2,18 +2,36 @@
 {% load app_filters %}
 digraph G {
 	imagepath="/Users/michael.rommel/Prog/SmartAncestry/smartancestry/data/media/persons_tree/";
-	graph [splines=ortho, label = "{% trans "Family tree" %} {{ person.first_name_short | remove_underlines }} {{ person.last_name }}", fontsize = 36, style = "bold"];
+	graph [splines=ortho, label = "{% trans "Family tree" %} {% trans "of" %} {{ person.first_name_short | remove_underlines }} {{ person.last_name }}", fontname="Verdana", fontsize = 32, style = "bold"];
 	rankdir=LR;
 	node [width=4];
-	node [color=grey, style=filled, shape=box];    
-	node [fontname="Verdana", fontsize = "13"];
+	node [style=filled, shape=box];    
+	node [fontname="Verdana", fontsize = "15"];
 
 	{% for relative in relatives.relatives %}
 	"node-{{ relative.person.id }}" [
-		color={% if relative.person.sex == 'F'%}"lightpink"{% else %}"lightblue"{% endif%},
-		label="{{ relative.person.first_name_short | remove_underlines }} {{ relative.person.last_name | replace_umlauts }}\n* {% if relative.person.birth_date_only_year %}{{ relative.person.birth_date | date:"Y" }}{% else %}{{ relative.person.birth_date | date:"d.m.Y" }}{% endif %} {% if relative.person.birth_location %}{{ relative.person.birth_location|location_without_country }}{% endif %}\n+ {% if relative.person.death_date_only_year %}{{ relative.person.death_date | date:"Y" }}{% else %}{{ relative.person.death_date | date:"d.m.Y" }}{% endif %} {% if relative.person.death_location %}{{ relative.person.death_location|location_without_country }}{% endif %}\n\n",
-		{% if relative.person.image %}image="{{ relative.person.image.url | remove_persons_folder }}",{% else %}{% if relative.person.sex == 'F'%}image="avatar_f.png",{% else %}image="avatar_m.png",{% endif%}{% endif%}
-		labelloc=b];{% endfor %}
-  	{% for relation in relatives.relations %}
-  	"node-{{ relation.source }}" -> "node-{{ relation.destination }}";{% endfor %}
+		color={% if relative.person.sex == 'F'%}"#9c1662"{% else %}"#105a83"{% endif%},
+		fillcolor={% if relative.person.sex == 'F'%}"#f5b8db"{% else %}"#9fd5eb"{% endif%},
+		label="{{ relative.person.first_name_short | remove_underlines }} {{ relative.person.last_name | replace_umlauts }}\n* {{ relative.person.birth_date | date:"Y" }} {% if relative.person.birth_location %}{{ relative.person.birth_location|location_without_country }}{% endif %}\n+ {{ relative.person.death_date | date:"Y" }} {% if relative.person.death_location %}{{ relative.person.death_location|location_without_country }}{% endif %}\n\n",
+		{# {% if relative.person.image %}image="{{ relative.person.image.url | remove_persons_folder }}",{% else %}{% if relative.person.sex == 'F'%}image="avatar_f.png",{% else %}image="avatar_m.png",{% endif%}{% endif%} #}
+		labelloc=b];
+	{% endfor %}
+	
+	{ rank=same {% for relative in relatives.relatives %}{% if relative.level == 0 %}"node-{{ relative.person.id }}" {% endif %}{% endfor %} }
+	{ rank=same {% for relative in relatives.relatives %}{% if relative.level == 1 %}"node-{{ relative.person.id }}" {% endif %}{% endfor %} }
+	{ rank=same {% for relative in relatives.relatives %}{% if relative.level == 2 %}"node-{{ relative.person.id }}" {% endif %}{% endfor %} }
+	{ rank=same {% for relative in relatives.relatives %}{% if relative.level == 3 %}"node-{{ relative.person.id }}" {% endif %}{% endfor %} }
+	{ rank=same {% for relative in relatives.relatives %}{% if relative.level == 4 %}"node-{{ relative.person.id }}" {% endif %}{% endfor %} }
+	
+	{% for relation in relatives.relations %}
+		{% if relation.text %}
+  			"node-{{ relation.id }}" [label="{{ relation.text }}", shape=box, width=0.2, height=0.1, orientation=90, color=white];
+		{% else %}  
+			"node-{{ relation.id }}" [shape=point, width=0.2, height=0.1, orientation=90, color=black];
+		{% endif %}	
+  	{% endfor %}
+	
+  	{% for connection in relatives.connections %}
+  	"node-{{ connection.source }}" -> "node-{{ connection.destination }}" [dir=none];
+  	{% endfor %}
 }

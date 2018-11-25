@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from django.http import HttpResponse, Http404
-from data.models import Person, Ancestry, Location
+from data.models import Person, Ancestry, Location, RelativesInfo
 from django.template import RequestContext, loader
 from django.template.loader import render_to_string
 from django.utils import translation
@@ -90,10 +90,15 @@ def dot_tree(request, person_id):
 		raise Http404("Person does not exist")
 		
 	all_persons = Person.objects.all()
+	
+	relatives2 = person.relatives2(0, [], [], [])
+	relatives3 = person.relatives3(0, [], [], [])
+	
+	relatives = RelativesInfo(relatives2.relatives + relatives3.relatives, relatives2.relations + relatives3.relations, relatives2.connections + relatives3.connections)
 		
 	return HttpResponse(render_to_string('data/dot_tree.html', {
 		'person': person,
-		'relatives': person.relatives(),
+		'relatives': relatives,
 	}))
 
 def distributions(request):
