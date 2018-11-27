@@ -2,7 +2,8 @@
 {% load app_filters %}
 digraph G {
 	imagepath="/Users/michael.rommel/Prog/SmartAncestry/smartancestry/data/media/persons_tree/";
-	graph [splines=ortho, label = "{% trans "Family tree" %} {% trans "of" %} {{ person.first_name_short | remove_underlines }} {{ person.last_name }}", fontname="Verdana", fontsize = 32, style = "bold"];
+	graph [label = "{% trans "Family tree" %} {% trans "of" %} {{ person.first_name_short | remove_underlines }} {{ person.last_name }}", fontname="Verdana", fontsize = 32, style = "bold"];
+	# splines=ortho,
 	rankdir=LR;
 	node [width=4];
 	node [style=filled, shape=box];    
@@ -17,11 +18,14 @@ digraph G {
 		labelloc=b];
 	{% endfor %}
 	
+	{ rank=same {% for relative in relatives.relatives %}{% if relative.level == -2 %}"node-{{ relative.person.id }}" {% endif %}{% endfor %} }
+	{ rank=same {% for relative in relatives.relatives %}{% if relative.level == -1 %}"node-{{ relative.person.id }}" {% endif %}{% endfor %} }
 	{ rank=same {% for relative in relatives.relatives %}{% if relative.level == 0 %}"node-{{ relative.person.id }}" {% endif %}{% endfor %} }
 	{ rank=same {% for relative in relatives.relatives %}{% if relative.level == 1 %}"node-{{ relative.person.id }}" {% endif %}{% endfor %} }
 	{ rank=same {% for relative in relatives.relatives %}{% if relative.level == 2 %}"node-{{ relative.person.id }}" {% endif %}{% endfor %} }
 	{ rank=same {% for relative in relatives.relatives %}{% if relative.level == 3 %}"node-{{ relative.person.id }}" {% endif %}{% endfor %} }
 	{ rank=same {% for relative in relatives.relatives %}{% if relative.level == 4 %}"node-{{ relative.person.id }}" {% endif %}{% endfor %} }
+	{ rank=same {% for relative in relatives.relatives %}{% if relative.level == 5 %}"node-{{ relative.person.id }}" {% endif %}{% endfor %} }
 	
 	{% for relation in relatives.relations %}
 		{% if relation.text %}
@@ -32,6 +36,6 @@ digraph G {
   	{% endfor %}
 	
   	{% for connection in relatives.connections %}
-  	"node-{{ connection.source }}" -> "node-{{ connection.destination }}" [dir=none];
+  	"node-{{ connection.source }}" -> "node-{{ connection.destination }}" [dir=none, tailport="e", headport="w"];
   	{% endfor %}
 }
