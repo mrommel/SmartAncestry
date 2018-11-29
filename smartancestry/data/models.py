@@ -300,9 +300,9 @@ class Person(models.Model):
 		
 	def thumbnail(self):
 		if self.image.name is not None and self.image.name <> '':
-			return '<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % ((self.image.name, self.image.name))
+			return mark_safe('<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % ((self.image.name, self.image.name)))
 		else:
-			return '<img border="0" alt="" src="/static/data/images/Person-icon-grey.JPG" height="40" />'
+			return mark_safe('<img border="0" alt="" src="/static/data/images/Person-icon-grey.JPG" height="40" />')
 	thumbnail.allow_tags = True
 	
 	def admin_url(self):
@@ -311,20 +311,20 @@ class Person(models.Model):
 	
 	def father_link(self):
 		if self.father is not None:
-			return '<a href="/admin/data/person/%s/">%s</a>' % (self.father.id, str(self.father))
+			return mark_safe('<a href="/admin/data/person/%s/">%s</a>' % (self.father.id, str(self.father)))
 		else:
 			return ''
 	father_link.allow_tags = True
 	
 	def mother_link(self):
 		if self.mother is not None:
-			return '<a href="/admin/data/person/%s/">%s</a>' % (self.mother.id, str(self.mother))
+			return mark_safe('<a href="/admin/data/person/%s/">%s</a>' % (self.mother.id, str(self.mother)))
 		else:
 			return ''
 	mother_link.allow_tags = True
 	
 	def tree_link(self):
-		return '<a href="http://127.0.0.1:4446/?person=%s" target="_blank">Tree</a> / <a href="view-source:http://127.0.0.1:8000/data/person/dot_tree/%s/ancestry.dot" target="_blank">Raw Tree</a>' % (self.id, self.id)
+		return mark_safe('<a href="http://127.0.0.1:4446/?person=%s" target="_blank">Tree</a> / <a href="view-source:http://127.0.0.1:8000/data/person/dot_tree/%s/ancestry.dot" target="_blank">Raw Tree</a>' % (self.id, self.id))
 	tree_link.allow_tags = True
 	
 	def age(self):
@@ -413,7 +413,7 @@ class Person(models.Model):
 		str = str.replace(", $", "")
 		str = str.replace("$", "")
 		
-		return str
+		return mark_safe(str)
 	siblings_text.allow_tags = True
 		
 	def children(self):
@@ -441,7 +441,7 @@ class Person(models.Model):
 		str = str.replace(", $", "")
 		str = str.replace("$", "")
 		
-		return str
+		return mark_safe(str)
 	childen_text.allow_tags = True
 		
 	def children_count(self):
@@ -739,7 +739,8 @@ class Person(models.Model):
 		return mark_safe(str(result_list).replace('"', '').replace('}, {', '};{').replace(' ', '%20'))
 	
 	def relation_to_str(self, person):
-		return '%s %s %s' % (ancestry_relation(self, featured_person.person), _('of'), featured_person.person)
+		return mark_safe('%s %s %s' % (ancestry_relation(self, featured_person.person), _('of'), featured_person.person))
+	relation_to_str.allow_tags = True
 	
 	def relation_in_str(self, ancestry):
 		featured_person = ancestry.featured()[0]
@@ -759,7 +760,7 @@ class Person(models.Model):
 			featured_person = ancestry.ancestry.featured()[0]
 			str = '%s %s %s %s (%s %s)<br />' % (str, ancestry_relation(self, featured_person.person), _('of'), featured_person.person.get_admin_url(), _('ancestry'),ancestry.ancestry)
 		
-		return str
+		return mark_safe(str)
 	relation_str.allow_tags = True
 	
 	@models.permalink
@@ -937,18 +938,18 @@ class Ancestry(models.Model):
 	map = models.ImageField(upload_to='media/maps', blank=True, null=True)
 	
 	def thumbnail(self):
-		return '<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % ((self.image.name, self.image.name))
+		return mark_safe('<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % ((self.image.name, self.image.name)))
 	thumbnail.allow_tags = True
 	
 	def number_of_members(self):
 		return '%d persons' % len(AncestryRelation.objects.filter(ancestry = self))
 	
 	def export(self):
-		return '<a href="/data/export/ancestry/%d/%s.pdf" target="_blank">Export PDF</a>' % (self.id, self.name)
+		return mark_safe('<a href="/data/export/ancestry/%d/%s.pdf" target="_blank">Export PDF</a>' % (self.id, self.name))
 	export.allow_tags = True
 	
 	def export_raw(self):
-		return '<a href="/data/ancestry_export/%d/%s.html?with=style" target="_blank">Export Raw</a>' % (self.id, self.name)
+		return mark_safe('<a href="/data/ancestry_export/%d/%s.html?with=style" target="_blank">Export Raw</a>' % (self.id, self.name))
 	export_raw.allow_tags = True
 	
 	def members(self):
@@ -1262,7 +1263,7 @@ class FamilyStatusRelation(models.Model):
 	
 	def husband_link(self):
 		if self.man is not None:
-			return '<a href="/admin/data/person/%s/">%s</a>' % (self.man.id, str(self.man))
+			return mark_safe('<a href="/admin/data/person/%s/">%s</a>' % (self.man.id, str(self.man)))
 
 		return ''
 	husband_link.allow_tags = True
@@ -1275,7 +1276,7 @@ class FamilyStatusRelation(models.Model):
 			
 	def wife_link(self):
 		if self.woman is not None:
-			return '<a href="/admin/data/person/%s/">%s</a>' % (self.woman.id, str(self.woman))
+			return mark_safe('<a href="/admin/data/person/%s/">%s</a>' % (self.woman.id, str(self.woman)))
 		
 		return ''
 	wife_link.allow_tags = True
