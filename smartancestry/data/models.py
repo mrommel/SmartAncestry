@@ -266,7 +266,10 @@ class Person(models.Model):
 		death_str = self.death_location
 		if death_str is None:
 			death_str = '-'
-		return mark_safe('%s<br>%s' % (date_str, death_str))
+		age_str = self.age()
+		if age_str is None:
+			age_str = '-'
+		return mark_safe('%s<br />%s<br />%s' % (date_str, death_str, age_str))
 		
 	def death_year(self):
 		if self.death_date is None and self.already_died:
@@ -324,7 +327,10 @@ class Person(models.Model):
 	mother_link.allow_tags = True
 	
 	def tree_link(self):
-		return mark_safe('<a href="http://127.0.0.1:4446/?person=%s" target="_blank">Tree</a> / <a href="view-source:http://127.0.0.1:8000/data/person/dot_tree/%s/ancestry.dot" target="_blank">Raw Tree</a>' % (self.id, self.id))
+		short_tree_link = '<a href="http://127.0.0.1:4446/ancestry.png?person=%s&max_level=2" target="_blank">Short Tree</a>' % self.id
+		full_tree_link = '<a href="http://127.0.0.1:4446/ancestry.png?person=%s&max_level=8" target="_blank">Full Tree</a>' % self.id
+		raw_tree_link = '<a href="view-source:http://127.0.0.1:8000/data/person/dot_tree/%s/2/ancestry.dot" target="_blank">Raw Tree</a>' % self.id
+		return mark_safe('%s / %s / %s' % (short_tree_link, full_tree_link, raw_tree_link))
 	tree_link.allow_tags = True
 	
 	def age(self):
@@ -548,7 +554,7 @@ class Person(models.Model):
 			
 		return None
 	
-	def relatives_parents(self, level, relatives_list, relations_list, connection_list):
+	def relatives_parents(self, level, relatives_list, relations_list, connection_list, max_level):
 		"""
 			iterate (with recursion) thru the parents
 		"""
@@ -557,7 +563,7 @@ class Person(models.Model):
 		
 		for partner in self.partner_relations():
 			if partner.partner is not None and (len(filter (lambda x : x.person == partner.partner, relatives_list)) == 0):
-				partner.partner.relatives_parents(level, relatives_list, relations_list, connection_list)
+				partner.partner.relatives_parents(level, relatives_list, relations_list, connection_list, max_level)
 				
 				if self.sex == 'M':
 					marriage_id = "marriage_%s_%s" % (self.id, partner.partner.id)
@@ -577,13 +583,13 @@ class Person(models.Model):
 				if (len(filter (lambda x : x.source == partner.partner.id and x.destination == marriage_id, connection_list)) == 0):
 					connection_list.append(RelationsInfo(partner.partner.id, marriage_id))
 		
-		if self.father is not None:
-			self.father.relatives_parents(level + 1, relatives_list, relations_list, connection_list)
+		if self.father is not None and level < max_level:
+			self.father.relatives_parents(level + 1, relatives_list, relations_list, connection_list, max_level)
 
-		if self.mother is not None:
-			self.mother.relatives_parents(level + 1, relatives_list, relations_list, connection_list)
+		if self.mother is not None and level < max_level:
+			self.mother.relatives_parents(level + 1, relatives_list, relations_list, connection_list, max_level)
 		
-		if self.mother is not None and self.father is not None:
+		if self.mother is not None and self.father is not None and level < max_level:
 			marriage_id = "marriage_%s_%s" % (self.father.id, self.mother.id)
 			
 			if (len(filter (lambda x : x.source == marriage_id and x.destination == self.id, connection_list)) == 0):

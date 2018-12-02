@@ -1,6 +1,5 @@
-{% load i18n %}
-{% load app_filters %}
-digraph G {
+{% load i18n %}{% load app_filters %}digraph G {
+	# {{ person_id }} / {{ max_level }}
 	imagepath="/Users/michael.rommel/Prog/SmartAncestry/smartancestry/data/media/persons_tree/";
 	graph [label = "{% trans "Family tree" %} {% trans "of" %} {{ person.first_name_short | remove_underlines }} {{ person.last_name }}", fontname="Verdana", fontsize = 32, style = "bold"];
 	# splines=ortho,

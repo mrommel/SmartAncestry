@@ -83,7 +83,7 @@ def ancestry_export(request, ancestry_id):
 		'documents' : ancestry.documents,
 	}))
 
-def dot_tree(request, person_id):
+def dot_tree(request, person_id, max_level):
 	try:
 		person = Person.objects.get(pk=person_id)
 	except Person.DoesNotExist:
@@ -91,10 +91,12 @@ def dot_tree(request, person_id):
 		
 	all_persons = Person.objects.all()
 	
-	relatives = person.relatives_parents(0, [], [], [])
+	relatives = person.relatives_parents(0, [], [], [], max_level)
 	relatives = person.relatives_children(0, relatives.relatives, relatives.relations, relatives.connections)
 
 	return HttpResponse(render_to_string('data/dot_tree.html', {
+		'person_id': person_id,
+		'max_level': max_level,
 		'person': person,
 		'relatives': relatives,
 	}))
