@@ -74,4 +74,4 @@ http.createServer(function (req, res) {
 }).listen(4446, '127.0.0.1');
  
 console.log('Ancestry SVG server running at http://127.0.0.1:4446/');
-console.log('ex. http://127.0.0.1:4446/?person=2&max_level=6');
+console.log('ex. http://127.0.0.1:4446/ancestry.png?person=2&max_level=6');

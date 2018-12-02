@@ -91,7 +91,7 @@ def dot_tree(request, person_id, max_level):
 		
 	all_persons = Person.objects.all()
 	
-	relatives = person.relatives_parents(0, [], [], [], max_level)
+	relatives = person.relatives_parents(0, [], [], [], int(max_level))
 	relatives = person.relatives_children(0, relatives.relatives, relatives.relations, relatives.connections)
 
 	return HttpResponse(render_to_string('data/dot_tree.html', {
