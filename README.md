@@ -9,6 +9,8 @@ cd ~/Prog/SmartAncestry/smartancestry
 brew install node
 pip install -r requirements.txt
 https://www.princexml.com/doc/9.0/installing/#macosx
+brew install cairo
+brew install libjpeg
 
 ## run web server
 

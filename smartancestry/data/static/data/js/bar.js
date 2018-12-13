@@ -150,7 +150,7 @@ var server = http.createServer(function(req,res) {
 			console.log("pie data: value=" + pieItem.value + ", color=" + pieItem.color);
 		});*/
 		
-		canvas = new Canvas(600, 450);
+		canvas = Canvas.createCanvas(600, 450);
     	ctx = canvas.getContext('2d');
 	
 		ctx.fillStyle = '#fff';
