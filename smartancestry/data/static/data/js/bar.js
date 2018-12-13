@@ -78,7 +78,7 @@ var server = http.createServer(function(req,res) {
 			});
 		}
 		
-		canvas = new Canvas(600, 450);
+		canvas = Canvas.createCanvas(600, 450);
     	ctx = canvas.getContext('2d');
 
 		ctx.fillStyle = '#fff';
