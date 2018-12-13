@@ -61,3 +61,14 @@ smartancestry/data/media/persons_tree/Vogtländer_Regina_ready.jpg
 smartancestry/venv
 smartancestry/db.sqlite3
 smartancestry/tmp.pdf
+smartancestry/ancestry.log
+smartancestry/ancestry.pid
+smartancestry/bar.log
+smartancestry/bar.pid
+smartancestry/debug.log
+smartancestry/django.log
+smartancestry/forms.log
+smartancestry/python.log
+smartancestry/python.pid
+smartancestry/tree.log
+smartancestry/tree.pid

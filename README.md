@@ -4,6 +4,11 @@
 
 cd ~/Prog/SmartAncestry/smartancestry
 
+## Installation
+
+brew install node
+pip install -r requirements.txt
+
 ## run web server
 
 python manage.py runserver 7000
@@ -19,6 +24,7 @@ deactivate
 ## translations
 
 ### installation
+
 brew install gettext
 brew link gettext --force
 

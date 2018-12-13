@@ -40,7 +40,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
-    'data',
+    #'data',
+    'data.apps.DataConfig',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -92,19 +93,19 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': '/Users/michael.rommel/Prog/SmartAncestry/smartancestry/debug.log',
+            'filename': 'debug.log',
             'formatter': 'verbose'
         },
         'file2': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': '/Users/michael.rommel/Prog/SmartAncestry/smartancestry/django.log',
+            'filename': 'django.log',
             'formatter': 'verbose'
         },
         'file_forms': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': '/Users/michael.rommel/Prog/SmartAncestry/smartancestry/forms.log',
+            'filename': 'forms.log',
             'formatter': 'verbose'
         },
     },
@@ -161,4 +162,5 @@ STATIC_ROOT = '/Users/michael.rommel/Prog/SmartAncestry/smartancestry/smartances
 MEDIA_ROOT = '/Users/michael.rommel/Prog/SmartAncestry/smartancestry/data'
 MEDIA_URL = '/media/'
 
-
+import django
+django.setup()
