@@ -11,6 +11,8 @@ pip install -r requirements.txt
 https://www.princexml.com/doc/9.0/installing/#macosx
 brew install cairo
 brew install libjpeg
+brew install graphviz
+npm i request
 
 ## run web server
 
@@ -60,3 +62,8 @@ cd ~/Prog/SmartAncestry/smartancestry/data/static/data/js
 ## pdf generator
 
 prince --no-author-style -s http://127.0.0.1:8000/static/data/style_print.css http://127.0.0.1:8000/data/ancestry/1/Kliemank -o Kliemank.pdf
+
+# todo
+
+- remove tree.js from file system and start script (no used anymore)
+- add images to ancestry.js / dot script
