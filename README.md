@@ -65,5 +65,4 @@ prince --no-author-style -s http://127.0.0.1:8000/static/data/style_print.css ht
 
 # todo
 
-- remove tree.js from file system and start script (no used anymore)
 - add images to ancestry.js / dot script

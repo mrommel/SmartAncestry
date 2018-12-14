@@ -3,18 +3,12 @@
 # description: node servers
 #
 bar_pidfile=./bar.pid
-tree_pidfile=./tree.pid
 ancestry_pidfile=./ancestry.pid
 python_pidfile=./python.pid
 
 if [ -f $bar_pidfile ]
 then
 	bar_pid=`cat $bar_pidfile`
-fi
-
-if [ -f $tree_pidfile ]
-then
-	tree_pid=`cat $tree_pidfile`
 fi
 
 if [ -f $ancestry_pidfile ]
@@ -46,24 +40,6 @@ start() {
 				node ./bar.js &> ./../../../../bar.log &
 				cd ../../../..
 				echo $! > $bar_pidfile
-		fi
-		
-		if [ -f $tree_pidfile ] ; then
-				if test `ps -e | grep -c $tree_pid` = 2; then
-						echo "Not starting tree - instance already running with PID: $tree_pid"
-				else
-						echo "Starting tree"
-						cd data/static/data/js/
-						node ./tree.js &> ./../../../../tree.log &
-						cd ../../../..
-						echo $! > $tree_pidfile
-				fi
-		else
-				echo "Starting tree"
-				cd data/static/data/js/
-				node ./tree.js &> ./../../../../tree.log &
-				cd ../../../..
-				echo $! > $tree_pidfile
 		fi
 
 		if [ -f $ancestry_pidfile ] ; then
@@ -115,13 +91,6 @@ stop() {
 				echo "Cannot stop bar - no Pidfile found!"
 		fi
 		
-		if [ -f $tree_pidfile ] ; then
-				echo "stopping tree"
-				kill -9 $tree_pid
-		else
-				echo "Cannot stop tree - no Pidfile found!"
-		fi
-		
 		if [ -f $ancestry_pidfile ] ; then
 				echo "stopping ancestry"
 				kill -9 $ancestry_pid
@@ -150,16 +119,6 @@ status() {
 				fi
 		else
 				echo "$bar_pidfile does not exist! Cannot process bar status!"
-		fi
-		
-		if [ -f $tree_pidfile ] ; then
-				if test `ps -e | grep -c $tree_pid` = 1; then
-						echo "tree not running"
-				else
-						echo "tree running with PID: [$tree_pid]"
-				fi
-		else
-				echo "$tree_pidfile does not exist! Cannot process tree status!"
 		fi
 		
 		if [ -f $ancestry_pidfile ] ; then
