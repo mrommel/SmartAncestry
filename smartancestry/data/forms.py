@@ -1,5 +1,5 @@
 from django.contrib import admin
-from data.models import Ancestry, AncestryRelation, FamilyStatusRelation, Person, DocumentRelation, Question, PersonEventRelation
+from data.models import Ancestry, AncestryRelation, FamilyStatusRelation, Person, DocumentRelation, Question, DocumentAncestryRelation
 from django.forms import CheckboxSelectMultiple
 from django.db import models
 from django import forms
@@ -129,14 +129,6 @@ class QuestionInline(admin.TabularInline):
 	model = Question
 	fk_name = "person"
 	extra = 1
-	
-class EventRelationInline(admin.TabularInline):
-	model = PersonEventRelation
-	fk_name = "person"
-	extra = 1
-	
-	list_display = ['date', 'event', 'location']
-	fields = ('date', 'event', 'location',)
 
 class PersonAdmin(admin.ModelAdmin):
     list_display = ('user_name', 'birth_name', 'thumbnail', 'birth', 'death', 'father_name', 'mother_name', 'ancestry_names', 'number_of_questions', )
@@ -145,7 +137,7 @@ class PersonAdmin(admin.ModelAdmin):
             'fields': ('first_name', 'last_name', 'birth_name', 'sex')
         }),
         ('Dates/Locations', {
-            'fields': ('birth_date', 'birth_date_only_year', 'birth_location', 'death_date', 'death_date_only_year', 'death_location', 'cause_of_death', 'already_died')
+            'fields': ('birth_date', 'birth_date_unclear', 'birth_date_only_year', 'birth_location', 'death_date', 'death_date_only_year', 'death_location', 'cause_of_death', 'already_died')
         }),
         ('Relations', {
         	'fields': ('father', 'father_link', 'father_extern', 'mother', 'mother_link', 'mother_extern', 'children_extern', 'childen_text', 'siblings_extern', 'siblings_text', 'relation_str')
@@ -166,7 +158,6 @@ class PersonAdmin(admin.ModelAdmin):
         WifeFamilyStatusRelationInline,
         DocumentRelationInline,
         QuestionInline,
-        EventRelationInline,
     ]
     actions = None
     
@@ -253,11 +244,23 @@ class LocationAdmin(admin.ModelAdmin):
     ]
 	actions = None
 	
+class DocumentPersonRelationInline(admin.TabularInline):
+	model = DocumentRelation
+	fk_name = "document"
+	
+class DocumentAncestryRelationInline(admin.TabularInline):
+	model = DocumentAncestryRelation
+	fk_name = "document"
+	
 class DocumentAdmin(admin.ModelAdmin):
-	list_display = ('thumbnail', 'name', 'person_names', 'admin_url', )
+	list_display = ('thumbnail', 'name', 'person_names', 'ancestry_names', 'admin_url', )
 	readonly_fields = ('thumbnail', 'admin_url',)
 	
 	ordering = ('name',)
+	inlines = [
+        DocumentPersonRelationInline,
+        DocumentAncestryRelationInline,
+    ]
 
 	actions = None
 	

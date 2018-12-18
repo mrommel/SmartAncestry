@@ -195,6 +195,7 @@ class Person(models.Model):
 	sex = models.CharField(max_length=1, choices=(('M', _('Male')), ('F', _('Female'))), verbose_name=_('Gender'))
 	birth_date = models.DateField(_('date of birth'))
 	birth_date_only_year = models.BooleanField(default=False)
+	birth_date_unclear = models.BooleanField(default=False)
 	birth_location = models.ForeignKey(Location, blank=True, null=True, related_name='birth_location') 
 	death_date = models.DateField(_('date of death'), null=True, blank=True)
 	death_date_only_year = models.BooleanField(default=False)
@@ -249,12 +250,18 @@ class Person(models.Model):
 			return "♀"
 			
 	def birth(self):
+		birth_date_str = '%s' % self.birth_date
+		if self.birth_date_unclear:
+			birth_date_str = '---'
+		
 		birth_str = self.birth_location
 		if birth_str is None:
-			birth_str = '-'
-		return mark_safe('%s<br>%s' % (self.birth_date, birth_str))
+			birth_str = '---'
+		return mark_safe('%s<br>%s' % (birth_date_str, birth_str))
 		
 	def birth_year(self):
+		if self.birth_date_unclear:
+			return '???'
 		if self.birth_date is None:
 			return '---'
 		return '{0.year:4d}'.format(self.birth_date)
@@ -334,6 +341,9 @@ class Person(models.Model):
 	tree_link.allow_tags = True
 	
 	def age(self):
+		if self.birth_date_unclear:
+			return None
+		
 		if self.death_date is None and self.already_died == False:
 			return calculate_age(self.birth_date, date.today())
 		
@@ -928,15 +938,7 @@ class StatisticsInfo(object):
 		
 	def childrenValuesStr(self):			
 		return str(self.children.values())
-
-class PersonEventRelation(models.Model):
-	event = models.CharField(max_length=512)
-	date = models.DateField()
-	person = models.ForeignKey(Person)
-	location = models.ForeignKey(Location, blank=True, null=True) 
-	
-	def __unicode__(self):			  
-		return '%s - %s - %s' % (self.date, self.person, self.event)
+		
 
 class Ancestry(models.Model):
 	name = models.CharField(max_length=50)
@@ -1152,6 +1154,21 @@ class Ancestry(models.Model):
 		
 		return document_list
 	
+	def ancestry_documents(self):
+		"""
+			Returns appendices (documents that are related to this ancestry) of this ancestry
+			- newest documents first
+		"""
+		document_list = []
+		for documentRelation in DocumentAncestryRelation.objects.filter(ancestry = self):
+			# check if document belongs to a person this ancestry
+			if documentRelation.document not in document_list:
+				document_list.append(documentRelation.document)
+		
+		document_list = sorted(document_list, key=attrgetter('date'), reverse=True)
+		
+		return document_list
+	
 	def distributions(self):
 		"""
 			Returns the list of distributions of this ancestry
@@ -1199,6 +1216,23 @@ class Document(models.Model):
 		"""
 		return mark_safe(','.join(map(str, self.persons())))
 	
+	def ancestries(self):
+		"""
+			Returns a list of ancestries linked to this document
+		"""
+		ancestryArr = []
+		
+		for ancestryRelation in DocumentAncestryRelation.objects.filter(document = self):
+			ancestryArr.append(ancestryRelation.ancestry)
+		
+		return ancestryArr
+	
+	def ancestry_names(self):
+		"""
+			Returns a comma seperated list of ancestries related to this document
+		"""
+		return mark_safe(','.join(map(str, self.ancestries())))
+	
 	def thumbnail(self):
 		"""
 			Returns a clickable thumbnail of the document for the admin area
@@ -1209,6 +1243,7 @@ class Document(models.Model):
 	def __unicode__(self):			  
 		return self.name
 
+
 class DocumentRelation(models.Model):
 	"""
 		class that links a Document with a person
@@ -1218,6 +1253,17 @@ class DocumentRelation(models.Model):
 	
 	def __unicode__(self):			  
 		return mark_safe(u'%s - %s' % (self.person, self.document.name))
+
+
+class DocumentAncestryRelation(models.Model):
+	"""
+		class that links a Document with an ancestry
+	"""
+	ancestry = models.ForeignKey(Ancestry)
+	document = models.ForeignKey(Document)
+	
+	def __unicode__(self):			  
+		return mark_safe(u'%s - %s' % (self.ancestry, self.document.name))
 		
 
 class Question(models.Model):
@@ -1237,6 +1283,7 @@ class Question(models.Model):
 		first = mark_safe(u' %s ' % self.person.first_name)
 		first = mark_safe(first.replace(" _", " <u>").replace("_ ", "</u> "))
 		return mark_safe((u' %s %s - %s' % (first, self.person.last_name, self.question)).strip())
+
 
 class AncestryRelation(models.Model):
 	person = models.ForeignKey(Person)

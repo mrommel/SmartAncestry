@@ -80,7 +80,8 @@ def ancestry_export(request, ancestry_id):
 		'distributions': ancestry.distributions(),
 		'locations' : ancestry.locations,
 		'statistics' : ancestry.statistics,
-		'documents' : ancestry.documents,
+		'ancestry_documents' : ancestry.ancestry_documents(),
+		'person_documents' : ancestry.documents(),
 	}))
 
 def dot_tree(request, person_id, max_level):

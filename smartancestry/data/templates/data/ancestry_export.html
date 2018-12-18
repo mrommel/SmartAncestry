@@ -106,10 +106,26 @@
 	<a href="#chapter6" class="nolink">6. {% trans "Appendix" %}</a>
 </item>
 
-{% if documents %}
-	{% for document in documents %}
-		<item href="#chapter6-{{ document.id }}" class="sub-chapter">
-			<a href="#chapter6-{{ document.id }}" class="nolink">
+{% if ancestry_documents %}
+	<item href="#chapter6-1">
+		<a href="#chapter6-1" class="nolink">Allgemeine Dokumente</a>
+	</item>
+	{% for document in ancestry_documents %}
+		<item href="#chapter6-1-{{ document.id }}" class="sub-chapter">
+			<a href="#chapter6-1-{{ document.id }}" class="nolink">
+				{{ document.name }}
+			</a>
+		</item>
+	{% endfor %}
+{% endif %}
+
+{% if person_documents %}
+	<item href="#chapter6-2">
+		<a href="#chapter6-2" class="nolink">Dokumente von Personen</a>
+	</item>
+	{% for document in person_documents %}
+		<item href="#chapter6-2-{{ document.id }}" class="sub-chapter">
+			<a href="#chapter6-2-{{ document.id }}" class="nolink">
 				{{ document.name }}
 			</a>
 		</item>
@@ -167,17 +183,21 @@
 				<tr class="{% cycle row_style %}">
 					<td width="20%" class="label">{% trans "Birth date" %}:</td>
 					<td width="60%" colspan="3">
-						{% if member.person.birth_date_only_year %}
-							{{ member.person.birth_date | date:"Y" }}
+						{% if member.person.birth_date_unclear %}
+							-
 						{% else %}
-							{{ member.person.birth_date | date:"d.m.Y" }}
-						{% endif %}
-						{% if member.person.birth_location %}
-							{% trans "in" %}
-							{% if member.person.birth_location.image %}
-								<img src="/{{ MEDIA_URL }}..{{ member.person.birth_location.image.url }}" class="location" />
+							{% if member.person.birth_date_only_year %}
+								{{ member.person.birth_date | date:"Y" }}
+							{% else %}
+								{{ member.person.birth_date | date:"d.m.Y" }}
 							{% endif %}
-							{{ member.person.birth_location|location_without_country }}
+							{% if member.person.birth_location %}
+								{% trans "in" %}
+								{% if member.person.birth_location.image %}
+									<img src="/{{ MEDIA_URL }}..{{ member.person.birth_location.image.url }}" class="location" />
+								{% endif %}
+								{{ member.person.birth_location|location_without_country }}
+							{% endif %}
 						{% endif %}
 					</td>
 				</tr>
@@ -552,28 +572,57 @@
 <chapnum>6. </chapnum>
 <title>{% trans "Appendix" %}</title>
 </chapheader>
-
-{% if documents %}
-	{% for document in documents %}
+	{% if ancestry_documents %}
 		<para>
-			<div class="not_breaking">
-			<h2>{{ document.name }}</h2>
-			{% if document.description %}
-				{{ document.description }}
-			{% endif %}
-			<a id="chapter6-{{ document.id }}">&nbsp;</a>
-			<ul>
-				{% for person in document.persons %}
-					<li><a href="#chapter1-{{ person.id }}" class="nolink">{{ person }}</a></li>
-				{% endfor %}
-			</ul>
-			<img src="{{ document.image.url }}" class="document" />
-			</div>
+			<h2>Allgemeine Dokumente</h2>
+			<a id="chapter6-1">&nbsp;</a>
 		</para>
-	{% endfor %}
-{% else %}
-	<para>{% trans "No appendices are available." %}</para>
-{% endif %}
+		{% for document in ancestry_documents %}
+			<para>
+				<div class="not_breaking">
+				<h3>{{ document.name }}</h3>
+				{% if document.description %}
+					{{ document.description }}
+				{% endif %}
+				<a id="chapter6-1-{{ document.id }}">&nbsp;</a>
+				<ul>
+					{% for person in document.persons %}
+						<li><a href="#chapter1-{{ person.id }}" class="nolink">{{ person }}</a></li>
+					{% endfor %}
+				</ul>
+				<img src="{{ document.image.url }}" class="document" />
+				</div>
+			</para>
+		{% endfor %}
+	{% else %}
+		<para>{% trans "No appendices are available." %}</para>
+	{% endif %}
+
+	{% if person_documents %}
+		<para>
+			<h2>Dokumente von Personen</h2>
+			<a id="chapter6-2">&nbsp;</a>
+		</para>
+		{% for document in person_documents %}
+			<para>
+				<div class="not_breaking">
+				<h3>{{ document.name }}</h3>
+				{% if document.description %}
+					{{ document.description }}
+				{% endif %}
+				<a id="chapter6-2-{{ document.id }}">&nbsp;</a>
+				<ul>
+					{% for person in document.persons %}
+						<li><a href="#chapter1-{{ person.id }}" class="nolink">{{ person }}</a></li>
+					{% endfor %}
+				</ul>
+				<img src="{{ document.image.url }}" class="document" />
+				</div>
+			</para>
+		{% endfor %}
+	{% else %}
+		<para>{% trans "No appendices are available." %}</para>
+	{% endif %}
 
 </chapter>
 
