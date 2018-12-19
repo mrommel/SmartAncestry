@@ -108,12 +108,12 @@
 
 {% if ancestry_documents %}
 	<item href="#chapter6-1">
-		<a href="#chapter6-1" class="nolink">Allgemeine Dokumente</a>
+		<a href="#chapter6-1" class="nolink">{% trans "General documents" %}</a>
 	</item>
 	{% for document in ancestry_documents %}
 		<item href="#chapter6-1-{{ document.id }}" class="sub-chapter">
 			<a href="#chapter6-1-{{ document.id }}" class="nolink">
-				{{ document.name }}
+				{{ document.name }} 
 			</a>
 		</item>
 	{% endfor %}
@@ -121,12 +121,12 @@
 
 {% if person_documents %}
 	<item href="#chapter6-2">
-		<a href="#chapter6-2" class="nolink">Dokumente von Personen</a>
+		<a href="#chapter6-2" class="nolink">{% trans "Documents of persons" %}</a>
 	</item>
 	{% for document in person_documents %}
 		<item href="#chapter6-2-{{ document.id }}" class="sub-chapter">
 			<a href="#chapter6-2-{{ document.id }}" class="nolink">
-				{{ document.name }}
+				{{ document.name }} - {% for person in document.persons %}{{ person.last_name|underline }}, {{ person.first_name|underline }}{% include "commalist.html" %}{% endfor %}
 			</a>
 		</item>
 	{% endfor %}
@@ -574,7 +574,7 @@
 </chapheader>
 	{% if ancestry_documents %}
 		<para>
-			<h2>Allgemeine Dokumente</h2>
+			<h2>{% trans "General documents" %}</h2>
 			<a id="chapter6-1">&nbsp;</a>
 		</para>
 		{% for document in ancestry_documents %}
@@ -600,7 +600,7 @@
 
 	{% if person_documents %}
 		<para>
-			<h2>Dokumente von Personen</h2>
+			<h2>{% trans "Documents of persons" %}</h2>
 			<a id="chapter6-2">&nbsp;</a>
 		</para>
 		{% for document in person_documents %}

@@ -1,0 +1,1 @@
+{% load i18n %}{% if not forloop.last %}{% ifequal forloop.revcounter 2 %} {% trans "and" %} {% else %}, {% endifequal %}{% else %}{% endif %}
