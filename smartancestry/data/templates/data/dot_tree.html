@@ -12,7 +12,7 @@
 	"node-{{ relative.person.id }}" [
 		color={% if relative.person.sex == 'F'%}"#9c1662"{% else %}"#105a83"{% endif%},
 		fillcolor={% if relative.person.sex == 'F'%}"#f5b8db"{% else %}"#9fd5eb"{% endif%},
-		label="{{ relative.person.first_name_short | remove_underlines }} {{ relative.person.last_name | replace_umlauts }}\n* {{ relative.person.birth_date | date:"Y" }} {% if relative.person.birth_location %}{{ relative.person.birth_location|location_without_country }}{% endif %}\n+ {{ relative.person.death_date | date:"Y" }} {% if relative.person.death_location %}{{ relative.person.death_location|location_without_country }}{% endif %}\n\n",
+		label="{{ relative.person.first_name_short | remove_underlines }} {{ relative.person.last_name | replace_umlauts }}\n* {% if relative.person.birth_date_unclear %}ca. {% endif %}{{ relative.person.birth_date | date:"Y" }} {% if relative.person.birth_location %}{{ relative.person.birth_location|location_without_country }}{% endif %}\n+ {{ relative.person.death_date | date:"Y" }} {% if relative.person.death_location %}{{ relative.person.death_location|location_without_country }}{% endif %}\n\n",
 		{# {% if relative.person.image %}image="{{ relative.person.image.url | remove_persons_folder }}",{% else %}{% if relative.person.sex == 'F'%}image="avatar_f.png",{% else %}image="avatar_m.png",{% endif%}{% endif%} #}
 		labelloc=b];
 	{% endfor %}
