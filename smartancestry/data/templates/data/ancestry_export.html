@@ -1,5 +1,7 @@
-{% load i18n %}
-{% load app_filters %}
+{% load i18n %}{% load staticfiles %}{% load app_filters %}
+{% if include_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'data/style_print.css' %}" />
+{% endif %}
 <book>
 <frontmatter>
 <titlepage>
@@ -440,6 +442,10 @@
 <div class="chartContainer">
 	<img src="http://127.0.0.1:4444/bar.png?data1={{ statistics.birthPerMonthStr|encodeSpaces }}&data2={{ statistics.deathPerMonthStr|encodeSpaces }}&axis={% trans 'January' %},{% trans 'February' %},{% trans 'March' %},{% trans 'April' %},{% trans 'May' %},{% trans 'June' %},{% trans 'July' %},{% trans 'August' %},{% trans 'September' %},{% trans 'October' %},{% trans 'November' %},{% trans 'December' %}" id="birthsPerMonthChart" width="600" height="450" />
 	
+	<div id="childrenLegend">
+    	<p>{% trans "Persons born or died per month in ancestry" %}</p>
+    </div>
+	
 	<div id="birthsPerMonthChartLegend">
 		<ul class="bar-legend">
 			<li>
@@ -463,6 +469,10 @@
 <div class="chartContainer">
 	<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.genderValuesStr|encodeSpaces }}" id="genderChart" width="600" height="450" />
 	
+	<div id="childrenLegend">
+    	<p>{% trans "Gender distribution of persons in ancestry" %}</p>
+    </div>
+    
 	<div id="genderLegend">
 		<ul class="pie-legend">
 			<li>
@@ -485,6 +495,10 @@
 <div class="chartContainer">
     <img src="http://127.0.0.1:4444/pie.png?data={{ statistics.birthLocationsValuesStr|encodeSpaces }}&colors={{ statistics.birthLocationsColorsStr|trimHash|encodeSpaces }}" id="birthLocationsChart" width="600" height="450" />
 	
+	<div id="childrenLegend">
+    	<p>{% trans "Birth locations in ancestry" %}</p>
+    </div>
+	
     <div id="birthLocationsLegend">
 		<ul class="pie-legend">
 			{% for birthLocations in statistics.birthLocations.list %}
@@ -493,7 +507,7 @@
 				<span class="title">{{ birthLocations.name }}</span>
 			</li>
 			{% endfor %}
-    	</ul>
+    	</ul>	
     </div>
 </div>
 </para>
@@ -506,6 +520,7 @@
 	<img src="http://127.0.0.1:4444/bar.png?data={{ statistics.childrenValuesStr|encodeSpaces }}&axis=0,1,2,3,4,5,6,7,8,9,10" id="childrenChart" width="600" height="450" />
 	
     <div id="childrenLegend">
+    	<p>{% trans "Number of children per person in ancestry" %}</p>
     </div>
 </div>
 </para>

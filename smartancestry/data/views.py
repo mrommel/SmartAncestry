@@ -52,8 +52,8 @@ def ancestry(request, ancestry_id):
 	return HttpResponse(render_to_string('data/ancestry.html', {
 		'ancestry': ancestry,
 		'member_list': ancestry.members,
-		'locations' : ancestry.locations,
-		'statistics' : ancestry.statistics,
+		'locations': ancestry.locations,
+		'statistics': ancestry.statistics,
 		}))
 
 def ancestry_export(request, ancestry_id):
@@ -71,6 +71,11 @@ def ancestry_export(request, ancestry_id):
 		member.person.template_value1 = member.person.relation_in_str(ancestry)
 		
 		members.append(member)
+	
+	if request.GET.get('with') is not None:
+		include_css = True
+	else:
+		include_css = False
 		
 	return HttpResponse(render_to_string('data/ancestry_export.html', {
 		'ancestry': ancestry,
@@ -78,10 +83,11 @@ def ancestry_export(request, ancestry_id):
 		'member_list': members,
 		'featured': ancestry.featured(),
 		'distributions': ancestry.distributions(),
-		'locations' : ancestry.locations,
-		'statistics' : ancestry.statistics,
-		'ancestry_documents' : ancestry.ancestry_documents(),
-		'person_documents' : ancestry.documents(),
+		'locations': ancestry.locations,
+		'statistics': ancestry.statistics,
+		'ancestry_documents': ancestry.ancestry_documents(),
+		'person_documents': ancestry.documents(),
+		'include_css': include_css
 	}))
 
 def dot_tree(request, person_id, max_level):
