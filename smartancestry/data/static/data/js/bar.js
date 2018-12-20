@@ -9,6 +9,14 @@ var server = http.createServer(function(req,res) {
 	var request = url.parse(req.url, true);
 	console.log("request: '" + request.pathname + "'");
 	var query = request.query;
+	
+	// prepare some general styles
+	Chart.defaults.global.scaleFontFamily = "'Euphemia UCAS', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
+	Chart.defaults.global.scaleFontSize = 20;
+	Chart.defaults.global.scaleFontColor = "#333";
+	Chart.defaults.global.tooltipTitleFontFamily = "'Euphemia UCAS', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
+	Chart.defaults.global.tooltipTitleFontSize = 18;
+	Chart.defaults.global.tooltipTitleFontColor = "#333";
 
 	if (request.pathname == '/bar.png') {
 	
@@ -82,7 +90,7 @@ var server = http.createServer(function(req,res) {
 			});
 		}
 		
-		canvas = Canvas.createCanvas(600, 450);
+		canvas = Canvas.createCanvas(800, 600);
     	ctx = canvas.getContext('2d');
 
 		ctx.fillStyle = '#fff';
@@ -154,7 +162,7 @@ var server = http.createServer(function(req,res) {
 			console.log("pie data: value=" + pieItem.value + ", color=" + pieItem.color);
 		});*/
 		
-		canvas = Canvas.createCanvas(600, 450);
+		canvas = Canvas.createCanvas(800, 600);
     	ctx = canvas.getContext('2d');
 	
 		ctx.fillStyle = '#fff';

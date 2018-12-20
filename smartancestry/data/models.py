@@ -207,7 +207,7 @@ class Person(models.Model):
 	father_extern = models.CharField(max_length=50, blank=True, null=True)
 	mother = models.ForeignKey('self', blank=True, null=True, related_name='children_mother')
 	mother_extern = models.CharField(max_length=50, blank=True, null=True)
-	children_extern = models.CharField(max_length=200, blank=True, null=True)
+	children_extern = models.CharField(max_length=600, blank=True, null=True)
 	siblings_extern = models.CharField(max_length=200, blank=True, null=True)
 	notes = models.CharField(max_length=500, blank=True, null=True) 
 	external_identifier = models.CharField(max_length=50, blank=True, null=True)  
@@ -1048,7 +1048,7 @@ class Ancestry(models.Model):
 		for ancestryPerson in AncestryRelation.objects.filter(ancestry = self):
 			person = ancestryPerson.person
 			
-			if person.birth_date is not None:
+			if person.birth_date is not None and person.birth_date_unclear == False and person.birth_date_only_year == False:
 				birthPerMonth[person.birth_date.month - 1] = birthPerMonth[person.birth_date.month - 1] + 1
 			
 			if person.death_date is not None:
@@ -1358,3 +1358,22 @@ class FamilyStatusRelation(models.Model):
 
 		return mark_safe((' ' + switcher.get(self.status, '') + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip())
 			
+EVENT_TYPES = (
+    ('T', _('Baptism')),
+    ('B', _('Funeral')),
+)
+
+class PersonEvent(models.Model): 
+	"""
+		additional events for persons
+	"""
+	type = models.CharField(max_length=1, choices=EVENT_TYPES)
+	person = models.ForeignKey(Person, blank=True, null=True)
+	date = models.DateField(_('date of marriage or divorce'), null=True, blank=True)
+	date_only_year = models.BooleanField(default=False)
+	location = models.ForeignKey(Location, blank=True, null=True) 
+	description = models.CharField(max_length=200, null=True, blank=True)
+	
+	def __unicode__(self):
+		return u'%s, %s, %s' % (self.person, self.type, self.date)
+

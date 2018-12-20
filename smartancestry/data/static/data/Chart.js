@@ -2494,7 +2494,8 @@
 				var textRotation = -(segment.startAngle + segment.circumference)+segment.circumference/2,
 						tX = this.chart.width/2+animDecimal*this.outerRadius*Math.cos(textRotation)*0.9,
 						tY = this.chart.height/2-animDecimal*this.outerRadius*Math.sin(textRotation)*0.9;
-				this.chart.ctx.fillStyle = segment.labelColor || 'white';
+				this.chart.ctx.fillStyle = segment.labelColor || this.options.tooltipTitleFontColor;
+				this.chart.ctx.font = helpers.fontString(this.options.tooltipTitleFontSize, this.options.tooltipTitleFontColor, this.options.tooltipTitleFontFamily);
 				this.chart.ctx.translate(tX, tY);
 				this.chart.ctx.fillText(segment.label, 0, 0);
 				this.chart.ctx.translate(-tX, -tY);
