@@ -294,7 +294,7 @@ td {
 }
 
 #birthsPerMonthChart {
-	
+	display: block;
 }
 
 #birthsPerMonthChartLegend {
@@ -308,7 +308,8 @@ td {
 }
 
 #genderChart {
-	
+	display: block;
+	margin: auto;
 }
 
 #genderLegend {
@@ -320,7 +321,8 @@ td {
 }
 
 #birthLocationsChart {
-	
+	display: block;
+	margin: auto;
 }
 
 #birthLocationsLegend {
@@ -335,13 +337,24 @@ td {
 	padding-inline-start: 0;
 }
 
+.chartBorder {
+	border: 1px solid #666;
+	padding: 20px;
+	display: inline-block;
+	max-width: 660px;
+}
+
 #childrenChart {
-	float: left;
+	display: block;
+	margin: auto;
 }
 
 #childrenLegend {
-	clear: left;
 	text-indent: 2em;
+}
+
+.chartDescription {
+	text-indent: 0em;
 }
 
 /* bar */
@@ -351,7 +364,7 @@ td {
 
 .bar-legend li {
 	display: inline;
-	width: 200px;
+	width: 180px;
 	float: left;
 }
 

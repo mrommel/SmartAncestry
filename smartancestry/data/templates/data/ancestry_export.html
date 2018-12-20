@@ -443,21 +443,23 @@
 	<div class="chartContainer">
 		<img src="http://127.0.0.1:4444/bar.png?data1={{ statistics.birthPerMonthStr|encodeSpaces }}&data2={{ statistics.deathPerMonthStr|encodeSpaces }}&axis={% trans 'January' %},{% trans 'February' %},{% trans 'March' %},{% trans 'April' %},{% trans 'May' %},{% trans 'June' %},{% trans 'July' %},{% trans 'August' %},{% trans 'September' %},{% trans 'October' %},{% trans 'November' %},{% trans 'December' %}" id="birthsPerMonthChart" width="400" height="300" />
 	
-		<div id="childrenLegend">
-			<p>{% trans "Persons born or died per month in ancestry" %}</p>
-		</div>
+		<div class="chartBorder">
+			<div id="childrenLegend">
+				<p class="chartDescription">{% trans "Persons born or died per month in ancestry" %}</p>
+			</div>
 	
-		<div id="birthsPerMonthChartLegend">
-			<ul class="bar-legend">
-				<li>
-					<span class="color color1">&nbsp;</span>
-					<span class="title">{% trans "Birth per month" %}</span>
-				</li>
-				<li>
-					<span class="color color2">&nbsp;</span>
-					<span class="title">{% trans "Death per month" %}</span>
-				</li>
-			</ul>
+			<div id="birthsPerMonthChartLegend">
+				<ul class="bar-legend">
+					<li>
+						<span class="color color1">&nbsp;</span>
+						<span class="title">{% trans "Birth per month" %}</span>
+					</li>
+					<li>
+						<span class="color color2">&nbsp;</span>
+						<span class="title">{% trans "Death per month" %}</span>
+					</li>
+				</ul>
+			</div>
 		</div>
 	</div>
 </div>
@@ -472,21 +474,23 @@
 	<div class="chartContainer">
 		<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.genderValuesStr|encodeSpaces }}" id="genderChart" width="400" height="300" />
 	
-		<div id="childrenLegend">
-			<p>{% trans "Gender distribution of persons in ancestry" %}</p>
-		</div>
+		<div class="chartBorder">
+			<div id="childrenLegend">
+				<p class="chartDescription">{% trans "Gender distribution of persons in ancestry" %}</p>
+			</div>
 	
-		<div id="genderLegend">
-			<ul class="pie-legend">
-				<li>
-					<span class="color color1">&nbsp;</span>
-					<span class="title">{% trans "Men" %}</span>
-				</li>
-				<li>
-					<span class="color color2">&nbsp;</span>
-					<span class="title">{% trans "Women" %}</span>
-				</li>
-			</ul>
+			<div id="genderLegend">
+				<ul class="pie-legend">
+					<li>
+						<span class="color color1">&nbsp;</span>
+						<span class="title">{% trans "Men" %}</span>
+					</li>
+					<li>
+						<span class="color color2">&nbsp;</span>
+						<span class="title">{% trans "Women" %}</span>
+					</li>
+				</ul>
+			</div>
 		</div>
 	</div>
 </div>		
@@ -500,19 +504,21 @@
 	<div class="chartContainer">
 		<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.birthLocationsValuesStr|encodeSpaces }}&colors={{ statistics.birthLocationsColorsStr|trimHash|encodeSpaces }}" id="birthLocationsChart" width="400" height="300" />
 	
-		<div id="childrenLegend">
-			<p>{% trans "Birth locations in ancestry" %}</p>
-		</div>
+		<div class="chartBorder">
+			<div id="childrenLegend">
+				<p class="chartDescription">{% trans "Birth locations in ancestry" %}</p>
+			</div>
 	
-		<div id="birthLocationsLegend">
-			<ul class="pie-legend">
-				{% for birthLocations in statistics.birthLocations.list %}
-				<li>
-					<span class="color color-{{ birthLocations.color|trimHash }}">&nbsp;</span>
-					<span class="title">{{ birthLocations.name }}</span>
-				</li>
-				{% endfor %}
-			</ul>	
+			<div id="birthLocationsLegend">
+				<ul class="pie-legend">
+					{% for birthLocations in statistics.birthLocations.list %}
+					<li>
+						<span class="color color-{{ birthLocations.color|trimHash }}">&nbsp;</span>
+						<span class="title">{{ birthLocations.name }}</span>
+					</li>
+					{% endfor %}
+				</ul>	
+			</div>
 		</div>
 	</div>
 </div>
@@ -526,8 +532,10 @@
 	<div class="chartContainer">
 		<img src="http://127.0.0.1:4444/bar.png?data={{ statistics.childrenValuesStr|encodeSpaces }}&axis=0,1,2,3,4,5,6,7,8,9,10" id="childrenChart" width="400" height="300" />
 	
-		<div id="childrenLegend">
-			<p>{% trans "Number of children per person in ancestry" %}</p>
+		<div class="chartBorder">
+			<div id="childrenLegend">
+				<p class="chartDescription">{% trans "Number of children per person in ancestry" %}</p>
+			</div>
 		</div>
 	</div>
 </div>
