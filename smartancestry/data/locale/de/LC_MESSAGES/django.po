@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-19 10:17+0100\n"
-"PO-Revision-Date: 2018-12-19 10:20+0100\n"
+"PO-Revision-Date: 2018-12-20 09:59+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -445,14 +445,10 @@ msgid "Page"
 msgstr "Seite"
 
 #: templates/data/ancestry_export.html:447
-#, fuzzy
-#| msgid "Births per month"
 msgid "Birth per month"
 msgstr "Geburten pro Monat"
 
 #: templates/data/ancestry_export.html:451
-#, fuzzy
-#| msgid "Deaths per month"
 msgid "Death per month"
 msgstr "Todesfälle pro Monat"
 
