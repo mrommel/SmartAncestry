@@ -9,7 +9,7 @@
 	<img src="" alt="Img" height="637" width="405">
 {% endif %}
 
-<date>{% now "j.F Y" %}</date>
+<date>{% now "j. F Y" %}</date>
 <title>{% trans "Ancestrybook" %}</title>
 <subtitle>{{ ancestry.name }}</subtitle>
 
@@ -346,7 +346,7 @@
 					<td width="80%" colspan="3">
 						<ul class="commalist">
 						{% for appendix in member.person.appendices %}
-							<li><a href="#chapter6-{{ appendix.document.id }}" class="nolink">{{ appendix.document.name }}</a> ({% trans "Page" %} <appendix><item href="#chapter6-{{ appendix.document.id }}"></item></appendix>)</li>
+							<li><a href="#chapter6-2-{{ appendix.document.id }}" class="nolink">{{ appendix.document.name }}</a> ({% trans "Page" %} <appendix><item href="#chapter6-2-{{ appendix.document.id }}"></item></appendix>)</li>
 						{% endfor %}
 						</ul>
 					</td>
@@ -573,13 +573,14 @@
 <title>{% trans "Appendix" %}</title>
 </chapheader>
 	{% if ancestry_documents %}
-		<para>
-			<h2>{% trans "General documents" %}</h2>
-			<a id="chapter6-1">&nbsp;</a>
-		</para>
 		{% for document in ancestry_documents %}
 			<para>
 				<div class="not_breaking">
+				{% if forloop.first %}
+                	<h2>{% trans "General documents" %}</h2>
+					<a id="chapter6-1">&nbsp;</a>                           
+                {% endif %}
+				
 				<h3>{{ document.name }}</h3>
 				{% if document.description %}
 					{{ document.description }}
@@ -599,13 +600,13 @@
 	{% endif %}
 
 	{% if person_documents %}
-		<para>
-			<h2>{% trans "Documents of persons" %}</h2>
-			<a id="chapter6-2">&nbsp;</a>
-		</para>
 		{% for document in person_documents %}
 			<para>
 				<div class="not_breaking">
+				{% if forloop.first %}
+					<h2>{% trans "Documents of persons" %}</h2>
+					<a id="chapter6-2">&nbsp;</a>
+				{% endif %}
 				<h3>{{ document.name }}</h3>
 				{% if document.description %}
 					{{ document.description }}

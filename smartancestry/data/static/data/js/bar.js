@@ -29,13 +29,6 @@ var server = http.createServer(function(req,res) {
 			  highlightFill : "rgba(151,187,205,0.75)",
 			  highlightStroke : "rgba(151,187,205,1)",
 			  data : [0,0,0,0,0,0,0]
-			},
-			{
-			  fillColor : "rgba(226,184,85,0.8)",
-			  strokeColor : "rgba(226,184,85,1.0)",
-			  highlightFill: "rgba(220,220,220,0.75)",
-			  highlightStroke: "rgba(220,220,220,1)",
-			  data : [0,0,0,0,0,0,0]
 			}
 		  ]
 		};
@@ -50,6 +43,17 @@ var server = http.createServer(function(req,res) {
 		}
 	
 		if (query.data2) {
+		
+			var secondDataset = {
+			  fillColor : "rgba(226,184,85,0.8)",
+			  strokeColor : "rgba(226,184,85,1.0)",
+			  highlightFill: "rgba(220,220,220,0.75)",
+			  highlightStroke: "rgba(220,220,220,1)",
+			  data : [0,0,0,0,0,0,0]
+			};
+			
+			barChartData.datasets.push(secondDataset);
+			
 			var index = 0;
 			var trimmedParam = query.data2.replace('[', '').replace(']', '');
 			trimmedParam.split(",").forEach(function (item) {
@@ -60,7 +64,7 @@ var server = http.createServer(function(req,res) {
 		
 		if (query.data) {
 			// remove second data
-			//data.datasets[1] = null;
+			//barChartData.datasets[1] = null;
 			 
 			var index = 0;
 			var trimmedParam = query.data.replace('[', '').replace(']', '');
