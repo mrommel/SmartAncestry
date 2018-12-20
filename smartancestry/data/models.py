@@ -1189,6 +1189,12 @@ class DistributionRelation(models.Model):
 	def __unicode__(self):			  
 		return '%s - %s' % (self.ancestry.name, self.distribution.family_name)
 
+
+ORIENTATION_TYPES = (
+    ('P', _('Portrait')),
+    ('L', _('Landscape')),
+)
+
 class Document(models.Model):
 	"""
 		class that holds a document (as image) along with a date and a description
@@ -1198,6 +1204,7 @@ class Document(models.Model):
 	description = models.CharField(max_length=200, null=True, blank=True)
 	date = models.DateField(_('date of creation'))
 	image = models.ImageField(upload_to='media/documents', blank=True, null=True)
+	type = models.CharField(max_length=1, choices=ORIENTATION_TYPES, default='L')
 		
 	def persons(self):
 		"""
@@ -1226,6 +1233,15 @@ class Document(models.Model):
 			ancestryArr.append(ancestryRelation.ancestry)
 		
 		return ancestryArr
+		
+	def css_class(self):
+		"""
+			Returns the appropriate css class for portrait or landscape mode
+		"""
+		if self.type == 'L':
+			return 'landscape'
+		else:
+			return 'portrait'
 	
 	def ancestry_names(self):
 		"""

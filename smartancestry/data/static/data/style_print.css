@@ -507,11 +507,21 @@ td {
 
 .document {
 	display: block;
+	padding: 20px;
     margin-left: auto;
     margin-right: auto;
     
-    max-width: 800px;
-    max-height: 650px;
+    max-width: 650px;
+    max-height: 1000px;
+}
+
+/* rotate landscape documents */
+.landscape {
+	-webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    transform: rotate(270deg);
 }
 
 .nolink {

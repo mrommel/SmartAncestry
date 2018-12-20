@@ -559,7 +559,7 @@
 			<div class="not_breaking">
 			<h2>{{ member.person }}</h2>
 			<a id="chapter4-{{ member.person.id }}">&nbsp;</a>
-			<img src="http://127.0.0.1:4446/ancestry.png?person={{ member.person.id }}&max_level=2" class="distribution" />
+			<img src="http://127.0.0.1:4446/ancestry.png?person={{ member.person.id }}&max_level=2" class="distribution landscape" />
 			</div>
 		</para>
 	{% endfor %}
@@ -622,7 +622,7 @@
 						<li><a href="#chapter1-{{ person.id }}" class="nolink">{{ person }}</a></li>
 					{% endfor %}
 				</ul>
-				<img src="{{ document.image.url }}" class="document" />
+				<img src="{{ document.image.url }}" class="document {{ document.css_class }}" />
 				</div>
 			</para>
 		{% endfor %}

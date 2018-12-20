@@ -263,7 +263,7 @@ class DocumentAncestryRelationInline(admin.TabularInline):
 	fk_name = "document"
 	
 class DocumentAdmin(admin.ModelAdmin):
-	list_display = ('thumbnail', 'name', 'person_names', 'ancestry_names', 'admin_url', )
+	list_display = ('thumbnail', 'type', 'name', 'person_names', 'ancestry_names', 'admin_url', )
 	readonly_fields = ('thumbnail', 'admin_url',)
 	
 	ordering = ('name',)
