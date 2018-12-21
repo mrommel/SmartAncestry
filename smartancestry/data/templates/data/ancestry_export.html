@@ -146,6 +146,7 @@
 <chapheader>
 <chapnum>1. </chapnum>
 <title>{% trans "Members" %}</title>
+<a id="chapter1" class="small">&nbsp;</a>
 </chapheader>
 
 <!-- fake table -->
@@ -373,7 +374,7 @@
 <chapheader>
 <chapnum>2. </chapnum>
 <title>{% trans "Timeline" %}</title>
-<a id="chapter2">&nbsp;</a>
+<a id="chapter2" class="small">&nbsp;</a>
 </chapheader>
 
 <para>
@@ -383,9 +384,16 @@
 	<tr class="{% if forloop.counter|divisibleby:2 %}alternating{% else %}row{% endif %}">
 		<td><strong>{{ timeline_entry.year }}</strong></td>
 		<td>
-		<ul class="not_breaking">
+		<ul class="timeline">
 			{% for timeline_entry_inner in timeline_entry.list %}
-				<li>{{ timeline_entry_inner.date }} {{ timeline_entry_inner.title }}</li>
+				<li>
+					{% if timeline_entry_inner.date_unclear %}
+						ca. {{ timeline_entry_inner.date | date:"Y" }}
+					{% else %}
+						{{ timeline_entry_inner.date | date:"d.m.Y" }}
+					{% endif %}
+					{{ timeline_entry_inner.title }}
+				</li>
 			{% endfor %}
 		</ul>
 		</tD>
@@ -404,16 +412,15 @@
 <chapheader>
 <chapnum>3. </chapnum>
 <title>{% trans "Statistics" %}</title>
-<a id="chapter3">&nbsp;</a>
+<a id="chapter3" class="small">&nbsp;</a>
 </chapheader>
 
 <para>
 
-<h2>{% trans "Specials" %}</h2>
-<a id="chapter3-1">&nbsp;</a>
+<h2>{% trans "Specials" %}<a id="chapter3-1">&nbsp;</a></h2>
 <table>
 	{% for special in statistics.specials.list %}
-		<tr class="{% if forloop.counter|divisibleby:2 %}alternating{% else %}row{% endif %}">
+		<tr class="{% cycle 'row' 'alternating' as statistics_style %}">
 			<td>{{ special.name_prefix }}</td>
 			<td>{{ special.name_suffix }}</td>
 			<td>{{ special.value }}</td>
@@ -425,8 +432,7 @@
 
 <para>
 
-<h2>{% trans "Locations" %}</h2>
-<a id="chapter3-2">&nbsp;</a>
+<h2>{% trans "Locations" %}<a id="chapter3-2">&nbsp;</a></h2>
 {% if ancestry.map %}
 	<img src="/{{ MEDIA_URL }}..{{ ancestry.map.url }}" alt="Img" height="400" class="distribution"><br />
 {% else %}
@@ -437,8 +443,7 @@
 
 <para>
 <div class="not_breaking">
-	<h2>{% trans "Births and Deaths per month" %}</h2>
-	<a id="chapter3-3">&nbsp;</a>
+	<h2>{% trans "Births and Deaths per month" %}<a id="chapter3-3">&nbsp;</a></h2>
 
 	<div class="chartContainer">
 		<img src="http://127.0.0.1:4444/bar.png?data1={{ statistics.birthPerMonthStr|encodeSpaces }}&data2={{ statistics.deathPerMonthStr|encodeSpaces }}&axis={% trans 'January' %},{% trans 'February' %},{% trans 'March' %},{% trans 'April' %},{% trans 'May' %},{% trans 'June' %},{% trans 'July' %},{% trans 'August' %},{% trans 'September' %},{% trans 'October' %},{% trans 'November' %},{% trans 'December' %}" id="birthsPerMonthChart" width="400" height="300" />
@@ -468,9 +473,8 @@
 
 <para>
 <div class="not_breaking">
-	<h2>{% trans "Gender distribution" %}</h2>
-	<a id="chapter3-4">&nbsp;</a>
-
+	<h2>{% trans "Gender distribution" %}<a id="chapter3-4">&nbsp;</a></h2>
+	
 	<div class="chartContainer">
 		<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.genderValuesStr|encodeSpaces }}" id="genderChart" width="400" height="300" />
 	
@@ -498,8 +502,7 @@
 
 <para>
 <div class="not_breaking">
-	<h2>{% trans "Birth locations" %}</h2>
-	<a id="chapter3-5">&nbsp;</a>
+	<h2>{% trans "Birth locations" %}<a id="chapter3-5">&nbsp;</a></h2>
 			
 	<div class="chartContainer">
 		<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.birthLocationsValuesStr|encodeSpaces }}&colors={{ statistics.birthLocationsColorsStr|trimHash|encodeSpaces }}" id="birthLocationsChart" width="400" height="300" />
@@ -526,8 +529,7 @@
 
 <para>
 <div class="not_breaking">
-	<h2>{% trans "Children" %}</h2>
-	<a id="chapter3-6">&nbsp;</a>
+	<h2>{% trans "Children" %}<a id="chapter3-6">&nbsp;</a></h2>
 
 	<div class="chartContainer">
 		<img src="http://127.0.0.1:4444/bar.png?data={{ statistics.childrenValuesStr|encodeSpaces }}&axis=0,1,2,3,4,5,6,7,8,9,10" id="childrenChart" width="400" height="300" />
@@ -550,7 +552,7 @@
 <chapheader>
 <chapnum>4. </chapnum>
 <title>{% trans "Family trees" %}</title>
-<a id="chapter4">&nbsp;</a>
+<a id="chapter4" class="small">&nbsp;</a>
 </chapheader>
 
 {% if featured %}
@@ -576,15 +578,14 @@
 <chapheader>
 <chapnum>5. </chapnum>
 <title>{% trans "Distributions" %}</title>
-<a id="chapter5">&nbsp;</a>
+<a id="chapter5" class="small">&nbsp;</a>
 </chapheader>
 
 {% if distributions %}
 	{% for distribution in distributions %}
 		<para>
 			<div class="not_breaking">
-			<h2>{{ distribution.distribution.family_name }}</h2>
-			<a id="chapter5-{{ distribution.distribution.id }}">&nbsp;</a>
+			<h2>{{ distribution.distribution.family_name }}<a id="chapter5-{{ distribution.distribution.id }}">&nbsp;</a></h2>
 			<img src="/{{ MEDIA_URL }}..{{ distribution.distribution.image.url }}" class="distribution" />
 			</div>
 		</para>
@@ -602,26 +603,20 @@
 <chapheader>
 <chapnum>6. </chapnum>
 <title>{% trans "Appendix" %}</title>
+<a id="chapter6" class="small">&nbsp;</a>
 </chapheader>
 	{% if ancestry_documents %}
 		{% for document in ancestry_documents %}
 			<para>
 				<div class="not_breaking">
 				{% if forloop.first %}
-                	<h2>{% trans "General documents" %}</h2>
-					<a id="chapter6-1">&nbsp;</a>                           
+                	<h2>{% trans "General documents" %}<a id="chapter6-1">&nbsp;</a></h2>                   
                 {% endif %}
 				
-				<h3>{{ document.name }}</h3>
+				<h3>{{ document.name }}<a id="chapter6-1-{{ document.id }}">&nbsp;</a></h3>
 				{% if document.description %}
 					{{ document.description }}
 				{% endif %}
-				<a id="chapter6-1-{{ document.id }}">&nbsp;</a>
-				<ul>
-					{% for person in document.persons %}
-						<li><a href="#chapter1-{{ person.id }}" class="nolink">{{ person }}</a></li>
-					{% endfor %}
-				</ul>
 				<img src="{{ document.image.url }}" class="document {{ document.css_class }}" />
 				</div>
 			</para>
@@ -635,20 +630,23 @@
 			<para>
 				<div class="not_breaking">
 				{% if forloop.first %}
-					<h2>{% trans "Documents of persons" %}</h2>
-					<a id="chapter6-2">&nbsp;</a>
+					<h2>{% trans "Documents of persons" %}<a id="chapter6-2">&nbsp;</a></h2>
 				{% endif %}
-				<h3>{{ document.name }}</h3>
+				<h3>{{ document.name }}<a id="chapter6-2-{{ document.id }}">&nbsp;</a></h3>
 				{% if document.description %}
 					{{ document.description }}
 				{% endif %}
-				<a id="chapter6-2-{{ document.id }}">&nbsp;</a>
-				<ul>
-					{% for person in document.persons %}
-						<li><a href="#chapter1-{{ person.id }}" class="nolink">{{ person }}</a></li>
-					{% endfor %}
-				</ul>
-				<img src="{{ document.image.url }}" class="document" />
+				
+				{% for person in document.persons %}
+					{% if forloop.first %}
+						<ul>
+					{% endif %}
+					<li><a href="#chapter1-{{ person.id }}" class="nolink">{{ person }}</a></li>
+					{% if forloop.last %}
+						</ul>
+					{% endif %}
+				{% endfor %}
+				<img src="{{ document.image.url }}" class="document {{ document.css_class }}" />
 				</div>
 			</para>
 		{% endfor %}

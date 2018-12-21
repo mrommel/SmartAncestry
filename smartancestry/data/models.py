@@ -822,8 +822,9 @@ class Person(models.Model):
 		return mark_safe('%s %s %s' % ((' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip(), self.last_name, date_str))
 
 class TimelineInfo(object):
-	def __init__(self, date, title):
+	def __init__(self, date, date_unclear, title):
 		self.date = date
+		self.date_unclear = date_unclear
 		self.title = mark_safe((' ' + title + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip())
 		
 class GroupedTimelineInfo(object):
@@ -1087,11 +1088,11 @@ class Ancestry(models.Model):
 		# sort & limit birth location to 10 (+rest)
 		birthLocations.limit(10)
 		
-		specials.add("%s:,%s" % (_("Youngest person"), youngestPerson), youngestAge)
-		specials.add("%s:,%s" % (_("Oldest person"), oldestPerson), oldestAge)
-		specials.add("%s:,%s" % (_("Lastest marriage"), latestMarriagePerson), latestMarriageAge)
-		specials.add("%s:,%s" % (_("Youngest marriage"), youngestMarriagePerson), youngestMarriageAge)
-		specials.add("%s:,%s" % (_("Most Children"), mostChildrenPerson), mostChildrenCount)
+		specials.add("%s:,%s" % (_("Youngest person"), youngestPerson), "%s %s" % (youngestAge, _("Years")))
+		specials.add("%s:,%s" % (_("Oldest person"), oldestPerson), "%s %s" % (oldestAge, _("Years")))
+		specials.add("%s:,%s" % (_("Lastest marriage"), latestMarriagePerson), "%s %s" % (latestMarriageAge, _("Years")))
+		specials.add("%s:,%s" % (_("Youngest marriage"), youngestMarriagePerson), "%s %s" % (youngestMarriageAge, _("Years")))
+		specials.add("%s:,%s" % (_("Most Children"), mostChildrenPerson), "%s %s" % (mostChildrenCount, _("Children")))
 		
 		return StatisticsInfo(birthPerMonth, deathPerMonth, gender, birthLocations, children, specials)
 	
@@ -1107,27 +1108,27 @@ class Ancestry(models.Model):
 			if person.birth_date is not None:
 				if person.birth_location is not None:
 					if person.birth_name is not None and person.birth_name <> '':
-						result_list.append(TimelineInfo(person.birth_date, _('%s %s (born %s) was born in %s') % (person.first_name, person.last_name, person.birth_name, person.birth_location)))
+						result_list.append(TimelineInfo(person.birth_date, person.birth_date_unclear, _('%s %s (born %s) was born in %s') % (person.first_name, person.last_name, person.birth_name, person.birth_location)))
 					else:
-						result_list.append(TimelineInfo(person.birth_date, _('%s %s was born in %s') % (person.first_name, person.last_name, person.birth_location)))
+						result_list.append(TimelineInfo(person.birth_date, person.birth_date_unclear, _('%s %s was born in %s') % (person.first_name, person.last_name, person.birth_location)))
 				else:
-					result_list.append(TimelineInfo(person.birth_date, _('%s %s was born') % (person.first_name, person.last_name)))
+					result_list.append(TimelineInfo(person.birth_date, person.birth_date_unclear, _('%s %s was born') % (person.first_name, person.last_name)))
 			
 			if ancestryPerson.person.death_date is not None:
 				if person.death_location is not None:
-					result_list.append(TimelineInfo(person.death_date, _('%s %s has died in %s') % (person.first_name, person.last_name, person.death_location)))
+					result_list.append(TimelineInfo(person.death_date, False, _('%s %s has died in %s') % (person.first_name, person.last_name, person.death_location)))
 				else:
-					result_list.append(TimelineInfo(person.death_date, _('%s %s has died') % (person.first_name, person.last_name)))
+					result_list.append(TimelineInfo(person.death_date, False, _('%s %s has died') % (person.first_name, person.last_name)))
 			
 			for familyStatusRelation in FamilyStatusRelation.objects.filter(woman = person):
 				if familyStatusRelation.date is not None:
 					if familyStatusRelation.status == 'M':
 						if familyStatusRelation.location is not None:
-							result_list.append(TimelineInfo(familyStatusRelation.date, _('marriage of %s and %s in %s') % (familyStatusRelation.husband_name(), familyStatusRelation.wife_name(), familyStatusRelation.location)))
+							result_list.append(TimelineInfo(familyStatusRelation.date, False, _('marriage of %s and %s in %s') % (familyStatusRelation.husband_name(), familyStatusRelation.wife_name(), familyStatusRelation.location)))
 						else:
-							result_list.append(TimelineInfo(familyStatusRelation.date, _('marriage of %s and %s') % (familyStatusRelation.husband_name(), familyStatusRelation.wife_name())))
+							result_list.append(TimelineInfo(familyStatusRelation.date, False, _('marriage of %s and %s') % (familyStatusRelation.husband_name(), familyStatusRelation.wife_name())))
 					else:
-						result_list.append(TimelineInfo(familyStatusRelation.date, _('divorce of %s and %s') % (familyStatusRelation.husband_name(), familyStatusRelation.wife_name())))
+						result_list.append(TimelineInfo(familyStatusRelation.date, False, _('divorce of %s and %s') % (familyStatusRelation.husband_name(), familyStatusRelation.wife_name())))
 			
 		result_list = sorted(result_list, key=attrgetter('date'), reverse=True)
 		grouped_list = [list(g) for k, g in groupby(result_list, key=lambda x: x.date.year)]

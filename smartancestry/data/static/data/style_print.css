@@ -173,7 +173,6 @@ h2 {
 h3 {
 	font-size: 1.0em;
   	text-align: center;
-  	padding: 1em 0 0.5em;
 }
 
 .location {
@@ -192,6 +191,14 @@ h3 {
 .not_breaking {
 	page-break-inside: avoid;
 	text-align: center;
+}
+
+.timeline {
+	page-break-inside: avoid;
+}
+
+.small {
+	font-size: 1px;
 }
 
 .timeline {
@@ -295,6 +302,7 @@ td {
 
 #birthsPerMonthChart {
 	display: block;
+	margin: auto;
 }
 
 #birthsPerMonthChartLegend {
@@ -310,6 +318,7 @@ td {
 #genderChart {
 	display: block;
 	margin: auto;
+	padding-bottom: 5px;
 }
 
 #genderLegend {
@@ -323,6 +332,7 @@ td {
 #birthLocationsChart {
 	display: block;
 	margin: auto;
+	padding-bottom: 5px;
 }
 
 #birthLocationsLegend {
@@ -339,7 +349,7 @@ td {
 
 .chartBorder {
 	border: 1px solid #666;
-	padding: 20px;
+	padding: 10px;
 	display: inline-block;
 	max-width: 660px;
 }
@@ -347,10 +357,11 @@ td {
 #childrenChart {
 	display: block;
 	margin: auto;
+	padding-bottom: 5px;
 }
 
 #childrenLegend {
-	text-indent: 2em;
+	margin-top: -10px;
 }
 
 .chartDescription {
@@ -501,27 +512,30 @@ td {
 	display: block;
     margin-left: auto;
     margin-right: auto;
-    max-width: 650px;
-    max-height: 850px;
+    max-width: 630px;
+    max-height: 830px;
 }
 
 .document {
 	display: block;
-	padding: 20px;
+	padding: 10px;
     margin-left: auto;
     margin-right: auto;
     
-    max-width: 650px;
-    max-height: 1000px;
+    max-width: 630px;
+    max-height: 800px;
 }
 
 /* rotate landscape documents */
 .landscape {
-	-webkit-transform: rotate(270deg);
+	/*-webkit-transform: rotate(270deg);
     -moz-transform: rotate(270deg);
     -o-transform: rotate(270deg);
     -ms-transform: rotate(270deg);
-    transform: rotate(270deg);
+    transform: rotate(270deg);*/
+    
+    transform: rotate(-90deg) translate(-100%, 15%);
+	transform-origin: 0 0;
 }
 
 .nolink {

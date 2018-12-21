@@ -1,5 +1,8 @@
 {% load i18n %}{% load app_filters %}digraph G {
 	# {{ person_id }} / {{ max_level }}
+	ratio="fill";
+ 	size="11.7,8.3!"; # A4 in inches
+ 	margin=0.5;
 	imagepath="/Users/michael.rommel/Prog/SmartAncestry/smartancestry/data/media/persons_tree/";
 	graph [label = "\n\n{% trans "Family tree" %} {% trans "of" %} {{ person.first_name_short | remove_underlines }} {{ person.last_name }}", fontname="Euphemia UCAS", fontsize = 32, style = "bold"];
 	# splines=ortho,
