@@ -231,10 +231,12 @@
 						<td width="80%" colspan="3" class="first">{{ member.person.template_value1 }}</td>
 					</tr>
 				{% endif %}
+				{% if member.person.profession %}
 				<tr class="{% cycle row_style %}">
 					<td width="20%" class="label first">{% trans "Profession" %}:</td>
-					<td width="80%" colspan="3">{% if member.person.profession %}{{ member.person.profession }}{% endif %}</td>
+					<td width="80%" colspan="3">{{ member.person.profession }}</td>
 				</tr>
+				{% endif %}
 				{% if member.person.partner_relations %}
 					{% for partner_relation in member.person.partner_relations %}
 						<tr class="{% cycle row_style %}">

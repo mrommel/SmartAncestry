@@ -136,7 +136,7 @@ class PartnerInfo(object):
 		if self.date_year_only:
 			return self.date.year
 		else:
-			return '%d.%d.%d' % (self.date.day, self.date.month, self.date.year) 
+			return '%02d.%02d.%04d' % (self.date.day, self.date.month, self.date.year) 
 		
 	def __unicode__(self):
 		return '[PartnerInfo: %s - dyo=%d,date:=%s' % (self.partner, self.date_year_only, self.date) 
@@ -1378,6 +1378,7 @@ class FamilyStatusRelation(models.Model):
 EVENT_TYPES = (
     ('T', _('Baptism')),
     ('B', _('Funeral')),
+    ('C', _('Confirmation')),
 )
 
 class PersonEvent(models.Model): 
