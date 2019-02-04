@@ -95,7 +95,7 @@ msgid "Oldest person"
 msgstr "Älteste Person"
 
 #: models.py:1092
-msgid "Lastest marriage"
+msgid "Latest marriage"
 msgstr "Späteste Heirat"
 
 #: models.py:1093
@@ -516,7 +516,7 @@ msgid "No ancestries are available."
 msgstr "Keine Stammbäume vorhanden."
 
 #: tools.py:56
-msgid "daugther"
+msgid "daughter"
 msgstr "Tochter"
 
 #: tools.py:58
@@ -524,7 +524,7 @@ msgid "son"
 msgstr "Sohn"
 
 #: tools.py:63 tools.py:70
-msgid "granddaugther"
+msgid "granddaughter"
 msgstr "Enkeltochter"
 
 #: tools.py:65 tools.py:72
@@ -560,11 +560,11 @@ msgid "boy cousin"
 msgstr "Cousin"
 
 #: tools.py:121 tools.py:204
-msgid "girl cousins daugther"
+msgid "girl cousins daughter"
 msgstr "Nichte 2ten Grades"
 
 #: tools.py:123 tools.py:206
-msgid "boy cousins daugther"
+msgid "boy cousins daughter"
 msgstr "Nichte 2ten Grades"
 
 #: tools.py:125 tools.py:208
@@ -610,7 +610,7 @@ msgid "son in law"
 msgstr "Schwiegersohn"
 
 #: tools.py:266
-msgid "daugther in law"
+msgid "daughter in law"
 msgstr "Schwiegertochter"
 
 #: tools.py:270

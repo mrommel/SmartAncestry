@@ -1,8 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
-from data.models import Person, Ancestry, AncestryRelation, FamilyStatusRelation, Location, Distribution, DistributionRelation, Document, DocumentRelation, Question, DocumentAncestryRelation, PersonEvent
-from data.forms import PersonAdmin, LocationAdmin, AncestryAdmin, DocumentAdmin
+from .forms import PersonAdmin, LocationAdmin, AncestryAdmin, DocumentAdmin
+
+from .models import Person, Ancestry, FamilyStatusRelation, Location, Distribution, DistributionRelation, Document, \
+    DocumentRelation, Question, DocumentAncestryRelation, PersonEvent
 
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Question)

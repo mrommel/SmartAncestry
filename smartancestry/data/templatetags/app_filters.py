@@ -13,100 +13,113 @@ logger = logging.getLogger('data.models')
 
 register = template.Library()
 
+
 @register.filter(name='location_without_country')
 def location_without_country(value):
-	if value is None:
-		return ''
-	
-	try:
-		return value.city
-	except:
-		pass
-		
-	return ''
-	
+    if value is None:
+        return ''
+
+    try:
+        return value.city
+    except:
+        pass
+
+    return ''
+
+
 @stringfilter
 @register.filter(name='encodeSpaces')
 def encodeSpaces(value):
-	return value.replace(' ', '')
-	
+    return value.replace(' ', '')
+
+
 @stringfilter
 @register.filter(name='underline')
 def underline(value):
-	val = ' %s ' % value
-	val = val.replace(' _', ' <u>')
-	val = val.replace('_ ', '</u> ')
-	return mark_safe(val.strip())
-	
+    val = ' %s ' % value
+    val = val.replace(' _', ' <u>')
+    val = val.replace('_ ', '</u> ')
+    return mark_safe(val.strip())
+
+
 @stringfilter
 @register.filter(name='remove_underlines')
 def remove_underlines(value):
-	value = value.replace('_', '')
-	value = value.replace('_', '')
-	return value.strip()
-	
+    value = value.replace('_', '')
+    value = value.replace('_', '')
+    return value.strip()
+
+
 @stringfilter
 @register.filter(name='replace_umlauts')
 def replace_umlauts(value):
-	value = value.replace('&auml;', u'ä')
-	return value.strip()
-	
+    value = value.replace('&auml;', u'ä')
+    return value.strip()
+
+
 @stringfilter
 @register.filter(name='remove_media')
 def remove_media(value):
-	return value.replace('media/media', 'media')
+    return value.replace('media/media', 'media')
+
 
 @stringfilter
-@register.filter(name='remove_persons_folder')	
+@register.filter(name='remove_persons_folder')
 def remove_persons_folder(value):
-	return value.replace('/media/media/persons/', '').replace('.JPG', '.jpg').replace('%C3%A4', 'ä')
-    
+    return value.replace('/media/media/persons/', '').replace('.JPG', '.jpg').replace('%C3%A4', 'ä')
+
+
 @stringfilter
 @register.filter(name='trim')
 def trim(value):
-	return value.strip()
+    return value.strip()
+
 
 @stringfilter
 @register.filter(name='trimHash')
 def trimHash(value):
-	return value.replace('#','').replace('\'','')
-	
+    return value.replace('#', '').replace('\'', '')
+
+
 @stringfilter
 @register.filter(name='trimAndUnescape')
 def trimAndUnescape(value):
-	val = value.strip()
-	val = val.replace('<u>', '')
-	val = val.replace('</u>', '')
-	#val = val.replace('&auml;', 'ae')
-	val = val.replace('  ', ' ')
-	val = val.replace('  ', ' ')
-	return val
-	
+    val = value.strip()
+    val = val.replace('<u>', '')
+    val = val.replace('</u>', '')
+    # val = val.replace('&auml;', 'ae')
+    val = val.replace('  ', ' ')
+    val = val.replace('  ', ' ')
+    return val
+
+
 @stringfilter
 @register.filter(name='htmlEncode')
-def htmlEncode(value):	
-	val = value.replace('\xe4', '&auml;')
-	return val
+def htmlEncode(value):
+    val = value.replace('\xe4', '&auml;')
+    return val
+
 
 @stringfilter
 @register.filter(name='underlineIndices')
 def underlineIndices(value):
-	val = value.strip()
-	#val = val.replace('&auml;', 'ae')
-	val = val.replace('  ', ' ')
-	val = val.replace('  ', ' ')
-	
-	u_start = val.find('<u>')
-	u_end = val.find('</u>')
-	
-	if u_start <> -1:
-		u_start = u_start + 2
-	
-	if u_end <> -1:
-		u_end = u_end - 1
-	
-	return '{start: %d, end: %d}' % (u_start, u_end)
-    
+    val = value.strip()
+    # val = val.replace('&auml;', 'ae')
+    val = val.replace('  ', ' ')
+    val = val.replace('  ', ' ')
+
+    u_start = val.find('<u>')
+    u_end = val.find('</u>')
+
+    if u_start != -1:
+        u_start = u_start + 2
+
+    if u_end != -1:
+        u_end = u_end - 1
+
+    return '{start: %d, end: %d}' % (u_start, u_end)
+
+
 @register.filter(needs_autoescape=True)
 def initial_letter_filter(text, autoescape=None):
     first, other = text[0], text[1:]
@@ -116,7 +129,8 @@ def initial_letter_filter(text, autoescape=None):
         esc = lambda x: x
     result = '<strong>%s</strong>%s' % (esc(first), esc(other))
     return mark_safe(result)
-    
+
+
 @stringfilter
 @register.filter(name='ellipses')
 def ellipses(value, arg):
@@ -126,4 +140,4 @@ def ellipses(value, arg):
     if len(original_string) <= max_length:
         return original_string
     else:
-        return original_string[:max_length-4] + " ..."
+        return original_string[:max_length - 4] + " ..."
