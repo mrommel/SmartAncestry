@@ -87,7 +87,7 @@ class HusbandFamilyStatusRelationInline(admin.TabularInline):
         """ hide all extra if the current user is having the wrong gender """
         try:
             person_id = request.path.replace('/admin/data/person/', '').replace('/', '').replace('change', '')
-            if person_id <> 'add':
+            if person_id != 'add':
                 person = Person.objects.get(id=person_id)
                 if person.sex == 'F':
                     return 0
@@ -116,7 +116,7 @@ class WifeFamilyStatusRelationInline(admin.TabularInline):
         """ hide all extra if the current user is having the wrong gender """
         try:
             person_id = request.path.replace('/admin/data/person/', '').replace('/', '').replace('change', '')
-            if person_id <> 'add':
+            if person_id != 'add':
                 person = Person.objects.get(id=person_id)
                 if person.sex == 'M':
                     return 0
@@ -300,6 +300,6 @@ class DocumentAdmin(admin.ModelAdmin):
     actions = None
 
     def admin_url(self, obj):
-        return '<a href="/admin/data/document/%s/" target="_blank">Admin</a>' % (obj.id)
+        return '<a href="/admin/data/document/%s/" target="_blank">Admin</a>' % obj.id
 
     admin_url.allow_tags = True

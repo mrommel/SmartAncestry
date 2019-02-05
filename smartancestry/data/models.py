@@ -654,7 +654,7 @@ class Person(models.Model):
         """
 			iterate (with recursion) thru the children
 		"""
-        if (len(filter(lambda x: x.person.id == self.id, relatives_list)) == 0):
+        if len(filter(lambda x: x.person.id == self.id, relatives_list)) == 0:
             relatives_list.append(TreeInfo(level, self, 0))
 
         for child in self.children():
@@ -1182,7 +1182,6 @@ class Ancestry(models.Model):
 			Returns timeline events of this ancestry
 		"""
         result_list = []
-        partner = None
 
         for ancestryPerson in AncestryRelation.objects.filter(ancestry=self):
             person = ancestryPerson.person
@@ -1311,12 +1310,12 @@ class Document(models.Model):
         """
 			Returns a list of person linked to this document
 		"""
-        personArr = []
+        person_arr = []
 
         for documentRelation in DocumentRelation.objects.filter(document=self):
-            personArr.append(documentRelation.person)
+            person_arr.append(documentRelation.person)
 
-        return personArr
+        return person_arr
 
     def person_names(self):
         """
@@ -1328,12 +1327,12 @@ class Document(models.Model):
         """
 			Returns a list of ancestries linked to this document
 		"""
-        ancestryArr = []
+        ancestry_arr = []
 
         for ancestryRelation in DocumentAncestryRelation.objects.filter(document=self):
-            ancestryArr.append(ancestryRelation.ancestry)
+            ancestry_arr.append(ancestryRelation.ancestry)
 
-        return ancestryArr
+        return ancestry_arr
 
     def css_class(self):
         """
