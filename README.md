@@ -7,7 +7,9 @@ cd ~/Prog/SmartAncestry/smartancestry
 ## Installation
 
 brew install node
-pip install -r requirements.txt
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python get-pip.py
+sudo pip install -r requirements.txt
 https://www.princexml.com/doc/9.0/installing/#macosx
 brew install cairo
 brew install libjpeg

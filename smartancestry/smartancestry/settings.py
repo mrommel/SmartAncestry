@@ -10,6 +10,8 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import django
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 from django.utils.translation import ugettext_lazy as _
@@ -29,7 +31,6 @@ ALLOWED_HOSTS = []
 
 PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
 
-
 # Application definition
 
 INSTALLED_APPS = (
@@ -40,7 +41,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
-    #'data',
     'data.apps.DataConfig',
 )
 
@@ -82,8 +82,8 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
-            'datefmt' : "%d/%b/%Y %H:%M:%S"
+            'format': "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt': "%d/%b/%Y %H:%M:%S"
         },
         'simple': {
             'format': '%(levelname)s %(message)s'
@@ -111,9 +111,9 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers':['file2'],
+            'handlers': ['file2'],
             'propagate': True,
-            'level':'DEBUG',
+            'level': 'DEBUG',
         },
         'data.models': {
             'handlers': ['file'],
@@ -142,8 +142,8 @@ DATABASES = {
 LANGUAGE_CODE = 'de-de'
 
 LANGUAGES = (
-  ('de', _('German')),
-  ('en', _('English')),
+    ('de', _('German')),
+    ('en', _('English')),
 )
 
 TIME_ZONE = 'Europe/Berlin'
@@ -154,7 +154,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 STATIC_URL = '/static/'
@@ -162,5 +161,4 @@ STATIC_ROOT = '/Users/michaelrommel/Prog/SmartAncestry/smartancestry/smartancest
 MEDIA_ROOT = '/Users/michaelrommel/Prog/SmartAncestry/smartancestry/data'
 MEDIA_URL = '/media/'
 
-import django
 django.setup()
