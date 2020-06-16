@@ -1,6 +1,6 @@
 from django.conf.urls import *
 
-import views
+from . import views
 from django.views.generic import RedirectView
 
 urlpatterns = [

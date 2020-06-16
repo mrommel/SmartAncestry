@@ -26,8 +26,8 @@ class Migration(migrations.Migration):
             name='DistributionRelation',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('ancestry', models.ForeignKey(to='data.Ancestry')),
-                ('distribution', models.ForeignKey(to='data.Distribution')),
+                ('ancestry', models.ForeignKey(to='data.Ancestry', on_delete=models.CASCADE)),
+                ('distribution', models.ForeignKey(to='data.Distribution', on_delete=models.CASCADE)),
             ],
             options={
             },

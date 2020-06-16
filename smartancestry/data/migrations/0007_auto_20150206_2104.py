@@ -28,13 +28,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='person',
             name='birth_location',
-            field=models.ForeignKey(related_name='birth_location', blank=True, to='data.Location', null=True),
+            field=models.ForeignKey(related_name='birth_location', on_delete=models.CASCADE, blank=True, to='data.Location', null=True),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='person',
             name='death_location',
-            field=models.ForeignKey(related_name='death_location', blank=True, to='data.Location', null=True),
+            field=models.ForeignKey(related_name='death_location', on_delete=models.CASCADE, blank=True, to='data.Location', null=True),
             preserve_default=True,
         ),
         migrations.AlterField(

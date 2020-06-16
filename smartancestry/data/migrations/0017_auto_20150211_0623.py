@@ -14,13 +14,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='familystatusrelation',
             name='man',
-            field=models.ForeignKey(related_name='husband', blank=True, to='data.Person', null=True),
+            field=models.ForeignKey(related_name='husband', on_delete=models.CASCADE, blank=True, to='data.Person', null=True),
             preserve_default=True,
         ),
         migrations.AlterField(
             model_name='familystatusrelation',
             name='woman',
-            field=models.ForeignKey(related_name='wife', blank=True, to='data.Person', null=True),
+            field=models.ForeignKey(related_name='wife', on_delete=models.CASCADE, blank=True, to='data.Person', null=True),
             preserve_default=True,
         ),
     ]

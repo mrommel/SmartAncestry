@@ -25,8 +25,8 @@ class Migration(migrations.Migration):
             name='AncestryRelation',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('ancestry', models.ForeignKey(to='data.Ancestry')),
-                ('person', models.ForeignKey(to='data.Person')),
+                ('ancestry', models.ForeignKey(to='data.Ancestry', on_delete=models.CASCADE)),
+                ('person', models.ForeignKey(to='data.Person', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -42,13 +42,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='person',
             name='father',
-            field=models.ForeignKey(related_name='children_father', blank=True, to='data.Person', null=True),
+            field=models.ForeignKey(related_name='children_father', on_delete=models.CASCADE, blank=True, to='data.Person', null=True),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='person',
             name='mother',
-            field=models.ForeignKey(related_name='children_mother', blank=True, to='data.Person', null=True),
+            field=models.ForeignKey(related_name='children_mother', on_delete=models.CASCADE, blank=True, to='data.Person', null=True),
             preserve_default=True,
         ),
         migrations.AddField(

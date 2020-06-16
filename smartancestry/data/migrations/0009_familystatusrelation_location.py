@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='familystatusrelation',
             name='location',
-            field=models.ForeignKey(blank=True, to='data.Location', null=True),
+            field=models.ForeignKey(blank=True, to='data.Location', on_delete=models.CASCADE, null=True),
             preserve_default=True,
         ),
     ]
