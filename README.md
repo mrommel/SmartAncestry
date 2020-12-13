@@ -6,10 +6,19 @@ cd ~/Prog/SmartAncestry/smartancestry
 
 ## Installation
 
-brew install node
+### pip
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-python get-pip.py
-sudo pip install -r requirements.txt
+python3 get-pip.py
+
+### Creating a virtual environment
+python3 -m pip install --user virtualenv
+python3 -m venv vsmartancentry
+
+source vsmartancentry/bin/activate
+
+brew install node
+
+sudo pip3 install -r requirements.txt
 https://www.princexml.com/doc/9.0/installing/#macosx
 brew install cairo
 brew install libjpeg
