@@ -893,6 +893,20 @@ class Person(models.Model):
         return mark_safe('%s %s %s' % (
             (' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip(), self.last_name, date_str))
 
+    def __str__(self):
+        first = self.first_name
+        first = first.replace(u'\xfc', '&uuml;')
+        first = first.replace(u'\xf6', '&ouml;')
+        first = first.replace(u'\xe4', '&auml;')
+
+        if self.is_alive():
+            date_str = '(geb. %s)' % self.birth_year()
+        else:
+            date_str = '(%s-%s)' % (self.birth_year(), self.death_year())
+
+        return mark_safe('%s %s %s' % (
+            (' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip(), self.last_name, date_str))
+
 
 class TimelineInfo(object):
     def __init__(self, date, date_unclear, title):
