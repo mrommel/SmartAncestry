@@ -153,9 +153,11 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
+
 STATIC_URL = '/static/'
-STATIC_ROOT = '~/Prog/SmartAncestry/smartancestry/smartancestry'
-MEDIA_ROOT = '~/Prog/SmartAncestry/smartancestry/data'
+STATIC_ROOT = os.path.join(BASE_DIR, 'smartancestry')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'data')
 MEDIA_URL = '/media/'
 
 # django.setup()
+# /Users/michaelrommel/Prog/SmartAncestry/smartancestry/data/media/persons
