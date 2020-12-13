@@ -1187,7 +1187,7 @@ class Ancestry(models.Model):
                 youngest_age = person.age()
                 youngest_person = person
 
-            if person.age() > oldest_age:
+            if person.age() is not None and person.age() > oldest_age:
                 oldest_age = person.age()
                 oldest_person = person
 
