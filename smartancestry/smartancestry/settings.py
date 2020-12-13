@@ -160,4 +160,4 @@ STATIC_ROOT = '/Users/michaelrommel/Prog/SmartAncestry/smartancestry/smartancest
 MEDIA_ROOT = '/Users/michaelrommel/Prog/SmartAncestry/smartancestry/data'
 MEDIA_URL = '/media/'
 
-django.setup()
+# django.setup()
