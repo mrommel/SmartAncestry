@@ -67,13 +67,13 @@ start() {
 						echo "Starting python"
 						#deactivate
 						#workon venv
-						python3 manage.py runserver 127.0.0.1:7000 &> ./python.log &
+						python3 manage.py runserver 0.0.0.0:7000 &> ./python.log &
 						echo $! > $python_pidfile
 						sleep 5
 				fi
 		else
 				echo "Starting python"
-				python3 manage.py runserver 127.0.0.1:7000 &> ./python.log &
+				python3 manage.py runserver 0.0.0.0:7000 &> ./python.log &
 				echo $! > $python_pidfile
 				sleep 5
 		fi

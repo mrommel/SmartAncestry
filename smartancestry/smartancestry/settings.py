@@ -10,11 +10,9 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-import django
+from django.utils.translation import ugettext_lazy as _
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
-from django.utils.translation import ugettext_lazy as _
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -156,8 +154,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 STATIC_URL = '/static/'
-STATIC_ROOT = '/Users/michaelrommel/Prog/SmartAncestry/smartancestry/smartancestry'
-MEDIA_ROOT = '/Users/michaelrommel/Prog/SmartAncestry/smartancestry/data'
+STATIC_ROOT = '~/Prog/SmartAncestry/smartancestry/smartancestry'
+MEDIA_ROOT = '~/Prog/SmartAncestry/smartancestry/data'
 MEDIA_URL = '/media/'
 
 # django.setup()
