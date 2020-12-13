@@ -105,7 +105,8 @@ class TreeInfo(object):
         sign = self.person.gender_sign()
         tmp = self.person.full_name()
         tmp = tmp.replace(u'\xe4', '&auml;')
-        from smartancestry.data.tools import trimAndUnescape, underlineIndices, ellipses
+        # from smartancestry.data.tools import trimAndUnescape, underlineIndices, ellipses
+        from data.tools import trimAndUnescape, underlineIndices, ellipses
         name = trimAndUnescape(str(tmp))
         indices = underlineIndices(str(tmp))
 
@@ -366,7 +367,8 @@ class Person(models.Model):
     tree_link.allow_tags = True
 
     def age(self):
-        from smartancestry.data.tools import calculate_age
+        # from smartancestry.data.tools import calculate_age
+        from data.tools import calculate_age
 
         if self.birth_date_unclear:
             return None
@@ -380,7 +382,8 @@ class Person(models.Model):
         return calculate_age(self.birth_date, self.death_date)
 
     def ageAtMarriage(self):
-        from smartancestry.data.tools import calculate_age
+        # from smartancestry.data.tools import calculate_age
+        from data.tools import calculate_age
 
         date_married = self.married_at()
 
@@ -809,7 +812,8 @@ class Person(models.Model):
         return mark_safe(str(result_list).replace('"', '').replace('}, {', '};{').replace(' ', '%20'))
 
     def relation_to_str(self, featured_person):
-        from smartancestry.data.tools import ancestry_relation
+        # from smartancestry.data.tools import ancestry_relation
+        from data.tools import ancestry_relation
 
         return mark_safe(
             '%s %s %s' % (ancestry_relation(self, featured_person.person), _('of'), featured_person.person))
@@ -1252,7 +1256,8 @@ class Ancestry(models.Model):
 			Returns appendices (documents that are related to persons) of this ancestry
 			- newest documents first
 		"""
-        from smartancestry.data.tools import is_empty
+        # from smartancestry.data.tools import is_empty
+        from data.tools import is_empty
 
         document_list = []
         for documentRelation in DocumentRelation.objects.all():
@@ -1422,7 +1427,8 @@ class AncestryRelation(models.Model):
     featured = models.NullBooleanField(default=False, blank=True, null=True)
 
     def relation(self):
-        from smartancestry.data.tools import ancestry_relation
+        # from smartancestry.data.tools import ancestry_relation
+        from data.tools import ancestry_relation
 
         featured_person = self.ancestry.featured()[0]
         return ancestry_relation(self.person, featured_person.person)
