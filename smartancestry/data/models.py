@@ -35,6 +35,9 @@ class Distribution(models.Model):
     def __unicode__(self):
         return '%s' % self.family_name
 
+    def __str__(self):
+        return '%s' % self.family_name
+
 
 class Location(models.Model):
     """
@@ -89,6 +92,9 @@ class Location(models.Model):
         return 'data.views.location', [str(self.id)]
 
     def __unicode__(self):
+        return '%s (%s)' % (self.city, self.country)
+
+    def __str__(self):
         return '%s (%s)' % (self.city, self.country)
 
 
@@ -149,6 +155,9 @@ class PartnerInfo(object):
             return '%02d.%02d.%04d' % (self.date.day, self.date.month, self.date.year)
 
     def __unicode__(self):
+        return '[PartnerInfo: %s - dyo=%d,date:=%s' % (self.partner, self.date_year_only, self.date)
+
+    def __str__(self):
         return '[PartnerInfo: %s - dyo=%d,date:=%s' % (self.partner, self.date_year_only, self.date)
 
 
@@ -1010,6 +1019,9 @@ class StatisticsListInfo(object):
     def __unicode__(self):
         return 'StatisticsListInfo: %s' % len(self.list)
 
+    def __str__(self):
+        return 'StatisticsListInfo: %s' % len(self.list)
+
 
 class StatisticsInfo(object):
     def __init__(self, birthPerMonth, deathPerMonth, gender, birthLocations, children, specials):
@@ -1309,6 +1321,9 @@ class Ancestry(models.Model):
     def __unicode__(self):
         return self.name
 
+    def __str__(self):
+        return self.name
+
 
 class DistributionRelation(models.Model):
     """
@@ -1318,6 +1333,9 @@ class DistributionRelation(models.Model):
     ancestry = models.ForeignKey(Ancestry, on_delete=models.CASCADE)
 
     def __unicode__(self):
+        return '%s - %s' % (self.ancestry.name, self.distribution.family_name)
+
+    def __str__(self):
         return '%s - %s' % (self.ancestry.name, self.distribution.family_name)
 
 
@@ -1393,6 +1411,9 @@ class Document(models.Model):
     def __unicode__(self):
         return self.name
 
+    def __str__(self):
+        return self.name
+
 
 class DocumentRelation(models.Model):
     """
@@ -1404,6 +1425,9 @@ class DocumentRelation(models.Model):
     def __unicode__(self):
         return mark_safe(u'%s - %s' % (self.person, self.document.name))
 
+    def __str__(self):
+        return mark_safe(u'%s - %s' % (self.person, self.document.name))
+
 
 class DocumentAncestryRelation(models.Model):
     """
@@ -1413,6 +1437,9 @@ class DocumentAncestryRelation(models.Model):
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
 
     def __unicode__(self):
+        return mark_safe(u'%s - %s' % (self.ancestry, self.document.name))
+
+    def __str__(self):
         return mark_safe(u'%s - %s' % (self.ancestry, self.document.name))
 
 
@@ -1434,6 +1461,11 @@ class Question(models.Model):
         first = mark_safe(first.replace(" _", " <u>").replace("_ ", "</u> "))
         return mark_safe((u' %s %s - %s' % (first, self.person.last_name, self.question)).strip())
 
+    def __str__(self):
+        first = mark_safe(u' %s ' % self.person.first_name)
+        first = mark_safe(first.replace(" _", " <u>").replace("_ ", "</u> "))
+        return mark_safe((u' %s %s - %s' % (first, self.person.last_name, self.question)).strip())
+
 
 class AncestryRelation(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
@@ -1448,6 +1480,9 @@ class AncestryRelation(models.Model):
         return ancestry_relation(self.person, featured_person.person)
 
     def __unicode__(self):
+        return u'%s' % self.ancestry.name
+
+    def __str__(self):
         return u'%s' % self.ancestry.name
 
 
@@ -1518,6 +1553,19 @@ class FamilyStatusRelation(models.Model):
         return mark_safe(
             (' ' + switcher.get(self.status, '') + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip())
 
+    def __str__(self):
+        husband_str = self.husband_name()
+        wife_str = self.wife_name()
+
+        switcher = {
+            'M': _('Marriage %s and %s') % (husband_str, wife_str),
+            'P': _('Partnership %s and %s') % (husband_str, wife_str),
+            'A': _('Adoption of %s and %s') % (husband_str, wife_str),
+        }
+
+        return mark_safe(
+            (' ' + switcher.get(self.status, '') + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip())
+
 
 EVENT_TYPES = (
     ('T', _('Baptism')),
@@ -1538,4 +1586,7 @@ class PersonEvent(models.Model):
     description = models.CharField(max_length=200, null=True, blank=True)
 
     def __unicode__(self):
+        return u'%s, %s, %s' % (self.person, self.type, self.date)
+
+    def __str__(self):
         return u'%s, %s, %s' % (self.person, self.type, self.date)
