@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-18 11:43+0100\n"
+"POT-Creation-Date: 2020-12-13 18:46+0100\n"
 "PO-Revision-Date: 2018-12-20 22:15+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -34,208 +34,208 @@ msgstr "Personen, die hier geboren sind"
 msgid "List of Persons died here"
 msgstr "Personen, die hier gestorben sind"
 
-#: models.py:117 models.py:119 templates/data/person.html:192
+#: models.py:122 models.py:124 templates/data/person.html:192
 msgid "Born"
 msgstr "Geboren"
 
-#: models.py:125 templates/data/person.html:193
+#: models.py:130 templates/data/person.html:193
 msgid "Died"
 msgstr "Gestorben"
 
-#: models.py:212
+#: models.py:220
 msgid "Male"
 msgstr "Männlich"
 
-#: models.py:212
+#: models.py:220
 msgid "Female"
 msgstr "Weiblich"
 
-#: models.py:212 templates/data/ancestry.html:299
+#: models.py:220 templates/data/ancestry.html:299
 msgid "Gender"
 msgstr "Geschlecht"
 
-#: models.py:213
+#: models.py:221
 msgid "date of birth"
 msgstr "Geburtsdatum"
 
-#: models.py:217
+#: models.py:226
 msgid "date of death"
 msgstr "Sterbbedatum"
 
-#: models.py:236
+#: models.py:246
 msgid "Name"
 msgstr "Name"
 
-#: models.py:815 models.py:828 models.py:840 templates/data/dot_tree.html:8
+#: models.py:828 models.py:841 models.py:855 templates/data/dot_tree.html:8
 msgid "of"
 msgstr "von"
 
-#: models.py:841
+#: models.py:856
 msgid "ancestry"
 msgstr "Stammbaum"
 
-#: models.py:957
+#: models.py:986
 msgid "Rest"
 msgstr "Rest"
 
-#: models.py:1150 templates/data/ancestry_export.html:496
+#: models.py:1182 templates/data/ancestry_export.html:496
 msgid "Women"
 msgstr "Frauen"
 
-#: models.py:1152 templates/data/ancestry_export.html:492
+#: models.py:1184 templates/data/ancestry_export.html:492
 msgid "Men"
 msgstr "Männer"
 
-#: models.py:1179
+#: models.py:1211
 msgid "Youngest person"
 msgstr "Jüngste Person"
 
-#: models.py:1179 models.py:1180 models.py:1182 models.py:1184
+#: models.py:1211 models.py:1212 models.py:1214 models.py:1216
 #: templates/data/ancestry.html:193 templates/data/ancestry_export.html:176
 msgid "Years"
 msgstr "Jahre"
 
-#: models.py:1180
+#: models.py:1212
 msgid "Oldest person"
 msgstr "Älteste Person"
 
-#: models.py:1181
+#: models.py:1213
 msgid "Latest marriage"
 msgstr "Späteste Heirat"
 
-#: models.py:1183
+#: models.py:1215
 msgid "Youngest marriage"
 msgstr "Jüngste Heirat"
 
-#: models.py:1185
+#: models.py:1217
 msgid "Most Children"
 msgstr "Meiste Kinder"
 
-#: models.py:1186 templates/data/ancestry.html:359
+#: models.py:1218 templates/data/ancestry.html:359
 #: templates/data/ancestry.html:370 templates/data/ancestry_export.html:70
 #: templates/data/ancestry_export.html:300
 #: templates/data/ancestry_export.html:534 templates/data/person.html:116
 msgid "Children"
 msgstr "Kinder"
 
-#: models.py:1202
+#: models.py:1234
 #, python-format
 msgid "%s %s (born %s) was born in %s"
 msgstr "%s %s (geb. %s) wurde in %s geboren"
 
-#: models.py:1207
+#: models.py:1239
 #, python-format
 msgid "%s %s was born in %s"
 msgstr "%s %s wurde in %s geboren"
 
-#: models.py:1212
+#: models.py:1244
 #, python-format
 msgid "%s %s was born"
 msgstr "%s %s wurde geboren"
 
-#: models.py:1216
+#: models.py:1248
 #, python-format
 msgid "%s %s has died in %s"
 msgstr "%s %s starb in %s"
 
-#: models.py:1220
+#: models.py:1252
 #, python-format
 msgid "%s %s has died"
 msgstr "%s %s starb"
 
-#: models.py:1227
+#: models.py:1259
 #, python-format
 msgid "marriage of %s and %s in %s"
 msgstr "Hochzeit von %s und %s in %s"
 
-#: models.py:1233
+#: models.py:1265
 #, python-format
 msgid "marriage of %s and %s"
 msgstr "Hochzeit von %s und %s"
 
-#: models.py:1237
+#: models.py:1269
 #, python-format
 msgid "divorce of %s and %s"
 msgstr "Scheidung von %s und %s"
 
-#: models.py:1305
+#: models.py:1344
 msgid "Portrait"
 msgstr "Portrait"
 
-#: models.py:1306
+#: models.py:1345
 msgid "Landscape"
 msgstr "Landscape"
 
-#: models.py:1317
+#: models.py:1356
 msgid "date of creation"
 msgstr "Erstellungsdatum"
 
-#: models.py:1403
+#: models.py:1451
 msgid "date of answer"
 msgstr "Datum der Antwort"
 
-#: models.py:1436 templates/data/ancestry_export.html:245
+#: models.py:1493 templates/data/ancestry_export.html:245
 msgid "Marriage"
 msgstr "Heirat"
 
-#: models.py:1436 templates/data/ancestry_export.html:251
+#: models.py:1493 templates/data/ancestry_export.html:251
 msgid "Partnership"
 msgstr "Partnerschaft"
 
-#: models.py:1437
+#: models.py:1494
 msgid "Adoption"
 msgstr "Adoption"
 
-#: models.py:1438 models.py:1514
+#: models.py:1495 models.py:1584
 msgid "date of marriage or divorce"
 msgstr "Datum der Heirat oder der Scheidung"
 
-#: models.py:1440 tools.py:90
+#: models.py:1497 tools.py:90
 msgid "husband"
 msgstr "Ehemann"
 
-#: models.py:1441 tools.py:80
+#: models.py:1498 tools.py:80
 msgid "wife"
 msgstr "Ehefrau"
 
-#: models.py:1480
+#: models.py:1537
 msgid "married"
 msgstr "Verheirated"
 
-#: models.py:1481
+#: models.py:1538
 msgid "partnership"
 msgstr "Partnerschaft"
 
-#: models.py:1482
+#: models.py:1539
 msgid "adopted"
 msgstr "Adoptiert"
 
-#: models.py:1492
+#: models.py:1549 models.py:1562
 #, python-format
 msgid "Marriage %s and %s"
 msgstr "Hochzeit von %s und %s"
 
-#: models.py:1493
+#: models.py:1550 models.py:1563
 #, python-format
 msgid "Partnership %s and %s"
 msgstr "Partnerschaft zwischen %s und %s"
 
-#: models.py:1494
+#: models.py:1551 models.py:1564
 #, python-format
 msgid "Adoption of %s and %s"
 msgstr "Adoption von %s und %s"
 
-#: models.py:1502
+#: models.py:1572
 msgid "Baptism"
 msgstr "Taufe"
 
-#: models.py:1503
+#: models.py:1573
 msgid "Funeral"
 msgstr "Beerdigung"
 
-#: models.py:1504
+#: models.py:1574
 msgid "Confirmation"
-msgstr ""
+msgstr "Konfirmation"
 
 #: templates/base.html:20 templates/data/index.html:6
 msgid "Home"
@@ -609,18 +609,6 @@ msgstr "Großmutter"
 #: tools.py:183
 msgid "mother"
 msgstr "Mutter"
-
-#: tools.py:209
-#, fuzzy
-#| msgid "girl cousins daughter"
-msgid "girl cousins daugther"
-msgstr "Nichte 2ten Grades"
-
-#: tools.py:211
-#, fuzzy
-#| msgid "boy cousins daughter"
-msgid "boy cousins daugther"
-msgstr "Nichte 2ten Grades"
 
 #: tools.py:267
 msgid "son in law"
