@@ -1,10 +1,12 @@
-from django.conf.urls import *
+#!/usr/bin/env python3
 
+from django.conf.urls import *
 from . import views
-from django.views.generic import RedirectView
+
+# from django.views.generic import RedirectView
 
 urlpatterns = [
-    url(r'^$', RedirectView.as_view(url='/index/')),
+    # url(r'^$', RedirectView.as_view(url='/index/')),
     url(r'^index/', views.index, name='data.views.index'),
     url(r'^persons/$', views.persons, name='data.views.persons'),
     url(r'^person/(?P<person_id>\d+)/', views.person, name='data.views.person'),
