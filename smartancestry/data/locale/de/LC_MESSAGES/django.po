@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-13 18:46+0100\n"
+"POT-Creation-Date: 2020-12-13 19:45+0100\n"
 "PO-Revision-Date: 2018-12-20 22:15+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -548,128 +548,112 @@ msgstr "Schwiegermutter"
 msgid "father"
 msgstr "Vater"
 
-#: tools.py:106 tools.py:111 tools.py:189 tools.py:194
+#: tools.py:106 tools.py:111 tools.py:221 tools.py:226
 msgid "aunt"
 msgstr "Tante"
 
-#: tools.py:108 tools.py:114 tools.py:191 tools.py:197
+#: tools.py:108 tools.py:114 tools.py:223 tools.py:229
 msgid "uncle"
 msgstr "Onkel"
 
-#: tools.py:119 tools.py:202
+#: tools.py:119 tools.py:234
 msgid "girl cousin"
 msgstr "Cousine"
 
-#: tools.py:121 tools.py:204
+#: tools.py:121 tools.py:236
 msgid "boy cousin"
 msgstr "Cousin"
 
-#: tools.py:126
+#: tools.py:126 tools.py:241
 msgid "girl cousins daughter"
 msgstr "Nichte 2ten Grades"
 
-#: tools.py:128
+#: tools.py:128 tools.py:243
 msgid "boy cousins daughter"
 msgstr "Nichte 2ten Grades"
 
-#: tools.py:130 tools.py:213
+#: tools.py:130 tools.py:245
 msgid "girl cousins son"
 msgstr "Neffe 2ten Grades"
 
-#: tools.py:132 tools.py:215
+#: tools.py:132 tools.py:247
 msgid "boy cousins son"
 msgstr "Neffe 2ten Grades"
 
-#: tools.py:135 tools.py:218
+#: tools.py:135 tools.py:250
 msgid "grandfather"
 msgstr "Großvater"
 
-#: tools.py:140 tools.py:164 tools.py:223 tools.py:247
+#: tools.py:140 tools.py:196 tools.py:255 tools.py:279
 msgid "greatgrandfather"
 msgstr "Urgroßvater"
 
-#: tools.py:143 tools.py:153 tools.py:167 tools.py:177 tools.py:226
-#: tools.py:236 tools.py:250 tools.py:260
+#: tools.py:145 tools.py:171 tools.py:199 tools.py:209 tools.py:258
+#: tools.py:268 tools.py:282 tools.py:292
 msgid "greatgreatgrandfather"
 msgstr "Ururgroßvater"
 
-#: tools.py:146 tools.py:156 tools.py:170 tools.py:180 tools.py:229
-#: tools.py:239 tools.py:253 tools.py:263
+#: tools.py:148 tools.py:159 tools.py:174 tools.py:185
+msgid "greatgreatgreatgrandfather"
+msgstr "Urururgroßvater"
+
+#: tools.py:151 tools.py:162 tools.py:177 tools.py:188
+msgid "greatgreatgreatgrandmother"
+msgstr "Urururgroßmutter"
+
+#: tools.py:156 tools.py:182 tools.py:202 tools.py:212 tools.py:261
+#: tools.py:271 tools.py:285 tools.py:295
 msgid "greatgreatgrandmother"
 msgstr "Ururgroßmutter"
 
-#: tools.py:150 tools.py:174 tools.py:233 tools.py:257
+#: tools.py:166 tools.py:206 tools.py:265 tools.py:289
 msgid "greatgrandmother"
 msgstr "Urgroßmutter"
 
-#: tools.py:159 tools.py:242
+#: tools.py:191 tools.py:274
 msgid "grandmother"
 msgstr "Großmutter"
 
-#: tools.py:183
+#: tools.py:215
 msgid "mother"
 msgstr "Mutter"
 
-#: tools.py:267
+#: tools.py:299
 msgid "son in law"
 msgstr "Schwiegersohn"
 
-#: tools.py:271
+#: tools.py:303
 msgid "daughter in law"
 msgstr "Schwiegertochter"
 
-#: tools.py:275
+#: tools.py:307
 msgid "sister"
 msgstr "Schwester"
 
-#: tools.py:277
+#: tools.py:309
 msgid "brother"
 msgstr "Bruder"
 
-#: tools.py:281
+#: tools.py:313
 msgid "sister in law"
 msgstr "Schwägerin"
 
-#: tools.py:284
+#: tools.py:316
 msgid "brother in law"
 msgstr "Schwager"
 
-#: tools.py:289
+#: tools.py:321
 msgid "niece"
 msgstr "Nichte"
 
-#: tools.py:291
+#: tools.py:323
 msgid "nephew"
 msgstr "Neffe"
 
-#: tools.py:296
+#: tools.py:328
 msgid "great niece"
 msgstr "Großnichte"
 
-#: tools.py:298
+#: tools.py:330
 msgid "great nephew"
 msgstr "Großneffe"
-
-#~ msgid "divorced"
-#~ msgstr "Geschieden"
-
-#~ msgid "Divorce %s and %s"
-#~ msgstr "Scheidung von %s und %s"
-
-#~ msgid "Birth place"
-#~ msgstr "Geburtsort"
-
-#~ msgid "Death place"
-#~ msgstr "Todesort"
-
-#~ msgid "birth_location"
-#~ msgstr "Geburtsort"
-
-#~ msgid "Family - Father"
-#~ msgstr "Familie - Vater"
-
-#~ msgid "Number of women"
-#~ msgstr "Anzahl der Frauen"
-
-#~ msgid "Number of men"
-#~ msgstr "Anzahl der Männer"
