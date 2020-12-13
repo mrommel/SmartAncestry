@@ -3,7 +3,6 @@ from datetime import date
 from itertools import chain, groupby
 from operator import attrgetter
 
-#from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Q, CharField
 from django.urls import reverse
@@ -11,7 +10,6 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from typing import Tuple
 
-#import smartancestry.data.tools
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -832,17 +830,18 @@ class Person(models.Model):
     relation_in_str.allow_tags = True
 
     def relation_str(self):
-        from smartancestry.data.tools import ancestry_relation
+        # from smartancestry.data.tools import ancestry_relation
+        from data.tools import ancestry_relation
 
-        str = ''
+        str_value = ''
 
         for ancestry in self.ancestries():
             featured_person = ancestry.ancestry.featured()[0]
-            str = '%s %s %s %s (%s %s)<br />' % (
-                str, ancestry_relation(self, featured_person.person), _('of'), featured_person.person.get_admin_url(),
+            str_value = '%s %s %s %s (%s %s)<br />' % (
+                str_value, ancestry_relation(self, featured_person.person), _('of'), featured_person.person.get_admin_url(),
                 _('ancestry'), ancestry.ancestry)
 
-        return mark_safe(str)
+        return mark_safe(str_value)
 
     relation_str.allow_tags = True
 
