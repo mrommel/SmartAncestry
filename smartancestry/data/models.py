@@ -830,7 +830,7 @@ class Person(models.Model):
     relation_to_str.allow_tags = True
 
     def relation_in_str(self, ancestry):
-        from smartancestry.data.tools import ancestry_relation
+        from data.tools import ancestry_relation
 
         featured_person = ancestry.featured()[0]
         relation = ancestry_relation(self, featured_person.person)
@@ -849,10 +849,11 @@ class Person(models.Model):
         str_value = ''
 
         for ancestry in self.ancestries():
-            featured_person = ancestry.ancestry.featured()[0]
-            str_value = '%s %s %s %s (%s %s)<br />' % (
-                str_value, ancestry_relation(self, featured_person.person), _('of'), featured_person.person.get_admin_url(),
-                _('ancestry'), ancestry.ancestry)
+            if len(ancestry.ancestry.featured()) > 0:
+                featured_person = ancestry.ancestry.featured()[0]
+                str_value = '%s %s %s %s (%s %s)<br />' % (
+                    str_value, ancestry_relation(self, featured_person.person), _('of'), featured_person.person.get_admin_url(),
+                    _('ancestry'), ancestry.ancestry)
 
         return mark_safe(str_value)
 
@@ -1190,7 +1191,7 @@ class Ancestry(models.Model):
                 oldest_age = person.age()
                 oldest_person = person
 
-            if person.ageAtMarriage() > latest_marriage_age:
+            if person.ageAtMarriage() is not None and person.ageAtMarriage() > latest_marriage_age:
                 latest_marriage_age = person.ageAtMarriage()
                 latest_marriage_person = person
 
