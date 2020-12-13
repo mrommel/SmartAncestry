@@ -73,3 +73,12 @@ smartancestry/python.pid
 smartancestry/tree.log
 smartancestry/tree.pid
 smartancestry/vsmartancentry
+smartancestry/data/static/data/js/node_modules/.bin
+smartancestry/data/static/data/js/node_modules/abbrev
+smartancestry/data/static/data/js/node_modules/ansi-regex
+smartancestry/data/static/data/js/node_modules/aproba
+smartancestry/data/static/data/js/node_modules/are-we-there-yet
+smartancestry/data/static/data/js/node_modules/canvas
+smartancestry/data/static/data/js/node_modules/balanced-match
+smartancestry/data/static/data/js/node_modules/brace-expansion
+smartancestry/data/static/data/js/node_modules
