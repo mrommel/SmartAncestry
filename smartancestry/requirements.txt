@@ -1,4 +1,4 @@
-Django==1.11.20
+Django==1.11.29
 django-extensions==3.0.9
 django-suit==0.2.25
 Pillow==8.0.1
