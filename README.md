@@ -24,10 +24,11 @@ brew install cairo
 brew install libjpeg
 brew install graphviz
 npm i request
+npm i canvas
 
 ## run web server
 
-python manage.py runserver 7000
+python3 manage.py runserver 7000
 
 ## data migration
 
