@@ -624,12 +624,12 @@ class Person(models.Model):
         """
 			iterate (with recursion) thru the parents
 		"""
-        if len(filter(lambda x: x.person.id == self.id, relatives_list)) == 0:
+        if len(list(filter(lambda x: x.person.id == self.id, relatives_list))) == 0:
             relatives_list.append(TreeInfo(level, self, 0))
 
         for partner in self.partner_relations():
             if partner.partner is not None and (
-                    len(filter(lambda x: x.person == partner.partner, relatives_list)) == 0):
+                    len(list(filter(lambda x: x.person == partner.partner, relatives_list))) == 0):
                 partner.partner.relatives_parents(level, relatives_list, relations_list, connection_list, max_level)
 
                 if self.sex == 'M':
@@ -644,11 +644,11 @@ class Person(models.Model):
                 else:
                     relations_list.append(MarriageInfo(level, marriage_id, ""))
 
-                if len(filter(lambda x: x.source == self.id and x.destination == marriage_id, connection_list)) == 0:
+                if len(list(filter(lambda x: x.source == self.id and x.destination == marriage_id, connection_list))) == 0:
                     connection_list.append(RelationsInfo(self.id, marriage_id))
 
-                if (len(filter(lambda x: x.source == partner.partner.id and x.destination == marriage_id,
-                               connection_list)) == 0):
+                if (len(list(filter(lambda x: x.source == partner.partner.id and x.destination == marriage_id,
+                               connection_list))) == 0):
                     connection_list.append(RelationsInfo(partner.partner.id, marriage_id))
 
         if self.father is not None and level < max_level:
@@ -660,7 +660,7 @@ class Person(models.Model):
         if self.mother is not None and self.father is not None and level < max_level:
             marriage_id = "marriage_%s_%s" % (self.father.id, self.mother.id)
 
-            if len(filter(lambda x: x.source == marriage_id and x.destination == self.id, connection_list)) == 0:
+            if len(list(filter(lambda x: x.source == marriage_id and x.destination == self.id, connection_list))) == 0:
                 connection_list.append(RelationsInfo(marriage_id, self.id))
 
         return RelativesInfo(relatives_list, relations_list, connection_list)
@@ -669,7 +669,7 @@ class Person(models.Model):
         """
 			iterate (with recursion) thru the children
 		"""
-        if len(filter(lambda x: x.person.id == self.id, relatives_list)) == 0:
+        if len(list(filter(lambda x: x.person.id == self.id, relatives_list))) == 0:
             relatives_list.append(TreeInfo(level, self, 0))
 
         for child in self.children():
@@ -677,9 +677,9 @@ class Person(models.Model):
 
         for partner in self.partner_relations():
             if partner.partner is not None and (
-                    len(filter(lambda x: x.person == partner.partner, relatives_list)) == 0):
+                    len(list(filter(lambda x: x.person == partner.partner, relatives_list))) == 0):
 
-                if len(filter(lambda x: x.person.id == partner.partner.id, relatives_list)) == 0:
+                if len(list(filter(lambda x: x.person.id == partner.partner.id, relatives_list))) == 0:
                     relatives_list.append(TreeInfo(level, partner.partner, 0))
 
                 if self.sex == 'M':
@@ -700,7 +700,7 @@ class Person(models.Model):
         if self.father is not None and self.mother is not None:
             marriage_id = "marriage_%s_%s" % (self.father.id, self.mother.id)
 
-            if len(filter(lambda x: x.source == marriage_id and x.destination == self.id, connection_list)) == 0:
+            if len(list(filter(lambda x: x.source == marriage_id and x.destination == self.id, connection_list))) == 0:
                 connection_list.append(RelationsInfo(marriage_id, self.id))
 
         return RelativesInfo(relatives_list, relations_list, connection_list)
