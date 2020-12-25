@@ -305,7 +305,7 @@ class Person(models.Model):
         age_str = self.age()
         if age_str is None:
             age_str = '-'
-        return mark_safe('%s<br />%s<br />%s' % (date_str, death_str, age_str))
+        return mark_safe('%s<br />%s<br />%s %s' % (date_str, death_str, age_str, _('years')))
 
     def death_year(self):
         if self.death_date is None and self.already_died:

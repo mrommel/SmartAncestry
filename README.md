@@ -32,10 +32,11 @@ python3 manage.py runserver 7000
 
 ## data migration
 
-workon venv
-python manage.py makemigrations data
-python manage.py sqlmigrate data 0007
-python manage.py migrate
+source vsmartancentry/bin/activate
+
+python3 manage.py makemigrations data
+python3 manage.py sqlmigrate data 0007
+python3 manage.py migrate
 deactivate
 
 ## translations
@@ -45,9 +46,11 @@ deactivate
 brew install gettext
 brew link gettext --force
 
-cd ~/Prog/SmartAncestry/smartancestry/data/
-python ../manage.py makemessages -l de -e html,txt,py -e xml
-python ../manage.py compilemessages
+cd ~/Prog/SmartAncestry/smartancestry/
+source vsmartancentry/bin/activate
+cd data
+python3 ../manage.py makemessages -l de -e html,txt,py -e xml
+python3 ../manage.py compilemessages
 
 ## node js scripts
 
