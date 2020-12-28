@@ -95,6 +95,39 @@ def ancestry_export(request, ancestry_id):
     }))
 
 
+def ancestry_export_no_documents(request, ancestry_id):
+    try:
+        ancestry = Ancestry.objects.get(pk=ancestry_id)
+    except Ancestry.DoesNotExist:
+        raise Http404("Ancestry does not exist")
+
+    sorted_members = ancestry.members()
+    sorted_members = sorted(sorted_members, key=attrgetter('person.first_name'))
+    sorted_members = sorted(sorted_members, key=attrgetter('person.last_name'))
+
+    members = []
+    for member in ancestry.members():
+        member.person.template_value1 = member.person.relation_in_str(ancestry)
+
+        members.append(member)
+
+    if request.GET.get('with') is not None:
+        include_css = True
+    else:
+        include_css = False
+
+    return HttpResponse(render_to_string('data/ancestry_export_no_documents.html', {
+        'ancestry': ancestry,
+        'sorted_members': sorted_members,
+        'member_list': members,
+        'featured': ancestry.featured(),
+        'distributions': ancestry.distributions(),
+        'locations': ancestry.locations,
+        'statistics': ancestry.statistics,
+        'include_css': include_css
+    }))
+
+
 def dot_tree(request, person_id, max_level):
     try:
         person = Person.objects.get(pk=person_id)
@@ -138,6 +171,15 @@ def export(request, ancestry_id):
     image_data = open('tmp.pdf', "rb").read()
     return HttpResponse(image_data, content_type='application/pdf')
 
+
+def export_no_documents(request, ancestry_id):
+
+    os.system(
+		"prince --no-author-style --javascript -s http://127.0.0.1:7000/static/data/style_print.css "
+		"http://127.0.0.1:7000/data/ancestry_export_no_documents/%s/Kliemank -o tmp.pdf" % ancestry_id)
+
+    image_data = open('tmp.pdf', "rb").read()
+    return HttpResponse(image_data, content_type='application/pdf')
 
 def person_image(request, person_id, person2_id):
     person_id = person2_id

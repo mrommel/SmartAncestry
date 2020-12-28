@@ -1075,6 +1075,12 @@ class Ancestry(models.Model):
 
     export.allow_tags = True
 
+    def export_no_documents(self):
+        return mark_safe(
+            '<a href="/data/export/ancestry_no_documents/%d/%s.pdf" target="_blank">Export PDF (no doc)</a>' % (self.id, self.name))
+
+    export_no_documents.allow_tags = True
+
     def export_raw(self):
         return mark_safe('<a href="/data/ancestry_export/%d/%s.html?with=style" target="_blank">Export Raw</a>' % (
             self.id, self.name))

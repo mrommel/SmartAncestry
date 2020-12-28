@@ -1,0 +1,560 @@
+{% load i18n %}{% load staticfiles %}{% load app_filters %}
+{% if include_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'data/style_print.css' %}" />
+{% endif %}
+<book>
+<frontmatter>
+<titlepage>
+{% if ancestry.image %}
+	<img src="/{{ MEDIA_URL }}..{{ ancestry.image.url }}" alt="Img" width="405">
+{% else %}
+	<img src="" alt="Img" height="637" width="405">
+{% endif %}
+
+<date>{% now "j. F Y" %}</date>
+<title>{% trans "Ancestrybook" %}</title>
+<subtitle>{{ ancestry.name }}</subtitle>
+
+</titlepage>
+
+<acknowledge>{% trans "Ancestrybook" %} {{ ancestry.name }}</acknowledge>
+
+<toc>
+<title>{% trans "Contents" %}</title>
+<list class="toc">
+
+<!-- index for chapter 1 -->
+
+<item href="#chapter1">
+	<a href="#chapter1" class="nolink">1. {% trans "Members" %}</a>
+</item>
+
+{% if sorted_members %}
+	{% for member in sorted_members %}
+		<item href="#chapter1-{{ member.person.id }}" class="sub-chapter">
+			<a href="#chapter1-{{ member.person.id }}" class="nolink">
+				{{ member.person.last_name|underline }}, {{ member.person.first_name|underline }}
+			</a>
+		</item>
+	{% endfor %}
+{% endif %}
+
+<!-- index for chapter 2 -->
+
+<item href="#chapter2">
+	<a href="#chapter2" class="nolink">2. {% trans "Timeline" %}</a>
+</item>
+
+<!-- index for chapter 3 -->
+
+<item href="#chapter3">
+	<a href="#chapter3" class="nolink">3. {% trans "Statistics" %}</a>
+</item>
+
+<item href="#chapter3-1" class="sub-chapter">
+	<a href="#chapter3-1" class="nolink">{% trans "Specials" %}</a>
+</item>
+<item href="#chapter3-2" class="sub-chapter">
+	<a href="#chapter3-2" class="nolink">{% trans "Locations" %}</a>
+</item>
+<item href="#chapter3-3" class="sub-chapter">
+	<a href="#chapter3-3" class="nolink">{% trans "Births and Deaths per month" %}</a>
+</item>
+<item href="#chapter3-4" class="sub-chapter">
+	<a href="#chapter3-4" class="nolink">{% trans "Gender distribution" %}</a>
+</item>
+<item href="#chapter3-5" class="sub-chapter">
+	<a href="#chapter3-5" class="nolink">{% trans "Birth locations" %}</a>
+</item>
+<item href="#chapter3-6" class="sub-chapter">
+	<a href="#chapter3-6" class="nolink">{% trans "Children" %}</a>
+</item>
+
+<!-- index for chapter 4 -->
+
+<item href="#chapter4">
+	<a href="#chapter4" class="nolink">4. {% trans "Family trees" %}</a>
+</item>
+
+{% if featured %}
+	{% for member in featured %}
+		<item href="#chapter4-{{ member.person.id }}" class="sub-chapter">
+			<a href="#chapter4-{{ member.person.id }}" class="nolink">
+				{{ member.person.last_name|underline }}, {{ member.person.first_name|underline }}
+			</a>
+		</item>
+	{% endfor %}
+{% endif %}
+
+<!-- index for chapter 5 -->
+
+<item href="#chapter5">
+	<a href="#chapter5" class="nolink">5. {% trans "Distributions" %}</a>
+</item>
+
+{% if distributions %}
+	{% for distribution in distributions %}
+		<item href="#chapter5-{{ distribution.distribution.id }}" class="sub-chapter">
+			<a href="#chapter5-{{ distribution.distribution.id }}" class="nolink">
+				{{ distribution.distribution }}
+			</a>
+		</item>
+	{% endfor %}
+{% endif %}
+
+</list>
+</toc>
+
+</frontmatter>
+<bookbody>
+<part>
+
+<chapter id="chapter1">
+
+<chapheader>
+<chapnum>1. </chapnum>
+<title>{% trans "Members" %}</title>
+<a id="chapter1" class="small">&nbsp;</a>
+</chapheader>
+
+<!-- fake table -->
+<para><table><tr><td></td></tr></table></para>
+
+{% if member_list %}
+	{% for member in member_list %}
+		<para>
+			<div class="not_breaking">
+			<table>
+				<tr class="{% cycle 'row' 'alternating' as row_style %}">
+					<td width="20%" rowspan="5" class="portrait alternating">
+						<div class="pngcontainer">
+							{% if member.person.image %}
+								<img src="/{{ MEDIA_URL }}..{{ member.person.image.url }}" alt="Img" class="portait_person">
+							{% else %}
+								<img src="/static/data/images/avatar_{{ member.person.sex }}.png" alt="Img{{ member.person.sex }}" class="portait_template">
+							{% endif %}
+							{% if member.person.show_dead %}
+								<img src="/static/data/images/avatar_died.png" alt="Died" class="portait_died">
+							{% endif %}
+						</div>
+					</td>
+					<td width="20%" class="label">{% trans "Last name" %}:</td>
+					<td width="20%">{% autoescape off %}{{ member.person.last_name }}{% endautoescape %}<a id="chapter1-{{ member.person.id }}" name="#chapter1-{{ member.person.id }}">&nbsp;</a></td>
+					<td width="20%" class="label">{% trans "Age" %}:</td>
+					<td width="20%">{% if member.person.age %}{{ member.person.age }} {% trans "Years" %}{% endif %}</td>
+				</tr>
+				<tr class="{% cycle row_style %}">
+					<td width="20%" class="label">{% trans "First name" %}:</td>
+					<td colspan="3">{{ member.person.first_name|underline }}</td>
+				</tr>
+				<tr class="{% cycle row_style %}">
+					<td width="20%" class="label">{% trans "Birth name" %}:</td>
+					<td colspan="3">{% if member.person.birth_name %}{{ member.person.birth_name }}{% endif %}</td>
+				</tr>
+				<tr class="{% cycle row_style %}">
+					<td width="20%" class="label">{% trans "Birth date" %}:</td>
+					<td width="60%" colspan="3">
+						{% if member.person.birth_date_unclear %}
+							-
+						{% else %}
+							{% if member.person.birth_date_only_year %}
+								{{ member.person.birth_date | date:"Y" }}
+							{% else %}
+								{{ member.person.birth_date | date:"d.m.Y" }}
+							{% endif %}
+							{% if member.person.birth_location %}
+								{% trans "in" %}
+								{% if member.person.birth_location.image %}
+									<img src="/{{ MEDIA_URL }}..{{ member.person.birth_location.image.url }}" class="location" />
+								{% endif %}
+								{{ member.person.birth_location|location_without_country }}
+							{% endif %}
+						{% endif %}
+					</td>
+				</tr>
+				<tr class="{% cycle row_style %}">
+					<td width="20%" class="label">{% trans "Death date" %}:</td>
+					<td width="60%" colspan="3">
+						{% if member.person.death_date %}
+							{% if member.person.death_date_only_year %}
+								{{ member.person.death_date | date:"Y" }}
+							{% else %}
+								{{ member.person.death_date | date:"d.m.Y" }}
+							{% endif %}
+						{% endif %}
+						{% if member.person.death_location %}
+							{% trans "in" %}
+							{% if member.person.death_location.image %}
+								<img src="/{{ MEDIA_URL }}..{{ member.person.death_location.image.url }}" class="location" />
+							{% endif %}
+							{{ member.person.death_location|location_without_country }}
+						{% endif %}
+					</td>
+				</tr>
+			</table>
+			<table>
+				{% if member.person.template_value1 %}
+					<tr class="{% cycle row_style %}">		
+						<td width="20%" class="label">{% trans "Relation" %}:</td>
+						<td width="80%" colspan="3" class="first">{{ member.person.template_value1 }}</td>
+					</tr>
+				{% endif %}
+				{% if member.person.profession %}
+				<tr class="{% cycle row_style %}">
+					<td width="20%" class="label first">{% trans "Profession" %}:</td>
+					<td width="80%" colspan="3">{{ member.person.profession }}</td>
+				</tr>
+				{% endif %}
+				{% if member.person.partner_relations %}
+					{% for partner_relation in member.person.partner_relations %}
+						<tr class="{% cycle row_style %}">
+							<td width="20%" class="label">
+								{% if partner_relation.state == 'M' %}
+									{% trans "Marriage" %}:
+								{% endif %}
+								{% if partner_relation.state == 'D' %}
+									{% trans "Divorce" %}:
+								{% endif %}
+								{% if partner_relation.state == 'P' %}
+									{% trans "Partnership" %}:
+								{% endif %}
+							</td>
+							<td width="80%" colspan="3">
+								{% if partner_relation.partner %}
+									<a href="#chapter1-{{ partner_relation.partner.id }}" class="nolink">{{ partner_relation.partner }}</a>
+								{% else %}
+									{{ partner_relation.partner_name }}
+								{% endif %}
+								{% if partner_relation.date %}
+									{% trans "at" %}
+									{{ partner_relation.date_str }}
+								{% endif %}
+								{% if partner_relation.location %}
+									{% trans "in" %}
+									{% if partner_relation.location.image %}
+										<img src="/{{ MEDIA_URL }}..{{ partner_relation.location.image.url }}" class="location" />
+									{% endif %}
+									{{ partner_relation.location|location_without_country }}
+								{% endif %}
+							</td>
+						</tr>
+					{% endfor %}
+				{% endif %}
+				<tr class="{% cycle row_style %}">
+					<td width="20%" class="label">{% trans "Father" %}:</td>
+					<td width="80%" colspan="3">
+						{% if member.person.father %}
+							<a href="#chapter1-{{ member.person.father.id }}" class="nolink">{{ member.person.father }}</a>
+						{% else %}
+							{% if member.person.father_extern %}
+								{{ member.person.father_extern|underline }}
+							{% endif %}	
+						{% endif %}
+					</td>
+				</tr>
+				<tr class="{% cycle row_style %}">
+					<td width="20%" class="label">{% trans "Mother" %}:</td>
+					<td width="80%" colspan="3">
+						{% if member.person.mother %}
+							<a href="#chapter1-{{ member.person.mother.id }}" class="nolink">{{ member.person.mother }}</a>
+						{% else %}
+							{% if member.person.mother_extern %}
+								{{ member.person.mother_extern|underline }}
+							{% endif %}
+						{% endif %}
+					</td>
+				</tr>
+				<tr class="{% cycle row_style %}">
+					<td width="20%" class="label">{% trans "Children" %}:</td>
+					<td width="80%" colspan="3">
+						<ul class="commalist">
+						{% if member.person.children %}
+    						{% for child in member.person.children %}
+        						<li><a href="#chapter1-{{ child.id }}" class="nolink">{{ child.full_name|underline }}</a></li>
+    						{% endfor %}
+						{% endif %}
+						{% if member.person.children_extern_list %}
+							{% if member.person.children_extern_list %}
+								{% for child in member.person.children_extern_list %}
+        							<li>{{ child }}</li>
+    							{% endfor %}
+    						{% endif %}
+						{% endif %}
+						</ul>
+					</td>
+				</tr>
+				<tr class="{% cycle row_style %}">
+					<td width="20%" class="label">{% trans "Siblings" %}:</td>
+					<td width="80%" colspan="3">
+						<ul class="commalist">
+						{% if member.person.siblings %}
+    						{% for child in member.person.siblings %}
+        						<li><a href="#chapter1-{{ child.id }}" class="nolink">{{ child.full_name|underline }}</a></li>
+    						{% endfor %}
+						{% endif %}
+						{% if member.person.siblings_extern_list %}
+							{% for child in member.person.siblings_extern_list %}
+        						<li>{{ child }}</li>
+    						{% endfor %}
+    					{% endif %}
+						</ul>
+					</td>
+				</tr>
+				{% if member.person.notes or member.person.external_identifier %}
+				<tr class="{% cycle row_style %}">
+					<td width="20%" class="label">{% trans "Notes" %}:</td>
+					<td width="80%" colspan="3">
+						{% if member.person.notes %}
+							{{ member.person.notes }}
+						{% endif %}
+						{% if member.person.external_identifier %}
+							{{ member.person.external_identifier }}
+						{% endif %}
+					</td>
+				</tr>
+				{% endif %}
+			</table>
+			</div>			
+		</para>
+		
+		{# resetcycle #}
+	{% endfor %}
+{% else %}
+	<para>{% trans "No members are available." %}</para>
+{% endif %}
+
+</chapter>
+
+<!-- Chapter 2 -->
+
+<chapter id="chapter2">
+
+<chapheader>
+<chapnum>2. </chapnum>
+<title>{% trans "Timeline" %}</title>
+<a id="chapter2" class="small">&nbsp;</a>
+</chapheader>
+
+<para>
+
+<table>
+{% for timeline_entry in ancestry.timeline %}
+	<tr class="{% if forloop.counter|divisibleby:2 %}alternating{% else %}row{% endif %}">
+		<td><strong>{{ timeline_entry.year }}</strong></td>
+		<td>
+		<ul class="timeline">
+			{% for timeline_entry_inner in timeline_entry.list %}
+				<li>
+					{% if timeline_entry_inner.date_unclear %}
+						ca. {{ timeline_entry_inner.date | date:"Y" }}
+					{% else %}
+						{{ timeline_entry_inner.date | date:"d.m.Y" }}
+					{% endif %}
+					{{ timeline_entry_inner.title }}
+				</li>
+			{% endfor %}
+		</ul>
+		</tD>
+	</tr>
+{% endfor %}
+</table>
+
+</para>
+
+</chapter>
+
+<!-- Chapter 3 -->
+
+<chapter id="chapter3">
+
+<chapheader>
+<chapnum>3. </chapnum>
+<title>{% trans "Statistics" %}</title>
+<a id="chapter3" class="small">&nbsp;</a>
+</chapheader>
+
+<para>
+
+<h2>{% trans "Specials" %}<a id="chapter3-1">&nbsp;</a></h2>
+<table>
+	{% for special in statistics.specials.list %}
+		<tr class="{% cycle 'row' 'alternating' as statistics_style %}">
+			<td>{{ special.name_prefix }}</td>
+			<td>{{ special.name_suffix }}</td>
+			<td>{{ special.value }}</td>
+		</tr>
+	{% endfor %}
+</table>
+
+</para>
+
+<para>
+
+<h2>{% trans "Locations" %}<a id="chapter3-2">&nbsp;</a></h2>
+{% if ancestry.map %}
+	<img src="/{{ MEDIA_URL }}..{{ ancestry.map.url }}" alt="Img" height="400" class="distribution"><br />
+{% else %}
+	<img src="" alt="Img" height="400" width="500" class="distribution"><br />
+{% endif %}
+
+</para>
+
+<para>
+<div class="not_breaking">
+	<h2>{% trans "Births and Deaths per month" %}<a id="chapter3-3">&nbsp;</a></h2>
+
+	<div class="chartContainer">
+		<img src="http://127.0.0.1:4444/bar.png?data1={{ statistics.birthPerMonthStr|encodeSpaces }}&data2={{ statistics.deathPerMonthStr|encodeSpaces }}&axis={% trans 'January' %},{% trans 'February' %},{% trans 'March' %},{% trans 'April' %},{% trans 'May' %},{% trans 'June' %},{% trans 'July' %},{% trans 'August' %},{% trans 'September' %},{% trans 'October' %},{% trans 'November' %},{% trans 'December' %}" id="birthsPerMonthChart" width="400" height="300" />
+	
+		<div class="chartBorder">
+			<div id="childrenLegend">
+				<p class="chartDescription">{% trans "Persons born or died per month in ancestry" %}</p>
+			</div>
+	
+			<div id="birthsPerMonthChartLegend">
+				<ul class="bar-legend">
+					<li>
+						<span class="color color1">&nbsp;</span>
+						<span class="title">{% trans "Birth per month" %}</span>
+					</li>
+					<li>
+						<span class="color color2">&nbsp;</span>
+						<span class="title">{% trans "Death per month" %}</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+</para>
+
+<para>
+<div class="not_breaking">
+	<h2>{% trans "Gender distribution" %}<a id="chapter3-4">&nbsp;</a></h2>
+	
+	<div class="chartContainer">
+		<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.genderValuesStr|encodeSpaces }}" id="genderChart" width="400" height="300" />
+	
+		<div class="chartBorder">
+			<div id="childrenLegend">
+				<p class="chartDescription">{% trans "Gender distribution of persons in ancestry" %}</p>
+			</div>
+	
+			<div id="genderLegend">
+				<ul class="pie-legend">
+					<li>
+						<span class="color color1">&nbsp;</span>
+						<span class="title">{% trans "Men" %}</span>
+					</li>
+					<li>
+						<span class="color color2">&nbsp;</span>
+						<span class="title">{% trans "Women" %}</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>		
+</para>
+
+<para>
+<div class="not_breaking">
+	<h2>{% trans "Birth locations" %}<a id="chapter3-5">&nbsp;</a></h2>
+			
+	<div class="chartContainer">
+		<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.birthLocationsValuesStr|encodeSpaces }}&colors={{ statistics.birthLocationsColorsStr|trimHash|encodeSpaces }}" id="birthLocationsChart" width="400" height="300" />
+	
+		<div class="chartBorder">
+			<div id="childrenLegend">
+				<p class="chartDescription">{% trans "Birth locations in ancestry" %}</p>
+			</div>
+	
+			<div id="birthLocationsLegend">
+				<ul class="pie-legend">
+					{% for birthLocations in statistics.birthLocations.list %}
+					<li>
+						<span class="color color-{{ birthLocations.color|trimHash }}">&nbsp;</span>
+						<span class="title">{{ birthLocations.name }}</span>
+					</li>
+					{% endfor %}
+				</ul>	
+			</div>
+		</div>
+	</div>
+</div>
+</para>
+
+<para>
+<div class="not_breaking">
+	<h2>{% trans "Children" %}<a id="chapter3-6">&nbsp;</a></h2>
+
+	<div class="chartContainer">
+		<img src="http://127.0.0.1:4444/bar.png?data={{ statistics.childrenValuesStr|encodeSpaces }}&axis=0,1,2,3,4,5,6,7,8,9,10" id="childrenChart" width="400" height="300" />
+	
+		<div class="chartBorder">
+			<div id="childrenLegend">
+				<p class="chartDescription">{% trans "Number of children per person in ancestry" %}</p>
+			</div>
+		</div>
+	</div>
+</div>
+</para>
+
+</chapter>
+
+<!-- Chapter 4 -->
+
+<chapter id="chapter4">
+
+<chapheader>
+<chapnum>4. </chapnum>
+<title>{% trans "Family trees" %}</title>
+<a id="chapter4" class="small">&nbsp;</a>
+</chapheader>
+
+{% if featured %}
+	{% for member in featured %}
+		<para>
+			<div class="not_breaking">
+			<h2>{{ member.person }}</h2>
+			<a id="chapter4-{{ member.person.id }}">&nbsp;</a>
+			<img src="http://127.0.0.1:4446/ancestry.png?person={{ member.person.id }}&max_level=2" class="distribution landscape" />
+			</div>
+		</para>
+	{% endfor %}
+{% else %}
+	<para>{% trans "No members are available." %}</para>
+{% endif %}
+
+</chapter>
+
+<!-- Chapter 5 -->
+
+<chapter id="chapter5">
+
+<chapheader>
+<chapnum>5. </chapnum>
+<title>{% trans "Distributions" %}</title>
+<a id="chapter5" class="small">&nbsp;</a>
+</chapheader>
+
+{% if distributions %}
+	{% for distribution in distributions %}
+		<para>
+			<div class="not_breaking">
+			<h2>{{ distribution.distribution.family_name }}<a id="chapter5-{{ distribution.distribution.id }}">&nbsp;</a></h2>
+			<img src="/{{ MEDIA_URL }}..{{ distribution.distribution.image.url }}" class="distribution" />
+			</div>
+		</para>
+	{% endfor %}
+{% else %}
+	<para>{% trans "No distributions are available." %}</para>
+{% endif %}
+
+</chapter>
+
+</part>
+</bookbody>
+</book>
+</gutbook>
