@@ -648,7 +648,11 @@
 						</ul>
 					{% endif %}
 				{% endfor %}
-				<img src="{{ document.image.url }}" class="document {{ document.css_class }}" />
+					{% if document.image %}
+						<img src="{{ document.image.url }}" class="document {{ document.css_class }}" />
+					{% else %}
+						<p>no image</p>
+					{% endif %}
 				</div>
 			</para>
 		{% endfor %}
