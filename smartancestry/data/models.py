@@ -231,11 +231,11 @@ class Person(models.Model):
     already_died = models.NullBooleanField(default=False, blank=True, null=True)
     profession = models.CharField(max_length=50, blank=True, null=True)
     father = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='children_father')
-    father_extern = models.CharField(max_length=50, blank=True, null=True)
+    father_extern = models.CharField(max_length=200, blank=True, null=True)
     mother = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='children_mother')
-    mother_extern = models.CharField(max_length=50, blank=True, null=True)
+    mother_extern = models.CharField(max_length=200, blank=True, null=True)
     children_extern = models.CharField(max_length=600, blank=True, null=True)
-    siblings_extern = models.CharField(max_length=200, blank=True, null=True)  # type: CharField
+    siblings_extern = models.CharField(max_length=600, blank=True, null=True)  # type: CharField
     notes = models.CharField(max_length=500, blank=True, null=True)
     external_identifier = models.CharField(max_length=50, blank=True, null=True)
     image = models.ImageField(upload_to='media/persons', blank=True, null=True)
