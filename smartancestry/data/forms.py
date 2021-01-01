@@ -148,7 +148,7 @@ class PersonEventInline(admin.TabularInline):
 
 class PersonAdmin(admin.ModelAdmin):
     list_display = (
-        'user_name', 'birth_name', 'thumbnail', 'birth', 'death', 'father_name', 'mother_name', 'ancestry_names',
+        'user_name', 'birth_name', 'thumbnail', 'birth', 'death', 'father_name_linked', 'mother_name_linked', 'partner_names_linked', 'ancestry_names',
         'number_of_questions',)
     fieldsets = (
         (None, {

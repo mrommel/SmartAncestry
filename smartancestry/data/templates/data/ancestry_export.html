@@ -237,6 +237,30 @@
 					<td width="80%" colspan="3">{{ member.person.profession }}</td>
 				</tr>
 				{% endif %}
+				<tr class="{% cycle row_style %}">
+					<td width="20%" class="label">{% trans "Father" %}:</td>
+					<td width="80%" colspan="3">
+						{% if member.person.father %}
+							<a href="#chapter1-{{ member.person.father.id }}" class="nolink">{{ member.person.father }}</a>
+						{% else %}
+							{% if member.person.father_extern %}
+								{{ member.person.father_extern|underline }}
+							{% endif %}	
+						{% endif %}
+					</td>
+				</tr>
+				<tr class="{% cycle row_style %}">
+					<td width="20%" class="label">{% trans "Mother" %}:</td>
+					<td width="80%" colspan="3">
+						{% if member.person.mother %}
+							<a href="#chapter1-{{ member.person.mother.id }}" class="nolink">{{ member.person.mother }}</a>
+						{% else %}
+							{% if member.person.mother_extern %}
+								{{ member.person.mother_extern|underline }}
+							{% endif %}
+						{% endif %}
+					</td>
+				</tr>
 				{% if member.person.partner_relations %}
 					{% for partner_relation in member.person.partner_relations %}
 						<tr class="{% cycle row_style %}">
@@ -270,51 +294,38 @@
 								{% endif %}
 							</td>
 						</tr>
-					{% endfor %}
-				{% endif %}
-				<tr class="{% cycle row_style %}">
-					<td width="20%" class="label">{% trans "Father" %}:</td>
-					<td width="80%" colspan="3">
-						{% if member.person.father %}
-							<a href="#chapter1-{{ member.person.father.id }}" class="nolink">{{ member.person.father }}</a>
-						{% else %}
-							{% if member.person.father_extern %}
-								{{ member.person.father_extern|underline }}
-							{% endif %}	
-						{% endif %}
-					</td>
-				</tr>
-				<tr class="{% cycle row_style %}">
-					<td width="20%" class="label">{% trans "Mother" %}:</td>
-					<td width="80%" colspan="3">
-						{% if member.person.mother %}
-							<a href="#chapter1-{{ member.person.mother.id }}" class="nolink">{{ member.person.mother }}</a>
-						{% else %}
-							{% if member.person.mother_extern %}
-								{{ member.person.mother_extern|underline }}
+						{% if partner_relation.partner %}
+							{% if partner_relation.state == 'M' %}
+								{% if partner_relation.partner.children %}
+									<tr class="{% cycle row_style %}">
+										<td width="20%" class="label">
+											&nbsp;&nbsp;&nbsp;{% trans "Children" %}:
+										</td>
+										<td width="80%" colspan="3">
+											{% if partner_relation.partner.children %}
+												{% for child in partner_relation.partner.children %}
+													<a href="#chapter1-{{ child.id }}" class="nolink">{{ child.full_name|underline }}</a>
+												{% endfor %}
+											{% endif %}
+										</td>
+									</tr>
+								{% endif %}
 							{% endif %}
 						{% endif %}
-					</td>
-				</tr>
-				<tr class="{% cycle row_style %}">
-					<td width="20%" class="label">{% trans "Children" %}:</td>
-					<td width="80%" colspan="3">
-						<ul class="commalist">
-						{% if member.person.children %}
-    						{% for child in member.person.children %}
-        						<li><a href="#chapter1-{{ child.id }}" class="nolink">{{ child.full_name|underline }}</a></li>
-    						{% endfor %}
-						{% endif %}
-						{% if member.person.children_extern_list %}
-							{% if member.person.children_extern_list %}
+					{% endfor %}
+				{% endif %}
+				{% if member.person.children_extern_list %}
+					<tr class="{% cycle row_style %}">
+						<td width="20%" class="label">{% trans "other Children" %}:</td>
+						<td width="80%" colspan="3">
+							<ul class="commalist">
 								{% for child in member.person.children_extern_list %}
         							<li>{{ child }}</li>
     							{% endfor %}
-    						{% endif %}
-						{% endif %}
-						</ul>
-					</td>
-				</tr>
+							</ul>
+						</td>
+					</tr>
+				{% endif %}
 				<tr class="{% cycle row_style %}">
 					<td width="20%" class="label">{% trans "Siblings" %}:</td>
 					<td width="80%" colspan="3">

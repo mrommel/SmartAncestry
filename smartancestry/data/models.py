@@ -331,9 +331,21 @@ class Person(models.Model):
         else:
             return self.father_extern
 
+    def father_name_linked(self):
+        if self.father is not None:
+            return self.father_link()
+        else:
+            return self.father_extern
+
     def mother_name(self):
         if self.mother is not None:
             return str(self.mother)
+        else:
+            return self.mother_extern
+
+    def mother_name_linked(self):
+        if self.mother is not None:
+            return self.mother_link()
         else:
             return self.mother_extern
 
@@ -435,6 +447,19 @@ class Person(models.Model):
 
         return None
 
+    def partner_names_linked(self):
+        result = ''
+
+        for partner_info in self.partner_relations():
+            if partner_info.partner is not None:
+                result = result + mark_safe('<a href="/admin/data/person/%s/">%s</a>' % (partner_info.partner.id, str(partner_info.partner))) + ", "
+            else:
+                result = result + partner_info.partner_name + ", "
+
+        return result
+
+    partner_names_linked.allow_tags = True
+
     def siblings(self):
         if self.mother is None and self.father is None:
             return []
@@ -533,7 +558,7 @@ class Person(models.Model):
         ancestry_names_var = ancestry_names_var.replace("$", "")
 
         if ancestry_names_var == '':
-            ancestry_names_var = '<p style="color: red;">%s</p>' % _("no ancestry")
+            ancestry_names_var = '<span style="color: red;">%s</span>' % _("no ancestry")
 
         return mark_safe(ancestry_names_var)
 
@@ -855,7 +880,8 @@ class Person(models.Model):
             if len(ancestry.ancestry.featured()) > 0:
                 featured_person = ancestry.ancestry.featured()[0]
                 str_value = '%s %s %s %s (%s %s)<br />' % (
-                    str_value, ancestry_relation(self, featured_person.person), _('of'), featured_person.person.get_admin_url(),
+                    str_value, ancestry_relation(self, featured_person.person), _('of'),
+                    featured_person.person.get_admin_url(),
                     _('ancestry'), ancestry.ancestry)
 
         return mark_safe(str_value)
@@ -1083,13 +1109,15 @@ class Ancestry(models.Model):
 
     def export_questions(self):
         return mark_safe(
-            '<a href="/data/export/ancestry_questions/%d/%s_questions.pdf" target="_blank">Questions</a>' % (self.id, self.name))
+            '<a href="/data/export/ancestry_questions/%d/%s_questions.pdf" target="_blank">Questions</a>' % (
+            self.id, self.name))
 
     export_questions.allow_tags = True
 
     def export_no_documents(self):
         return mark_safe(
-            '<a href="/data/export/ancestry_no_documents/%d/%s_no_doc.pdf" target="_blank">PDF (no doc)</a>' % (self.id, self.name))
+            '<a href="/data/export/ancestry_no_documents/%d/%s_no_doc.pdf" target="_blank">PDF (no doc)</a>' % (
+            self.id, self.name))
 
     export_no_documents.allow_tags = True
 
