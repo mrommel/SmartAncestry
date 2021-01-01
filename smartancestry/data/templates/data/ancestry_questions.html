@@ -1,0 +1,70 @@
+{% load i18n %}{% load staticfiles %}{% load app_filters %}
+{% if include_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'data/style_print.css' %}" />
+{% endif %}
+<book>
+
+<title>{% trans "Questions" %} {% trans "Ancestrybook" %} {{ ancestry.name }}</title>
+
+<bookbody>
+<part>
+
+<chapter id="chapter1">
+
+<chapheader>
+<chapnum></chapnum>
+<title>{% trans "Questions" %}</title>
+<a id="chapter1" class="small">&nbsp;</a>
+</chapheader>
+
+{% if questions %}
+	{% for question in questions %}
+		<table class="question_table">
+			<tbody>
+			<tr class="row">
+				<td colspan="2">
+					<strong>{{ question.person.last_name|underline }}, {{ question.person.first_name|underline }}</strong>
+					{% if question.person.person.birth_name %}<br />(geb. {{ question.person.person.birth_name }}){% endif %}
+				</td>
+			</tr>
+			{% if not question.person.birth_date_unclear %}
+				<tr>
+					<td>
+						geb.
+						{% if question.person.birth_date_only_year %}
+							{{ question.person.birth_date | date:"Y" }}
+						{% else %}
+							{{ question.person.birth_date | date:"d.m.Y" }}
+						{% endif %}
+						{% if question.person.birth_location %}
+							{% trans "in" %}
+							{% if question.person.birth_location.image %}
+								<img src="/{{ MEDIA_URL }}..{{ question.person.birth_location.image.url }}" class="location" />
+							{% endif %}
+							{{ question.person.birth_location|location_without_country }}
+						{% endif %}
+					</td>
+				</tr>
+			{% endif %}
+			<tr class="alternating">
+				<td>
+					{{ question.question }}
+				</td>
+				<td>
+					&nbsp;<br />
+					&nbsp;<br />
+					&nbsp;<br />
+					&nbsp;<br />
+				</td>
+			</tr>
+			</tbody>
+		</table>
+		&nbsp;<br />
+	{% endfor %}
+{% endif %}
+</chapter>
+
+</part>
+</bookbody>
+</book>
+</gutbook>

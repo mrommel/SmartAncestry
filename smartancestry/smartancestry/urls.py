@@ -8,7 +8,6 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     url(r'^$', RedirectView.as_view(url='/data/index')),
-    url(r'^/$', RedirectView.as_view(url='/data/index')),
     url(r'^data/', include('data.urls')),
     url(r'^admin/', include(admin.site.urls)),
     # path('admin/', admin.site.urls),

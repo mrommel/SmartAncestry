@@ -532,6 +532,9 @@ class Person(models.Model):
         ancestry_names_var = ancestry_names_var.replace(", $", "")
         ancestry_names_var = ancestry_names_var.replace("$", "")
 
+        if ancestry_names_var == '':
+            ancestry_names_var = '<p style="color: red;">%s</p>' % _("no ancestry")
+
         return mark_safe(ancestry_names_var)
 
     def has_ancestry(self, ancestry_id):
@@ -880,6 +883,9 @@ class Person(models.Model):
         return '%d / %d' % (
             len(Question.objects.filter(person=self).exclude(answer=None)), len(Question.objects.filter(person=self)))
 
+    def questions(self):
+        return Question.objects.filter(person=self)
+
     def is_alive(self):
         if self.already_died:
             return False
@@ -1071,18 +1077,24 @@ class Ancestry(models.Model):
 
     def export(self):
         return mark_safe(
-            '<a href="/data/export/ancestry/%d/%s.pdf" target="_blank">Export PDF</a>' % (self.id, self.name))
+            '<a href="/data/export/ancestry/%d/%s.pdf" target="_blank">PDF</a>' % (self.id, self.name))
 
     export.allow_tags = True
 
+    def export_questions(self):
+        return mark_safe(
+            '<a href="/data/export/ancestry_questions/%d/%s_questions.pdf" target="_blank">Questions</a>' % (self.id, self.name))
+
+    export_questions.allow_tags = True
+
     def export_no_documents(self):
         return mark_safe(
-            '<a href="/data/export/ancestry_no_documents/%d/%s.pdf" target="_blank">Export PDF (no doc)</a>' % (self.id, self.name))
+            '<a href="/data/export/ancestry_no_documents/%d/%s_no_doc.pdf" target="_blank">PDF (no doc)</a>' % (self.id, self.name))
 
     export_no_documents.allow_tags = True
 
     def export_raw(self):
-        return mark_safe('<a href="/data/ancestry_export/%d/%s.html?with=style" target="_blank">Export Raw</a>' % (
+        return mark_safe('<a href="/data/ancestry_export/%d/%s.html?with=style" target="_blank">Raw</a>' % (
             self.id, self.name))
 
     export_raw.allow_tags = True

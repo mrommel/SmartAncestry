@@ -260,6 +260,16 @@ td {
 	background-color: #ededed;
 }
 
+.question_table {
+    table-layout: fixed;
+    border: 1px;
+}
+
+.question_table tr td:first-child {
+    width: 30%;
+    vertical-align: top;
+}
+
 .alternating {
 	background-color: #f7f7f7;
 }
@@ -344,7 +354,7 @@ td {
 	float: left;
 	text-indent: 0em;
 	margin: 0px;
-	padding-inline-start: 0;
+	/* padding-inline-start: 0; */
 }
 
 .chartBorder {

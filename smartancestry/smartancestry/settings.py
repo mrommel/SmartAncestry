@@ -23,7 +23,7 @@ SECRET_KEY = '9$+_xwu)k_k7a-_-9-dkpums4jt^r&2qwd0y*&sau+1wbhu_h8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = True
+#TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 

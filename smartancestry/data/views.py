@@ -1,5 +1,6 @@
 import logging
 import os
+import urllib
 from operator import attrgetter
 from random import randint
 
@@ -95,6 +96,33 @@ def ancestry_export(request, ancestry_id):
     }))
 
 
+def ancestry_questions(request, ancestry_id):
+    try:
+        ancestry = Ancestry.objects.get(pk=ancestry_id)
+    except Ancestry.DoesNotExist:
+        raise Http404("Ancestry does not exist")
+
+    sorted_members = ancestry.members()
+    sorted_members = sorted(sorted_members, key=attrgetter('person.first_name'))
+    sorted_members = sorted(sorted_members, key=attrgetter('person.last_name'))
+
+    questions = []
+    for member in sorted_members:
+        for question in member.person.questions():
+            questions.append(question)
+
+    if request.GET.get('with') is not None:
+        include_css = True
+    else:
+        include_css = False
+
+    return HttpResponse(render_to_string('data/ancestry_questions.html', {
+        'ancestry': ancestry,
+        'questions': questions,
+        'include_css': include_css
+    }))
+
+
 def ancestry_export_no_documents(request, ancestry_id):
     try:
         ancestry = Ancestry.objects.get(pk=ancestry_id)
@@ -180,6 +208,24 @@ def export_no_documents(request, ancestry_id):
 
     image_data = open('tmp.pdf', "rb").read()
     return HttpResponse(image_data, content_type='application/pdf')
+
+
+def export_questions(request, ancestry_id):
+
+    try:
+        ancestry = Ancestry.objects.get(pk=ancestry_id)
+    except Ancestry.DoesNotExist:
+        raise Http404("Ancestry does not exist")
+
+    path = "http://127.0.0.1:7000/data/ancestry_questions/%s/%s/ -o tmp.pdf" % (ancestry_id, urllib.quote(ancestry.name))
+
+    # write html to tmp.pdf
+    os.system(
+		"prince --no-author-style --javascript -s http://127.0.0.1:7000/static/data/style_print.css %s" % path)
+
+    pdf_data = open('tmp.pdf', "rb").read()
+    return HttpResponse(pdf_data, content_type='application/pdf')
+
 
 def person_image(request, person_id, person2_id):
     person_id = person2_id
