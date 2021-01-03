@@ -169,7 +169,7 @@ class PersonAdmin(admin.ModelAdmin):
     )
     search_fields = ['first_name', 'last_name', ]
     readonly_fields = (
-        'childen_text', 'father_link', 'mother_link', 'thumbnail', 'tree_link', 'siblings_text', 'relation_str')
+        'children_text', 'father_link', 'mother_link', 'thumbnail', 'tree_link', 'siblings_text', 'relation_str')
     # raw_id_fields = ('father', 'mother',)
     # list_filter = ('birth_date', 'ancestries', ) #PersonAncestryListFilter,
     list_filter = PersonAncestryListFilter,
