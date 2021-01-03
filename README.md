@@ -50,6 +50,7 @@ cd ~/Prog/SmartAncestry/smartancestry/
 source vsmartancentry/bin/activate
 cd data
 python3 ../manage.py makemessages -l de -e html,txt,py -e xml
+translate with poedit
 python3 ../manage.py compilemessages
 
 ## node js scripts
