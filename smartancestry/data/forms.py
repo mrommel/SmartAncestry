@@ -161,7 +161,7 @@ class PersonAdmin(admin.ModelAdmin):
         ('Relations', {
             'fields': (
                 'father', 'father_link', 'father_extern', 'mother', 'mother_link', 'mother_extern', 'children_extern',
-                'childen_text', 'siblings_extern', 'siblings_text', 'relation_str')
+                'children_text', 'siblings_extern', 'siblings_text', 'relation_str')
         }),
         ('Notes', {
             'fields': ('profession', 'notes', 'external_identifier', 'thumbnail', 'image', 'tree_link')
