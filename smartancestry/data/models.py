@@ -362,14 +362,14 @@ class Person(models.Model):
                         first_sentence = _('%s was born as son of %s and %s on %s in %s.') % (
                         self.full_name(), father_name_str, mother_name_str, birth_date_str, self.birth_location)
                     else:
-                        first_sentence = _('%s was born as son of %s and %s on %s') % (
+                        first_sentence = _('%s was born as son of %s and %s on %s.') % (
                         self.full_name(), father_name_str, mother_name_str, birth_date_str)
                 else:
                     if self.birth_location:
                         first_sentence = _('%s was born as daughter of %s and %s on %s in %s.') % (
                         self.full_name(), father_name_str, mother_name_str, birth_date_str, self.birth_location)
                     else:
-                        first_sentence = _('%s was born as daughter of %s and %s on %s') % (
+                        first_sentence = _('%s was born as daughter of %s and %s on %s.') % (
                         self.full_name(), father_name_str, mother_name_str, birth_date_str)
             else:
                 if self.birth_location:

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-03 21:40+0100\n"
-"PO-Revision-Date: 2021-01-03 21:41+0100\n"
+"POT-Creation-Date: 2021-01-03 22:28+0100\n"
+"PO-Revision-Date: 2021-01-03 22:28+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -34,375 +34,403 @@ msgstr "Personen, die hier geboren sind"
 msgid "List of Persons died here"
 msgstr "Personen, die hier gestorben sind"
 
-#: models.py:128 models.py:130 templates/data/person.html:192
+#: models.py:126 models.py:128 templates/data/person.html:192
 msgid "Born"
 msgstr "Geboren"
 
-#: models.py:136 templates/data/person.html:193
+#: models.py:134 templates/data/person.html:193
 msgid "Died"
 msgstr "Gestorben"
 
-#: models.py:235
+#: models.py:234
 msgid "Male"
 msgstr "Männlich"
 
-#: models.py:235
+#: models.py:234
 msgid "Female"
 msgstr "Weiblich"
 
-#: models.py:235 templates/data/ancestry.html:299
+#: models.py:234 templates/data/ancestry.html:299
 msgid "Gender"
 msgstr "Geschlecht"
 
-#: models.py:236
+#: models.py:235
 msgid "date of birth"
 msgstr "Geburtsdatum"
 
-#: models.py:241
+#: models.py:240
 msgid "date of death"
 msgstr "Sterbbedatum"
 
-#: models.py:261
+#: models.py:260
 msgid "Name"
 msgstr "Name"
 
-#: models.py:363
+#: models.py:336
+#, python-format
+msgid ""
+"%s was born on %s in %s as son of %s (%s years old) and his mother %s (%s "
+"years old)."
+msgstr ""
+"%s wurde am %s in %s als Sohn von %s (%s Jahre alt) und seiner Mutter %s (%s "
+"Jahre alt) geboren."
+
+#: models.py:341
+#, python-format
+msgid ""
+"%s was born on %s as son of %s (%s years old) and his mother %s (%s years "
+"old)."
+msgstr ""
+"%s wurde am %s als Sohn von %s (%s Jahre alt) und seiner Mutter %s (%s Jahre "
+"alt) geboren."
+
+#: models.py:347
+#, python-format
+msgid ""
+"%s was born on %s in %s as daughter of %s (%s years old) and her mother %s "
+"(%s years old)."
+msgstr ""
+"%s wurde am %s in %s als Tochter von %s (%s Jahre alt) und ihrer Mutter %s "
+"(%s Jahre alt) geboren."
+
+#: models.py:352
+#, python-format
+msgid ""
+"%s was born on %s as daughter of %s (%s years old) and her mother %s (%s "
+"years old)."
+msgstr ""
+"%s wurde am %s als Tochter von %s (%s Jahre alt) und ihrer Mutter %s (%s "
+"Jahre alt) geboren."
+
+#: models.py:362
+#, python-format
+msgid "%s was born as son of %s and %s on %s in %s."
+msgstr "%s wurde als Sohn von %s und %s am %s in %s geboren."
+
+#: models.py:365
+#, python-format
+msgid "%s was born as son of %s and %s on %s."
+msgstr "%s wurde als Sohn von %s und %s am %s geboren."
+
+#: models.py:369
+#, python-format
+msgid "%s was born as daughter of %s and %s on %s in %s."
+msgstr "%s wurde als Tochter von %s und %s am %s in %s geboren."
+
+#: models.py:372
+#, python-format
+msgid "%s was born as daughter of %s and %s on %s."
+msgstr "%s wurde als Tochter von %s und %s am %s geboren."
+
+#: models.py:376
+#, python-format
+msgid "%s was born on %s in %s."
+msgstr "%s wurde am %s in %s geboren."
+
+#: models.py:379
+#, python-format
+msgid "%s was born on %s."
+msgstr "%s wurde am %s geboren."
+
+#: models.py:393
 msgid "years"
 msgstr "Jahre"
 
-#: models.py:462
-#, python-format
-msgid "When %s was born at %s in %s, "
-msgstr "Als %s am %s in %s geboren wurde,"
-
-#: models.py:464
-#, python-format
-msgid "When %s was born at %s, "
-msgstr "Als %s am %s geboren wurde,"
-
-#: models.py:471
-#, python-format
-msgid "his father %s was %s years and his mother %s was %s years old."
-msgstr "sein Vater %s war %s Jahres und ihre Mutter %s war %s Jahre alt."
-
-#: models.py:473
-#, python-format
-msgid "her father %s was %s years and her mother %s was %s years old."
-msgstr "ihr Vater %s war %s Jahres und ihre Mutter %s war %s Jahre alt."
-
-#: models.py:512
-msgid "one son"
-msgstr "Ein Sohn"
-
-#: models.py:514
-#, python-format
-msgid "%d sons"
-msgstr "%d Söhne"
-
-#: models.py:519
-msgid "one daughter"
-msgstr "eine Tochter"
-
-#: models.py:521
-#, python-format
-msgid "%d daughters"
-msgstr "%d Töchter"
-
-#: models.py:557
+#: models.py:487
 msgid "Birth"
 msgstr "Geburt"
 
-#: models.py:563
+#: models.py:493
 msgid "Birth of son"
 msgstr "Geburt eines Sohns"
 
-#: models.py:566
+#: models.py:496
 #, python-format
 msgid "His son %s was born %s in %s."
 msgstr "Sein Sohn %s wurde am %s in %s geboren."
 
-#: models.py:568
+#: models.py:499
 #, python-format
 msgid "Her son %s was born %s in %s."
 msgstr "Ihr Sohn %s wurde am %s in %s geboren."
 
-#: models.py:571
+#: models.py:503
 #, python-format
 msgid "His son %s was born %s."
 msgstr "Sein Sohn %s wurde am %s geboren."
 
-#: models.py:573
+#: models.py:505
 #, python-format
 msgid "Her son %s was born %s."
 msgstr "Ihr Sohn %s wurde am %s geboren."
 
-#: models.py:575
+#: models.py:507
 msgid "Birth of daughter"
 msgstr "Geburt einer Tochter"
 
-#: models.py:578
+#: models.py:510
 #, python-format
 msgid "His daughter %s was born %s in %s."
 msgstr "Seine Tochter %s wurde am %s in %s geboren."
 
-#: models.py:580
+#: models.py:513
 #, python-format
 msgid "Her daughter %s was born %s in %s."
 msgstr "Ihre Tochter %s wurde am %s in %s geboren."
 
-#: models.py:583
+#: models.py:517
 #, python-format
 msgid "His daughter %s was born %s."
 msgstr "Seine Tochter %s wurde am %s geboren."
 
-#: models.py:585
+#: models.py:519
 #, python-format
 msgid "Her daughter %s was born %s."
 msgstr "Ihre Tochter %s wurde am %s geboren."
 
-#: models.py:601
+#: models.py:536
 msgid "Death of son"
 msgstr "Tod eines Sohns"
 
-#: models.py:604
+#: models.py:539
 #, python-format
 msgid "His son %s died at %s in %s."
 msgstr "Sein Sohn %s starb am %s in %s."
 
-#: models.py:606
+#: models.py:542
 #, python-format
 msgid "Her son %s died at %s in %s."
 msgstr "Ihr Sohn %s starb am %s in %s."
 
-#: models.py:609
+#: models.py:546
 #, python-format
 msgid "His son %s died at %s."
 msgstr "Sein Sohn %s starb am %s."
 
-#: models.py:611
+#: models.py:548
 #, python-format
 msgid "Her son %s died at %s."
 msgstr "Ihr Sohn %s starb am %s."
 
-#: models.py:613
+#: models.py:550
 msgid "Death of daughter"
 msgstr "Tod einer Tochter"
 
-#: models.py:616
+#: models.py:553
 #, python-format
 msgid "His daughter %s died at %s in %s."
 msgstr "Seine Tochter %s starb am %s in %s."
 
-#: models.py:618
+#: models.py:556
 #, python-format
 msgid "Her daughter %s died at %s in %s."
 msgstr "Ihre Tochter %s starb am %s in %s."
 
-#: models.py:621
+#: models.py:560
 #, python-format
 msgid "His daughter %s died at %s."
 msgstr "Seine Tochter %s starb am %s."
 
-#: models.py:623
+#: models.py:563
 #, python-format
 msgid "Her daughter %s died at %s."
 msgstr "Ihre Tochter %s starb am %s."
 
-#: models.py:633
+#: models.py:575
 msgid "Birth of brother"
 msgstr "Geburt eines Bruders"
 
-#: models.py:646
+#: models.py:592
 msgid "Birth of sister"
 msgstr "Geburt einer Schwester"
 
-#: models.py:674
+#: models.py:624
 msgid "Death of brother"
 msgstr "Tod eines Bruders"
 
-#: models.py:678
+#: models.py:628
 #, python-format
 msgid "His brother %s died at %s in %s, when %s was %d years old."
 msgstr "Sein Bruder %s starb am %s in %s, als %s %d Jahre alt war."
 
-#: models.py:680
+#: models.py:631
 #, python-format
 msgid "Her brother %s died at %s in %s, when %s was %d years old."
 msgstr "Ihr Bruder %s starb am %s in %s, als %s %d Jahre alt war."
 
-#: models.py:683
+#: models.py:635
 #, python-format
 msgid "His brother %s died at %s, when %s was %d years old."
 msgstr "Sein Bruder %s starb am %s, als %s %d Jahre alt war."
 
-#: models.py:685
+#: models.py:638
 #, python-format
 msgid "Her brother %s died at %s, when %s was %d years old."
 msgstr "Ihr Bruder %s starb am %s, als %s %d Jahre alt war."
 
-#: models.py:688
+#: models.py:642
 msgid "Death of sister"
 msgstr "Tod einer Schwester"
 
-#: models.py:692
+#: models.py:646
 #, python-format
 msgid "His sister %s died at %s in %s, when %s was %d years old."
 msgstr "Seine Schwester %s starb am %s in %s, als %s %d Jahre alt war."
 
-#: models.py:694
+#: models.py:649
 #, python-format
 msgid "Her sister %s died at %s in %s, when %s was %d years old."
 msgstr "Ihre Schwester %s starb am %s in %s, als %s %d Jahre alt war."
 
-#: models.py:697
+#: models.py:653
 #, python-format
 msgid "His sister %s died at %s, when %s was %d years old."
 msgstr "Seine Schwester %s starb am %s, als %s %d Jahre alt war."
 
-#: models.py:699
+#: models.py:656
 #, python-format
 msgid "Her sister %s died at %s, when %s was %d years old."
 msgstr "Ihre Schwester %s starb am %s, als %s %d Jahre alt war."
 
-#: models.py:710 models.py:724
+#: models.py:668 models.py:686
 msgid "marriage"
 msgstr "Heirat"
 
-#: models.py:713
+#: models.py:671
 #, python-format
 msgid "%s married %s on %s at %s when he was %d years old."
 msgstr "%s heiratete %s am %s in %s als er %d Jahre alt war."
 
-#: models.py:715
+#: models.py:675
 #, python-format
 msgid "%s married %s on %s when he was %d years old."
 msgstr "%s heiratete %s am %s als er %d Jahre alt war."
 
-#: models.py:727
+#: models.py:689
 #, python-format
 msgid "%s married %s on %s at %s when she was %d years old."
 msgstr "%s heiratete %s am %s in %s als sie %d Jahre alt war."
 
-#: models.py:729
+#: models.py:693
 #, python-format
 msgid "%s married %s on %s when she was %d years old."
 msgstr "%s heiratete %s am %s als sie %d Jahre alt war."
 
-#: models.py:746
+#: models.py:712
 msgid "Death of father"
 msgstr "Tod des Vaters"
 
-#: models.py:750
+#: models.py:716
 #, python-format
 msgid "His father %s died at %s in %s, when %s was %d years old."
 msgstr "Sein Vater %s starb am %s in %s, als %s %d Jahre alt war."
 
-#: models.py:752
+#: models.py:720
 #, python-format
 msgid "Her father %s died at %s in %s, when %s was %d years old."
 msgstr "Ihr Vater %s starb am %s in %s, als %s %d Jahre alt war."
 
-#: models.py:755
+#: models.py:725
 #, python-format
 msgid "His father %s died at %s, when %s was %d years old."
 msgstr "Sein Vater %s starb am %s, als %s %d Jahre alt war."
 
-#: models.py:757
+#: models.py:728
 #, python-format
 msgid "Her father %s died at %s, when %s was %d years old."
 msgstr "Ihr Vater %s starb am %s, als %s %d Jahre alt war."
 
-#: models.py:774
+#: models.py:746
 msgid "Death of mother"
 msgstr "Tod der Mutter"
 
-#: models.py:778
+#: models.py:750
 #, python-format
 msgid "His mother %s died at %s in %s, when %s was %d years old."
 msgstr "Seine Mutter %s starb am %s in %s, als %s %d Jahre alt war."
 
-#: models.py:780
+#: models.py:754
 #, python-format
 msgid "Her mother %s died at %s in %s, when %s was %d years old."
 msgstr "Ihre Mutter %s starb am %s in %s, als %s %d Jahre alt war."
 
-#: models.py:783
+#: models.py:759
 #, python-format
 msgid "His mother %s died at %s, when %s was %d years old."
 msgstr "Seine Mutter %s starb am %s, als %s %d Jahre alt war."
 
-#: models.py:785
+#: models.py:762
 #, python-format
 msgid "Her mother %s died at %s, when %s was %d years old."
 msgstr "Ihre Mutter %s starb am %s, als %s %d Jahre alt war."
 
-#: models.py:795
+#: models.py:773
 msgid "Death"
 msgstr "Tod"
 
-#: models.py:798
+#: models.py:776
 #, python-format
 msgid "%s died at %s in %s at the age of %d years."
 msgstr "%s starb am %s in %s im Alter von %d Jahren."
 
-#: models.py:800
+#: models.py:779
 #, python-format
 msgid "%s died at %s at the age of %d years."
 msgstr "%s starb am %s im Alter von %d Jahren."
 
-#: models.py:979
+#: models.py:955
 msgid "no ancestry"
 msgstr "Kein Stammbaum"
 
-#: models.py:1274 models.py:1287 models.py:1301 templates/data/dot_tree.html:8
+#: models.py:1249 models.py:1261 models.py:1273 templates/data/dot_tree.html:8
 msgid "of"
 msgstr "von"
 
-#: models.py:1303
+#: models.py:1275
 msgid "ancestry"
 msgstr "Stammbaum"
 
-#: models.py:1436
+#: models.py:1408
 msgid "Rest"
 msgstr "Rest"
 
-#: models.py:1646 templates/data/ancestry_export.html:586
+#: models.py:1618 templates/data/ancestry_export.html:586
 #: templates/data/ancestry_export_no_documents.html:452
 msgid "Women"
 msgstr "Frauen"
 
-#: models.py:1648 templates/data/ancestry_export.html:582
+#: models.py:1620 templates/data/ancestry_export.html:582
 #: templates/data/ancestry_export_no_documents.html:448
 msgid "Men"
 msgstr "Männer"
 
-#: models.py:1675
+#: models.py:1647
 msgid "Youngest person"
 msgstr "Jüngste Person"
 
-#: models.py:1675 models.py:1676 models.py:1678 models.py:1680
+#: models.py:1647 models.py:1648 models.py:1650 models.py:1652
 #: templates/data/ancestry.html:193 templates/data/ancestry_export.html:176
 #: templates/data/ancestry_export_no_documents.html:144
 msgid "Years"
 msgstr "Jahre"
 
-#: models.py:1676
+#: models.py:1648
 msgid "Oldest person"
 msgstr "Älteste Person"
 
-#: models.py:1677
+#: models.py:1649
 msgid "Latest marriage"
 msgstr "Späteste Heirat"
 
-#: models.py:1679
+#: models.py:1651
 msgid "Youngest marriage"
 msgstr "Jüngste Heirat"
 
-#: models.py:1681
+#: models.py:1653
 msgid "Most Children"
 msgstr "Meiste Kinder"
 
-#: models.py:1682 templates/data/ancestry.html:359
+#: models.py:1654 templates/data/ancestry.html:359
 #: templates/data/ancestry.html:370 templates/data/ancestry_export.html:70
 #: templates/data/ancestry_export.html:302
 #: templates/data/ancestry_export.html:624
@@ -413,139 +441,139 @@ msgstr "Meiste Kinder"
 msgid "Children"
 msgstr "Kinder"
 
-#: models.py:1698
+#: models.py:1670
 #, python-format
 msgid "%s %s (born %s) was born in %s"
 msgstr "%s %s (geb. %s) wurde in %s geboren"
 
-#: models.py:1703
+#: models.py:1675
 #, python-format
 msgid "%s %s was born in %s"
 msgstr "%s %s wurde in %s geboren"
 
-#: models.py:1708
+#: models.py:1680
 #, python-format
 msgid "%s %s was born"
 msgstr "%s %s wurde geboren"
 
-#: models.py:1712
+#: models.py:1684
 #, python-format
 msgid "%s %s has died in %s"
 msgstr "%s %s starb in %s"
 
-#: models.py:1716
+#: models.py:1688
 #, python-format
 msgid "%s %s has died"
 msgstr "%s %s starb"
 
-#: models.py:1723
+#: models.py:1695
 #, python-format
 msgid "marriage of %s and %s in %s"
 msgstr "Hochzeit von %s und %s in %s"
 
-#: models.py:1729
+#: models.py:1701
 #, python-format
 msgid "marriage of %s and %s"
 msgstr "Hochzeit von %s und %s"
 
-#: models.py:1733
+#: models.py:1705
 #, python-format
 msgid "divorce of %s and %s"
 msgstr "Scheidung von %s und %s"
 
-#: models.py:1808
+#: models.py:1778
 msgid "Portrait"
 msgstr "Portrait"
 
-#: models.py:1809
+#: models.py:1779
 msgid "Landscape"
 msgstr "Landscape"
 
-#: models.py:1820
+#: models.py:1790
 msgid "date of creation"
 msgstr "Erstellungsdatum"
 
-#: models.py:1915
+#: models.py:1885
 msgid "date of answer"
 msgstr "Datum der Antwort"
 
-#: models.py:1957 templates/data/ancestry_export.html:269
+#: models.py:1924 templates/data/ancestry_export.html:269
 #: templates/data/ancestry_export_no_documents.html:213
 msgid "Marriage"
 msgstr "Heirat"
 
-#: models.py:1957 templates/data/ancestry_export.html:275
+#: models.py:1924 templates/data/ancestry_export.html:275
 #: templates/data/ancestry_export_no_documents.html:219
 msgid "Partnership"
 msgstr "Partnerschaft"
 
-#: models.py:1958
+#: models.py:1925
 msgid "Adoption"
 msgstr "Adoption"
 
-#: models.py:1959 models.py:2048
+#: models.py:1926 models.py:2015
 msgid "date of marriage or divorce"
 msgstr "Datum der Heirat oder der Scheidung"
 
-#: models.py:1961 tools.py:93
+#: models.py:1928 tools.py:93
 msgid "husband"
 msgstr "Ehemann"
 
-#: models.py:1962 tools.py:83
+#: models.py:1929 tools.py:83
 msgid "wife"
 msgstr "Ehefrau"
 
-#: models.py:2001
+#: models.py:1968
 msgid "married"
 msgstr "Verheirated"
 
-#: models.py:2002
+#: models.py:1969
 msgid "partnership"
 msgstr "Partnerschaft"
 
-#: models.py:2003
+#: models.py:1970
 msgid "adopted"
 msgstr "Adoptiert"
 
-#: models.py:2013
+#: models.py:1980
 #, python-format
 msgid "Marriage %s and %s"
 msgstr "Hochzeit von %s und %s"
 
-#: models.py:2014
+#: models.py:1981
 #, python-format
 msgid "Partnership %s and %s"
 msgstr "Partnerschaft zwischen %s und %s"
 
-#: models.py:2015
+#: models.py:1982
 #, python-format
 msgid "Adoption of %s and %s"
 msgstr "Adoption von %s und %s"
 
-#: models.py:2026
+#: models.py:1993
 #, python-format
 msgid "Marriage %(husband)s and %(wife)s"
 msgstr "Hochzeit von %(husband)s und %(wife)s"
 
-#: models.py:2027
+#: models.py:1994
 #, python-format
 msgid "Partnership %(husband)s and %(wife)s"
 msgstr "Partnerschaft zwischen %(husband)s und %(wife)s"
 
-#: models.py:2028
+#: models.py:1995
 #, python-format
 msgid "Adoption of %(husband)s and %(wife)s"
 msgstr "Adoption von %(husband)s und %(wife)s"
 
-#: models.py:2036
+#: models.py:2003
 msgid "Baptism"
 msgstr "Taufe"
 
-#: models.py:2037
+#: models.py:2004
 msgid "Funeral"
 msgstr "Beerdigung"
 
-#: models.py:2038
+#: models.py:2005
 msgid "Confirmation"
 msgstr "Konfirmation"
 
@@ -1052,3 +1080,21 @@ msgstr "Großnichte"
 #: tools.py:333
 msgid "great nephew"
 msgstr "Großneffe"
+
+#, python-format
+#~ msgid "When %s was born at %s, "
+#~ msgstr "Als %s am %s geboren wurde,"
+
+#~ msgid "one son"
+#~ msgstr "Ein Sohn"
+
+#, python-format
+#~ msgid "%d sons"
+#~ msgstr "%d Söhne"
+
+#~ msgid "one daughter"
+#~ msgstr "eine Tochter"
+
+#, python-format
+#~ msgid "%d daughters"
+#~ msgstr "%d Töchter"
