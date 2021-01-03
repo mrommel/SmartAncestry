@@ -76,6 +76,9 @@ class Location(models.Model):
 
         return result_list
 
+    def coordinate(self):
+        return ('%f#%f' % (self.lat, self.lon)).replace(',','.').replace('#',',')
+
     def has_image(self):
         if self.image:
             return True
@@ -210,6 +213,15 @@ def name_of_ancestry(x):
     return mark_safe(name)
 
 
+class PersonEventInfo(object):
+
+    def __init__(self, date, age, title, summary, location):
+        self.date = date
+        self.age = age
+        self.title = title
+        self.summary = summary
+        self.location = location
+
 class Person(models.Model):
     """
 		class of persons
@@ -281,12 +293,19 @@ class Person(models.Model):
     def birth(self):
         birth_date_str = '%s' % self.birth_date
         if self.birth_date_unclear:
-            birth_date_str = '---'
+            birth_date_str = '???'
 
         birth_str = self.birth_location
         if birth_str is None:
             birth_str = '---'
         return mark_safe('%s<br>%s' % (birth_date_str, birth_str))
+
+    def birth_no_year(self):
+        if self.birth_date_unclear:
+            return ''
+        if self.birth_date is None:
+            return ''
+        return "%s.%s." % ('{0.day:02d}'.format(self.birth_date), '{0.month:02d}'.format(self.birth_date))
 
     def birth_year(self):
         if self.birth_date_unclear:
@@ -294,6 +313,39 @@ class Person(models.Model):
         if self.birth_date is None:
             return '---'
         return '{0.year:4d}'.format(self.birth_date)
+
+    def birth_summary(self):
+        from data.tools import calculate_age
+
+        birth_date_str = str(self.birth_date)
+
+        if self.birth_date_unclear:
+            birth_date_str = '???'
+
+        if self.birth_date_only_year:
+            birth_date_str = str(self.birth_year())
+
+        if self.birth_location:
+            first_sentence_part1 = "%s wurde am %s in %s, " % (self.full_name(), birth_date_str, self.birth_location)
+        else:
+            first_sentence_part1 = "%s wurde am %s, " % (self.full_name(), birth_date_str)
+
+        if self.father and self.mother:
+            age_father = calculate_age(self.father.birth_date, self.birth_date)
+            age_mother = calculate_age(self.mother.birth_date, self.birth_date)
+            first_sentence_part2 = "als Kind von %s (%s Jahre alt) und seiner Mutter %s (%s Jahre alt) geboren." % (self.father.first_name, age_father, self.mother.first_name, age_mother)
+
+            first_sentence = "%s%s" % (first_sentence_part1, first_sentence_part2)
+        else:
+            father_name_str = self.father_name()
+            mother_name_str = self.mother_name()
+
+            if father_name_str and mother_name_str:
+                first_sentence = "%s wurde als Sohn von %s und %s am %s in %s, geboren." % (self.full_name(), father_name_str, mother_name_str, birth_date_str, self.birth_location)
+            else:
+                first_sentence = "%s wurde am %s in %s, geboren." % (self.full_name(), birth_date_str, self.birth_location)
+
+        return first_sentence
 
     def death(self):
         date_str = self.death_date
@@ -306,6 +358,11 @@ class Person(models.Model):
         if age_str is None:
             age_str = '-'
         return mark_safe('%s<br />%s<br />%s %s' % (date_str, death_str, age_str, _('years')))
+
+    def death_no_year(self):
+        if self.death_date is None:
+            return ''
+        return "%s.%s." % ('{0.day:02d}'.format(self.death_date), '{0.month:02d}'.format(self.death_date))
 
     def death_year(self):
         if self.death_date is None and self.already_died:
@@ -386,6 +443,344 @@ class Person(models.Model):
         return mark_safe('%s / %s / %s' % (short_tree_link, full_tree_link, raw_tree_link))
 
     tree_link.allow_tags = True
+
+    def summary(self):
+        from data.tools import calculate_age
+
+        birth_date_str = str(self.birth_date)
+
+        if self.birth_date_unclear:
+            birth_date_str = '???'
+
+        if self.birth_date_only_year:
+            birth_date_str = str(self.birth_year())
+
+        if self.birth_location:
+            first_sentence_part1 = "Als %s am %s in %s geboren wurde, " % (self.full_name(), birth_date_str, self.birth_location)
+        else:
+            first_sentence_part1 = "Als %s am %s geboren wurde, " % (self.full_name(), birth_date_str)
+
+        if self.father and self.mother:
+            age_father = calculate_age(self.father.birth_date, self.birth_date)
+            age_mother = calculate_age(self.mother.birth_date, self.birth_date)
+            first_sentence_part2 = "war sein Vater %s %s Jahre und seine Mutter %s %s Jahre alt." % (self.father.first_name, age_father, self.mother.first_name, age_mother)
+
+            first_sentence = "%s%s" % (first_sentence_part1, first_sentence_part2)
+        else:
+            father_name_str = self.father_name()
+            mother_name_str = self.mother_name()
+
+            if father_name_str and mother_name_str:
+                first_sentence = "%s, der Sohn von %s und %s, wurde am %s in %s, geboren." % (self.full_name(), father_name_str, mother_name_str, birth_date_str, self.birth_location)
+            else:
+                first_sentence = "%s wurde am %s in %s, geboren." % (self.full_name(), birth_date_str, self.birth_location)
+
+        # second
+        sons = 0
+        dauthers = 0
+        year_min = None
+        year_max = None
+
+        for child in self.children():
+            if child.male():
+                sons = sons + 1
+            else:
+                dauthers = dauthers + 1
+
+            if not child.birth_date_unclear:
+                if year_min:
+                    year_min = min(year_min, self.birth_year())
+                else:
+                    year_min = self.birth_year()
+
+                if year_max:
+                    year_max = max(year_max, self.birth_year())
+                else:
+                    year_max = self.birth_year()
+
+        if sons > 0 or dauthers > 0:
+            if sons == 0:
+                sons_str = ""
+            elif sons == 1:
+                sons_str = _('one son')
+            else:
+                sons_str = "%d Soehne" % sons
+
+            if dauthers == 0:
+                dauthers_str = ""
+            elif dauthers == 1:
+                dauthers_str = "eine Tochter"
+            else:
+                dauthers_str = "%d Toechter" % dauthers
+
+            if year_min != year_max:
+                year_date_str = "zwischen %s und %s" % (year_min, year_max)
+            else:
+                year_date_str = "im Jahr %s" % year_min
+
+            if sons_str != "" and dauthers_str != "":
+                second_sentence = "Er hatte %s und %s %s." % (sons_str, dauthers_str, year_date_str)
+            elif sons_str == "":
+                second_sentence = "Er hatte %s %s." % (dauthers_str, year_date_str)
+            elif dauthers_str == "":
+                second_sentence = "Er hatte %s %s." % (sons_str, year_date_str)
+            else:
+                second_sentence = ""
+        else:
+            second_sentence = ""
+
+        # third
+        # Er starb am 23. Dezember 1945 im Alter von 50 Jahren.
+
+        if self.birth_date and self.death_date:
+            age = calculate_age(self.birth_date, self.death_date)
+            third_sentence = "Er starb am %s im Alter von %s Jahren." % (self.death_date, age)
+        else:
+            third_sentence = ""
+
+        return "%s %s %s" % (first_sentence, second_sentence, third_sentence)
+
+    def events(self):
+        from data.tools import calculate_age
+
+        event_list = []
+
+        # birth
+        if not self.birth_date_unclear:
+            event_list.append(PersonEventInfo(self.birth_date, -1, _("Birth"), self.birth_summary(), self.birth_location))
+
+        # birth/death of children
+        for child in self.children():
+            age = calculate_age(self.birth_date, child.birth_date)
+            if child.male():
+                birth_child_title = _('Birth of son')
+                if child.birth_location:
+                    if self.male():
+                        birth_child_summary = _('His son %s was born %s in %s.') % (child.first_name, child.birth_date, child.birth_location)
+                    else:
+                        birth_child_summary = _('Her son %s was born %s in %s.') % (child.first_name, child.birth_date, child.birth_location)
+                else:
+                    if self.male():
+                        birth_child_summary = _('His son %s was born %s.') % (child.first_name, child.birth_date)
+                    else:
+                        birth_child_summary = _('Her son %s was born %s.') % (child.first_name, child.birth_date)
+            else:
+                birth_child_title = _('Birth of daughter')
+                if child.birth_location:
+                    if self.male():
+                        birth_child_summary = _('His daughter %s was born %s in %s.') % (child.first_name, child.birth_date, child.birth_location)
+                    else:
+                        birth_child_summary = _('Her daughter %s was born %s in %s.') % (child.first_name, child.birth_date, child.birth_location)
+                else:
+                    if self.male():
+                        birth_child_summary = _('His daughter %s was born %s.') % (child.first_name, child.birth_date)
+                    else:
+                        birth_child_summary = _('Her daughter %s was born %s.') % (child.first_name, child.birth_date)
+
+            event_list.append(PersonEventInfo(child.birth_date, age, birth_child_title, birth_child_summary, child.birth_location))
+
+            show_death_of_child = False
+            if child.death_date:
+                show_death_of_child = True
+            age = -1
+            if self.death_date and child.death_date:
+                if child.death_date > self.death_date:
+                    show_death_of_child = False
+                else:
+                    age = calculate_age(self.birth_date, child.death_date)
+
+            if show_death_of_child:
+                if child.male():
+                    death_child_title = _('Death of son')
+                    if child.death_location:
+                        if self.male():
+                            death_child_summary = _('His son %s died at %s in %s.') % (child.first_name, child.death_date, child.death_location)
+                        else:
+                            death_child_summary = _('Her son %s died at %s in %s.') % (child.first_name, child.death_date, child.death_location)
+                    else:
+                        if self.male():
+                            death_child_summary = _('His son %s died at %s.') % (child.first_name, child.death_date)
+                        else:
+                            death_child_summary = _('Her son %s died at %s.') % (child.first_name, child.death_date)
+                else:
+                    death_child_title = _('Death of daughter')
+                    if child.death_location:
+                        if self.male():
+                            death_child_summary = _('His daughter %s died at %s in %s.') % (child.first_name, child.death_date, child.death_location)
+                        else:
+                            death_child_summary = _('Her daughter %s died at %s in %s.') % (child.first_name, child.death_date, child.death_location)
+                    else:
+                        if self.male():
+                            death_child_summary = _('His daughter %s died at %s.') % (child.first_name, child.death_date)
+                        else:
+                            death_child_summary = _('Her daughter %s died at %s.') % (child.first_name, child.death_date)
+
+                event_list.append(
+                    PersonEventInfo(child.death_date, age, death_child_title, death_child_summary, child.death_location))
+
+        # birth/death of siblings
+        for sibling in self.siblings():
+            age = calculate_age(self.birth_date, sibling.birth_date)
+
+            if sibling.male():
+                sibling_title = _('Birth of brother')
+
+                if self.birth_location:
+                    if self.male():
+                        sibling_summary = "His brother %s was born at %s in %s, when %s was %d years old." % (sibling.first_name, sibling.birth_date, sibling.birth_location, self.first_name, age)
+                    else:
+                        sibling_summary = "Her brother %s was born at %s in %s, when %s was %d years old." % (sibling.first_name, sibling.birth_date, sibling.birth_location, self.first_name, age)
+                else:
+                    if self.male():
+                        sibling_summary = "His brother %s was born at %s, when %s was %d years old." % (sibling.first_name, sibling.birth_date, self.first_name, age)
+                    else:
+                        sibling_summary = "Her brother %s was born at %s, when %s was %d years old." % (sibling.first_name, sibling.birth_date, self.first_name, age)
+            else:
+                sibling_title = _('Birth of sister')
+
+                if self.birth_location:
+                    if self.male():
+                        sibling_summary = "His sister %s was born at %s in %s, when %s was %d years old." % (sibling.first_name, sibling.birth_date, sibling.birth_location, self.first_name, age)
+                    else:
+                        sibling_summary = "Her sister %s was born at %s in %s, when %s was %d years old." % (sibling.first_name, sibling.birth_date, sibling.birth_location, self.first_name, age)
+                else:
+                    if self.male():
+                        sibling_summary = "His sister %s was born at %s, when %s was %d years old." % (sibling.first_name, sibling.birth_date, sibling.first_name, age)
+                    else:
+                        sibling_summary = "Her sister %s was born at %s, when %s was %d years old." % (sibling.first_name, sibling.birth_date, sibling.first_name, age)
+
+            event_list.append(PersonEventInfo(sibling.birth_date, age, sibling_title, sibling_summary,
+                                              sibling.birth_location))
+
+            show_death_of_sibling = False
+            if sibling.death_date:
+                show_death_of_sibling = True
+            age = -1
+            if self.death_date and sibling.death_date:
+                if sibling.death_date > self.death_date:
+                    show_death_of_sibling = False
+                else:
+                    age = calculate_age(self.birth_date, sibling.death_date)
+
+            if show_death_of_sibling:
+                if sibling.male():
+                    sibling_title = _('Death of brother')
+
+                    if self.death_location:
+                        if self.male():
+                            sibling_summary = _('His brother %s died at %s in %s, when %s was %d years old.') % (sibling.first_name, sibling.death_date, sibling.death_location, self.first_name, age)
+                        else:
+                            sibling_summary = _('Her brother %s died at %s in %s, when %s was %d years old.') % (sibling.first_name, sibling.death_date, sibling.death_location, self.first_name, age)
+                    else:
+                        if self.male():
+                            sibling_summary = _('His brother %s died at %s, when %s was %d years old.') % (sibling.first_name, sibling.death_date, self.first_name, age)
+                        else:
+                            sibling_summary = _('Her brother %s died at %s, when %s was %d years old.') % (sibling.first_name, sibling.death_date, self.first_name, age)
+
+                else:
+                    sibling_title = _('Death of sister')
+
+                    if self.death_location:
+                        if self.male():
+                            sibling_summary = _('His sister %s died at %s in %s, when %s was %d years old.') % (sibling.first_name, sibling.death_date, sibling.death_location, self.first_name, age)
+                        else:
+                            sibling_summary = _('Her sister %s died at %s in %s, when %s was %d years old.') % (sibling.first_name, sibling.death_date, sibling.death_location, self.first_name, age)
+                    else:
+                        if self.male():
+                            sibling_summary = _('His sister %s died at %s, when %s was %d years old.') % (sibling.first_name, sibling.death_date, self.first_name, age)
+                        else:
+                            sibling_summary = _('Her sister %s died at %s, when %s was %d years old.') % (sibling.first_name, sibling.death_date, self.first_name, age)
+
+                event_list.append(
+                    PersonEventInfo(sibling.death_date, age, sibling_title, sibling_summary, sibling.death_location))
+
+        # marriage
+        for familyStatusRelation in FamilyStatusRelation.objects.filter(
+                Q(man=self) & Q(status='M') & (Q(ended=False) | Q(ended=None))):
+            if familyStatusRelation.date:
+                age = calculate_age(self.birth_date, familyStatusRelation.date)
+                event_list.append(PersonEventInfo(familyStatusRelation.date, age, "Heirat", "Heirat mit %s" % (familyStatusRelation.woman), familyStatusRelation.location))
+
+        for familyStatusRelation in FamilyStatusRelation.objects.filter(
+                Q(woman=self) & Q(status='M') & (Q(ended=False) | Q(ended=None))):
+            if familyStatusRelation.date:
+                age = calculate_age(self.birth_date, familyStatusRelation.date)
+                event_list.append(PersonEventInfo(familyStatusRelation.date, age, "Heirat", "Heirat mit %s" % (familyStatusRelation.man), familyStatusRelation.location))
+
+        # death of parents
+        if self.father:
+            show_death_of_father = False
+            if self.father.death_date:
+                show_death_of_father = True
+            age = -1
+            if self.death_date and self.father.death_date:
+                if self.father.death_date > self.death_date:
+                    show_death_of_father = False
+                else:
+                    age = calculate_age(self.birth_date, self.father.death_date)
+
+            if show_death_of_father:
+                death_father_title = _('Death of father')
+
+                if self.father.death_location:
+                    if self.male():
+                        death_father_summary = _('His father %s died at %s in %s, when %s was %d years old.') % (self.father.first_name, self.father.death_date, self.father.death_location, self.first_name, age)
+                    else:
+                        death_father_summary = _('Her father %s died at %s in %s, when %s was %d years old.') % (self.father.first_name, self.father.death_date, self.father.death_location, self.first_name, age)
+                else:
+                    if self.male():
+                        death_father_summary = _('His father %s died at %s, when %s was %d years old.') % (self.father.first_name, self.father.death_date, self.first_name, age)
+                    else:
+                        death_father_summary = _('Her father %s died at %s, when %s was %d years old.') % (self.father.first_name, self.father.death_date, self.first_name, age)
+
+                event_list.append(
+                    PersonEventInfo(self.father.death_date, age, death_father_title, death_father_summary,
+                                    self.father.death_location))
+        if self.mother:
+            show_death_of_mother = False
+            if self.mother.death_date:
+                show_death_of_mother = True
+            age = -1
+            if self.death_date and self.mother.death_date:
+                if self.mother.death_date > self.death_date:
+                    show_death_of_mother = False
+                else:
+                    age = calculate_age(self.birth_date, self.mother.death_date)
+
+            if show_death_of_mother:
+                death_mother_title = _('Death of mother')
+
+                if self.mother.death_location:
+                    if self.male():
+                        death_mother_summary = _('His mother %s died at %s in %s, when %s was %d years old.') % (self.mother.first_name, self.mother.death_date, self.mother.death_location, self.first_name, age)
+                    else:
+                        death_mother_summary = _('Her mother %s died at %s in %s, when %s was %d years old.') % (self.mother.first_name, self.mother.death_date, self.mother.death_location, self.first_name, age)
+                else:
+                    if self.male():
+                        death_mother_summary = _('His mother %s died at %s, when %s was %d years old.') % (self.mother.first_name, self.mother.death_date, self.first_name, age)
+                    else:
+                        death_mother_summary = _('Her mother %s died at %s, when %s was %d years old.') % (self.mother.first_name, self.mother.death_date, self.first_name, age)
+
+                event_list.append(
+                    PersonEventInfo(self.mother.death_date, age, death_mother_title, death_mother_summary,
+                                    self.mother.death_location))
+
+        # death
+        if self.death_date:
+            age = calculate_age(self.birth_date, self.death_date)
+
+            death_title = _('Death')
+
+            if self.death_location:
+                death_summary = _('%s died at %s in %s at the age of %d years.') % (self.full_name(), self.death_date, self.death_location, age)
+            else:
+                death_summary = _('%s died at %s at the age of %d years.') % (self.full_name(), self.death_date, age)
+
+            event_list.append(PersonEventInfo(self.death_date, age, death_title, death_summary, self.death_location))
+
+        event_list = sorted(event_list, key=attrgetter('date'))
+
+        return event_list
 
     def age(self):
         # from smartancestry.data.tools import calculate_age

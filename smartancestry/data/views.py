@@ -71,6 +71,11 @@ def ancestry_export(request, ancestry_id):
     sorted_members = sorted(sorted_members, key=attrgetter('person.first_name'))
     sorted_members = sorted(sorted_members, key=attrgetter('person.last_name'))
 
+    questions = []
+    for member in sorted_members:
+        for question in member.person.questions():
+            questions.append(question)
+
     members = []
     for member in ancestry.members():
         member.person.template_value1 = member.person.relation_in_str(ancestry)
@@ -90,6 +95,7 @@ def ancestry_export(request, ancestry_id):
         'distributions': ancestry.distributions(),
         'locations': ancestry.locations,
         'statistics': ancestry.statistics,
+        'questions': questions,
         'ancestry_documents': ancestry.ancestry_documents(),
         'person_documents': ancestry.documents(),
         'include_css': include_css
@@ -122,6 +128,31 @@ def ancestry_questions(request, ancestry_id):
         'include_css': include_css
     }))
 
+
+def ancestry_history(request, ancestry_id):
+    try:
+        ancestry = Ancestry.objects.get(pk=ancestry_id)
+    except Ancestry.DoesNotExist:
+        raise Http404("Ancestry does not exist")
+
+    sorted_members = ancestry.members()
+    sorted_members = sorted(sorted_members, key=attrgetter('person.first_name'))
+    sorted_members = sorted(sorted_members, key=attrgetter('person.last_name'))
+
+    if request.GET.get('with') is not None:
+        include_css = True
+    else:
+        include_css = False
+
+    return HttpResponse(render_to_string('data/ancestry_history.html', {
+        'ancestry': ancestry,
+        'sorted_members': sorted_members,
+        'featured': ancestry.featured(),
+        'distributions': ancestry.distributions(),
+        'locations': ancestry.locations,
+        'statistics': ancestry.statistics,
+        'include_css': include_css
+    }))
 
 def ancestry_export_no_documents(request, ancestry_id):
     try:
@@ -226,6 +257,7 @@ def export_questions(request, ancestry_id):
     pdf_data = open('tmp.pdf', "rb").read()
     return HttpResponse(pdf_data, content_type='application/pdf')
 
+#def export_history
 
 def person_image(request, person_id, person2_id):
     person_id = person2_id

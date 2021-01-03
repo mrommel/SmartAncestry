@@ -22,11 +22,14 @@ urlpatterns = [
     url(r'^ancestry_export/(?P<ancestry_id>\d+)/', views.ancestry_export, name='data.views.ancestry_export'),
     url(r'^ancestry_export_no_documents/(?P<ancestry_id>\d+)/', views.ancestry_export_no_documents, name='data.views.ancestry_export_no_documents'),
     url(r'^ancestry_questions/(?P<ancestry_id>\d+)/', views.ancestry_questions, name='data.views.ancestry_questions'),
+    url(r'^ancestry_history/(?P<ancestry_id>\d+)/', views.ancestry_history, name='data.views.ancestry_history'),
     url(r'^location/(?P<location_id>\d+)/', views.location, name='data.views.location'),
     url(r'^distributions/', views.distributions, name='data.views.distributions'),
+
     url(r'^export/ancestry/(?P<ancestry_id>\d+)/', views.export, name='data.views.export'),
     url(r'^export/ancestry_no_documents/(?P<ancestry_id>\d+)/', views.export_no_documents, name='data.views.export_no_documents'),
     url(r'^export/ancestry_questions/(?P<ancestry_id>\d+)/', views.export_questions, name='data.views.export_questions'),
+    #url(r'^export/ancestry_history/(?P<ancestry_id>\d+)/', views.export_history, name='data.views.export_history'),
     url(r'^person/dot_tree/(?P<person_id>\d+)/(?P<max_level>\d+)/ancestry\.dot', views.dot_tree,
         name='data.views.dot_tree'),
 ]

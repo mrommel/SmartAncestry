@@ -102,19 +102,19 @@
 	{% endfor %}
 {% endif %}
 
-<!-- index for chapter 6 -->
+<!-- index for chapter 7 -->
 
-<item href="#chapter6">
-	<a href="#chapter6" class="nolink">6. {% trans "Appendix" %}</a>
+<item href="#chapter7">
+	<a href="#chapter7" class="nolink">7. {% trans "Appendix" %}</a>
 </item>
 
 {% if ancestry_documents %}
-	<item href="#chapter6-1">
-		<a href="#chapter6-1" class="nolink">{% trans "General documents" %}</a>
+	<item href="#chapter7-1">
+		<a href="#chapter7-1" class="nolink">{% trans "General documents" %}</a>
 	</item>
 	{% for document in ancestry_documents %}
-		<item href="#chapter6-1-{{ document.id }}" class="sub-chapter">
-			<a href="#chapter6-1-{{ document.id }}" class="nolink">
+		<item href="#chapter7-1-{{ document.id }}" class="sub-chapter">
+			<a href="#chapter7-1-{{ document.id }}" class="nolink">
 				{{ document.name }} 
 			</a>
 		</item>
@@ -122,12 +122,12 @@
 {% endif %}
 
 {% if person_documents %}
-	<item href="#chapter6-2">
-		<a href="#chapter6-2" class="nolink">{% trans "Documents of persons" %}</a>
+	<item href="#chapter7-2">
+		<a href="#chapter7-2" class="nolink">{% trans "Documents of persons" %}</a>
 	</item>
 	{% for document in person_documents %}
-		<item href="#chapter6-2-{{ document.id }}" class="sub-chapter">
-			<a href="#chapter6-2-{{ document.id }}" class="nolink">
+		<item href="#chapter7-2-{{ document.id }}" class="sub-chapter">
+			<a href="#chapter7-2-{{ document.id }}" class="nolink">
 				{{ document.name }} - {% for person in document.persons %}{{ person.last_name|underline }}, {{ person.first_name|underline }}{% include "commalist.html" %}{% endfor %}
 			</a>
 		</item>
@@ -362,7 +362,7 @@
 					<td width="80%" colspan="3">
 						<ul class="commalist">
 						{% for appendix in member.person.appendices %}
-							<li><a href="#chapter6-2-{{ appendix.document.id }}" class="nolink">{{ appendix.document.name }}</a> ({% trans "Page" %} <appendix><item href="#chapter6-2-{{ appendix.document.id }}"></item></appendix>)</li>
+							<li><a href="#chapter7-2-{{ appendix.document.id }}" class="nolink">{{ appendix.document.name }}</a> ({% trans "Page" %} <appendix><item href="#chapter7-2-{{ appendix.document.id }}"></item></appendix>)</li>
 						{% endfor %}
 						</ul>
 					</td>
@@ -373,6 +373,75 @@
 		</para>
 		
 		{# resetcycle #}
+
+		{% for featured_member in featured %}
+			{% if member == featured_member %}
+				<para>
+					<h4>Lebensgeschichte</h4>
+
+					<div class="pageWrap">
+						<div class="personView">
+							<div class="personViewPages">
+								<div class="personPage personPageStory">
+									<div class="lifeStory storyline">
+
+										<div class="not_breaking">
+											{% if member.person.birth_location %}
+												<section class="lifeStorySec lifeStoryMap storylineHasTrail">
+													<div class="storylineBullet storylineBulletHasText">
+														<div class="storylineBulletText">
+															<h3 class="storylineBulletTitle"><img src="/static/data/images/map.png" width="32" height="32" /></h3>
+														</div>
+													</div>
+
+													<div class="con conHasArrow conHasArrowLeftTop">
+														<h2 class="conTitle hideVisually">Orte</h2>
+														<div class="conBody">
+															<figure class="mapFigure">
+																<div class="link showMapModal photo" id="showMapModal-FigureLifeEvents">
+																	<img alt="Karte anzeigen" class="staticMap" src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-m-star+A6BCC6({{ member.person.birth_location.coordinate }})/{{ member.person.birth_location.coordinate }},6/750x262@2x?access_token=pk.eyJ1IjoibXJvbW1lbDgyIiwiYSI6ImNramVtNzFrcTJsb2YycXJ1MnJkZjNtanIifQ._XmEx_GVTa9BZS4IppCJfg">
+																</div>
+															</figure>
+														</div>
+														<div class="conArrow"></div>
+													</div>
+												</section>
+											{% endif %}
+										</div>
+
+										{% for item in member.person.events %}
+											<div class="not_breaking">
+												<section class="lifeStorySec lifeStoryEvent storylineHasTrail">
+													<div class="storylineBullet storylineBulletHasText">
+														<div class="storylineBulletText">
+															<p class="storylineBulletSubtitle">{{ item.date | date:"d.m" }}</p>
+															<h3 class="storylineBulletTitle">{{ item.date | date:"Y" }}</h3>
+															{% if item.age != -1 %}
+																<p class="storylineBulletSubtitle">Alter {{ item.age }}</p>
+															{% endif %}
+														</div>
+													</div>
+													<div class="con conHasArrow conHasArrowLeftTop">
+														<h2 class="conTitle">{{ item.title }}</h2>
+														<div class="conBody">
+															<p class="storyNarr topSpacing textEditable colornormal">
+																{{ item.summary }}
+															</p>
+															<h4 class="cardTitle topSpacing storyDatePlace"><span class="dateField notEditableDateField">{{ item.date | date:"d.m.Y" }}</span>&nbsp;•&nbsp;<span class="locationField notEditableLocationField">{{ member.person.birth_location }}</span></h4>
+														</div>
+														<div class="conArrow"></div>
+													</div>
+												</section>
+											</div>
+										{% endfor %}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</para>
+			{% endif %}
+		{% endfor %}
 	{% endfor %}
 {% else %}
 	<para>{% trans "No members are available." %}</para>
@@ -409,7 +478,7 @@
 				</li>
 			{% endfor %}
 		</ul>
-		</tD>
+		</td>
 	</tr>
 {% endfor %}
 </table>
@@ -572,14 +641,14 @@
 	{% for member in featured %}
 		<para>
 			<div class="not_breaking">
-			<h2>{{ member.person }}</h2>
-			<a id="chapter4-{{ member.person.id }}">&nbsp;</a>
+			<h2>{{ member.person }}</h2>
+			<a id="chapter4-{{ member.person.id }}">&nbsp;</a>
 			<img src="http://127.0.0.1:4446/ancestry.png?person={{ member.person.id }}&max_level=2" class="distribution landscape" />
 			</div>
 		</para>
 	{% endfor %}
 {% else %}
-	<para>{% trans "No members are available." %}</para>
+	<para>{% trans "No featured members are available." %}</para>
 {% endif %}
 
 </chapter>
@@ -615,18 +684,36 @@
 
 <chapheader>
 <chapnum>6. </chapnum>
-<title>{% trans "Appendix" %}</title>
+<title>{% trans "Questions" %}</title>
 <a id="chapter6" class="small">&nbsp;</a>
+</chapheader>
+
+	<para>
+	{% for question in questions %}
+		{{ question }}
+	{% endfor %}
+	</para>
+
+</chapter>
+
+<!-- Chapter 7 -->
+
+<chapter id="chapter7">
+
+<chapheader>
+<chapnum>7. </chapnum>
+<title>{% trans "Appendix" %}</title>
+<a id="chapter7" class="small">&nbsp;</a>
 </chapheader>
 	{% if ancestry_documents %}
 		{% for document in ancestry_documents %}
 			<para>
 				<div class="not_breaking">
 				{% if forloop.first %}
-                	<h2>{% trans "General documents" %}<a id="chapter6-1">&nbsp;</a></h2>                   
+                	<h2>{% trans "General documents" %}<a id="chapter7-1">&nbsp;</a></h2>
                 {% endif %}
 				
-				<h3>{{ document.name }}<a id="chapter6-1-{{ document.id }}">&nbsp;</a></h3>
+				<h3>{{ document.name }}<a id="chapter7-1-{{ document.id }}">&nbsp;</a></h3>
 				{% if document.description %}
 					{{ document.description }}
 				{% endif %}
@@ -634,8 +721,6 @@
 				</div>
 			</para>
 		{% endfor %}
-	{% else %}
-		<para>{% trans "No appendices are available." %}</para>
 	{% endif %}
 
 	{% if person_documents %}
@@ -643,9 +728,9 @@
 			<para>
 				<div class="not_breaking">
 				{% if forloop.first %}
-					<h2>{% trans "Documents of persons" %}<a id="chapter6-2">&nbsp;</a></h2>
+					<h2>{% trans "Documents of persons" %}<a id="chapter7-2">&nbsp;</a></h2>
 				{% endif %}
-				<h3>{{ document.name }}<a id="chapter6-2-{{ document.id }}">&nbsp;</a></h3>
+				<h3>{{ document.name }}<a id="chapter7-2-{{ document.id }}">&nbsp;</a></h3>
 				{% if document.description %}
 					{{ document.description }}
 				{% endif %}

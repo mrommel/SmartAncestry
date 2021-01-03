@@ -553,3 +553,251 @@ td {
 	text-underline: none;
 	color: #000;
 }
+
+/* history */
+*, :after, :before {
+    -webkit-box-sizing: inherit;
+    box-sizing: inherit;
+}
+.personViewPages {
+    margin-bottom: -20px;
+    position: relative;
+    background-color: #f5f5f5;
+}
+.personViewPages .personPage {
+    padding: 10px;
+}
+.personPageStory {
+    position: relative;
+    z-index: 2;
+}
+.personPageStory .lifeStory {
+    margin: 0 auto;
+    max-width: 950px;
+    padding: 0 100px;
+    position: relative;
+    z-index: 1;
+}
+.personPageStory .lifeStory .lifeStorySec+.lifeStorySec {
+    margin-top: 30px;
+    padding: 0px;
+}
+.storyline {
+    box-sizing: border-box;
+}
+.personPageStory .lifeStory .lifeStorySec {
+    position: relative;
+    padding-bottom: 20px;
+}
+.lifeStoryMap {
+    cursor: default;
+    max-width: 1024px;
+    z-index: 1;
+}
+.con:not(.bgDark), .conSecond:not(.bgDark) {
+    background-color: #fff;
+}
+.conHasArrow {
+    position: relative;
+}
+.con, .conSecond, .conThird {
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: 6px;
+    padding: 10px;
+}
+.conBody {
+    margin: 0px;
+    padding: 0px;
+    position: relative;
+    text-align: left;
+    text-indent: 0px;
+}
+.conTitle {
+    margin: 0px;
+    margin-top: 0px;
+    padding: 0px;
+    text-align: left;
+    text-indent: 0px;
+}
+.hideVisually:not(:focus), .screenReaderText {
+    height: 1px!important;
+    line-height: 2em;
+    margin: -1px;
+    opacity: 0;
+    overflow: hidden!important;
+    position: absolute!important;
+    width: 1px!important;
+}
+.lifeStory .mapFigure, .lifeStory .mediaFigureMap {
+    display: block;
+    margin: 0px;
+    padding: 0px;
+    position: relative;
+    z-index: 1;
+}
+.lifeStory .mapFigure {
+    box-sizing: border-box;
+}
+.conHasArrow[class*=conHasArrowLeft] .conArrow {
+    border-top: 0;
+    border-top-right-radius: 100%;
+    left: -7px;
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    background-color: white;
+}
+.conHasArrowLeftTop .conArrow {
+    top: 18px;
+}
+.conArrow {
+    border: inherit;
+    -webkit-box-shadow: inherit;
+    box-shadow: inherit;
+    height: 14px;
+    outline: inherit;
+    position: absolute;
+    width: 14px;
+}
+.conHasArrow[class*=conHasArrowLeft] .conArrow:after {
+    border-bottom-right-radius: 8px 14px;
+    border-top-right-radius: 8px 14px;
+    left: 6px;
+    top: -10px;
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}
+.conArrow:after {
+    background-color: inherit;
+    content: "";
+    display: block;
+    height: 28px;
+    position: absolute;
+    width: 9px;
+}
+.personViewPages .lifeStory .storylineBullet.storylineBulletSize1.icon::before {
+    font-size: 18px;
+}
+.storylineBullet.storylineBulletSize1.icon:before {
+    font-size: 10px;
+}
+.storylineBullet.icon:before {
+    color: #f5f5f5;
+    font-size: 14px;
+    height: 1em;
+    left: 50%;
+    line-height: 1em;
+    margin: -.5em 0 0 -.5em;
+    position: absolute;
+    top: 50%;
+    width: 1em;
+}
+.icon:empty:before {
+    margin-right: 0;
+}
+.iconMap:before {
+    content: "\e67b";
+}
+.icon:before, span.icon {
+    margin-right: .25em;
+}
+.icon:before, .iconAfter:after {
+    font: normal 100%/0 ancestry-icon;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+    speak: none;
+    text-transform: none;
+    top: .12em;
+}
+.personViewPages .lifeStory .storylineHasTrail::after {
+    /* height: calc(100% + 30px); */
+}
+.personViewPages .lifeStory .storylineHasTrail::after {
+    top: 59px;
+    height: 80px;
+}
+.personViewPages .lifeStory .lifeStorySec.lifeStoryEvent.storylineHasTrail::after {
+    top: 59px;
+    height: 88px;
+}
+.personViewPages .lifeStory .lifeStoryMap.storylineHasTrail::after {
+    top: 59px;
+    height: 120px;
+    /* height: calc(100% + 10px); */
+}
+.storylineHasTrail:after {
+    background-color: #584d70;
+    content: "";
+    display: block;
+    height: 80px; /* calc(100%+10px); */
+    left: -62px;
+    position: absolute;
+    top: 69px;
+    width: 4px;
+    z-index: 1;
+    margin: 0px;
+    padding: 0px;
+}
+.showMapModal {
+    height: 140px; /*248px;*/
+    width: 400px; /*708px;*/
+}
+.staticMap {
+    height: 140px; /*248px;*/
+    width: 400px; /*708px;*/
+}
+.storylineBulletHasText {
+    color: #fff;
+    display: table;
+    text-align: center;
+    text-transform: uppercase;
+}
+.storylineBullet {
+    background-color: #584d70;
+    border-radius: 50%;
+    cursor: default;
+    height: 70px;
+    left: -95px;
+    position: absolute;
+    top: -10px;
+    width: 70px;
+    z-index: 2;
+}
+.storylineBulletHasText .storylineBulletText {
+    display: table-cell;
+    vertical-align: middle;
+}
+.storylineBulletHasText .storylineBulletSubtitle {
+    display: block;
+    font-size: 10px;
+    text-indent: 0px;
+    margin: 0px;
+}
+.storylineBulletHasText .storylineBulletSubtitle+.storylineBulletTitle {
+    margin-top: -2px;
+}
+.storylineBulletHasText .storylineBulletTitle {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    text-indent: 0px;
+    margin: 0px;
+}
+.lifeStoryEvents .timelineItem .storyContent .textEditable {
+    text-align: left;
+    text-shadow: none;
+}
+.lifeStoryEvents .timelineItem .storyContent .storyNarr {
+    font-size: 16px;
+}
+.cardSubtitle, .cardTitle {
+    margin-top: 0;
+}
+.cardTitle {
+    font-size: 12px;
+    font-weight: 700;
+    margin: 0px;
+}
+.topSpacing {
+    margin-top: 10px!important;
+}

@@ -1,0 +1,323 @@
+{% load i18n %}{% load staticfiles %}{% load app_filters %}
+{% if include_css %}<link rel="stylesheet" type="text/css" href="{% static 'data/style_print.css' %}" />{% endif %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>History</title>
+
+    <style>
+	    body { margin: 0; padding: 0; background-color: #f5f5f5; }
+
+        body, button, dd, div, dl, dt, fieldset, form, h1, h2, h3, h4, h5, h6, input, legend, li, ol, p, pre, td, textarea, ul {
+            margin: 0;
+            margin-top: 0px;
+            margin-right: 0px;
+            margin-bottom: 0px;
+            margin-left: 0px;
+            padding: 0;
+        }
+
+        /* css */
+        *, :after, :before {
+            -webkit-box-sizing: inherit;
+            box-sizing: inherit;
+        }
+        .personViewPages {
+            margin-bottom: -20px;
+            position: relative;
+        }
+        .personViewPages .personPage {
+            padding: 20px;
+        }
+        .personPageStory {
+            position: relative;
+            z-index: 2;
+        }
+        .personPageStory .lifeStory {
+            margin: 0 auto;
+            max-width: 950px;
+            padding: 0 100px;
+            position: relative;
+            z-index: 1;
+        }
+        .personPageStory .lifeStory .lifeStorySec+.lifeStorySec {
+            margin-top: 30px;
+        }
+        .storyline {
+            box-sizing: border-box;
+        }
+        .personPageStory .lifeStory .lifeStorySec {
+            position: relative;
+        }
+        .lifeStoryMap {
+            cursor: default;
+            max-width: 1024px;
+            z-index: 1;
+        }
+        .con:not(.bgDark), .conSecond:not(.bgDark) {
+            background-color: #fff;
+        }
+        @media (min-width: 768px)
+        .conHasArrow {
+            position: relative;
+        }
+        .con, .conSecond, .conThird {
+            border: 1px solid rgba(0,0,0,.2);
+            border-radius: 6px;
+            padding: 20px;
+        }
+        .conBody {
+            position: relative;
+        }
+        .conTitle {
+            margin-top: 0;
+            padding-bottom: 10px;
+        }
+        .hideVisually:not(:focus), .screenReaderText {
+            height: 1px!important;
+            line-height: 2em;
+            margin: -1px;
+            opacity: 0;
+            overflow: hidden!important;
+            pointer-events: none;
+            position: absolute!important;
+            width: 1px!important;
+        }
+        .lifeStory .mapFigure, .lifeStory .mediaFigureMap {
+            display: block;
+            margin: 0px;
+            padding: 0px;
+            position: relative;
+            z-index: 1;
+        }
+        .lifeStory .mapFigure {
+            box-sizing: border-box;
+        }
+        .conHasArrow[class*=conHasArrowLeft] .conArrow {
+            border-top: 0;
+            border-top-right-radius: 100%;
+            left: -7px;
+            -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+            background-color: white;
+        }
+        .conHasArrowLeftTop .conArrow {
+            top: 18px;
+        }
+        .conArrow {
+            border: inherit;
+            -webkit-box-shadow: inherit;
+            box-shadow: inherit;
+            height: 14px;
+            outline: inherit;
+            position: absolute;
+            width: 14px;
+        }
+        .conHasArrow[class*=conHasArrowLeft] .conArrow:after {
+            border-bottom-right-radius: 8px 14px;
+            border-top-right-radius: 8px 14px;
+            left: 6px;
+            top: -10px;
+            -webkit-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+        }
+        .conArrow:after {
+            background-color: inherit;
+            content: "";
+            display: block;
+            height: 28px;
+            position: absolute;
+            width: 9px;
+        }
+        .personViewPages .lifeStory .storylineBullet.storylineBulletSize1.icon::before {
+            font-size: 18px;
+        }
+        .storylineBullet.storylineBulletSize1.icon:before {
+            font-size: 16px;
+        }
+        .storylineBullet.icon:before {
+            color: #f5f5f5;
+            font-size: 25px;
+            height: 1em;
+            left: 50%;
+            line-height: 1em;
+            margin: -.5em 0 0 -.5em;
+            position: absolute;
+            top: 50%;
+            width: 1em;
+        }
+        .icon:empty:before {
+            margin-right: 0;
+        }
+        .iconMap:before {
+            content: "\e67b";
+        }
+        .icon:before, span.icon {
+            margin-right: .25em;
+        }
+        .icon:before, .iconAfter:after {
+            font: normal 100%/0 ancestry-icon;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            speak: none;
+            text-transform: none;
+            top: .12em;
+        }
+        .personViewPages .lifeStory .storylineHasTrail::after {
+            height: calc(100% + 30px);
+        }
+        .personViewPages .lifeStory .storylineHasTrail::after {
+            top: 10px;
+        }
+        .storylineHasTrail:after {
+            background-color: #584d70;
+            content: "";
+            display: block;
+            height: calc(100% + 10px);
+            left: -62px;
+            position: absolute;
+            top: 25px;
+            width: 4px;
+            z-index: 1;
+        }
+        .showMapModal {
+            height: 248px;
+            width: 708px;
+        }
+        .staticMap {
+            height: 248px;
+            width: 708px;
+        }
+        .storylineBulletHasText {
+            color: #fff;
+            display: table;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .storylineBullet {
+            background-color: #584d70;
+            border-radius: 50%;
+            cursor: default;
+            height: 70px;
+            left: -95px;
+            position: absolute;
+            top: -10px;
+            width: 70px;
+            z-index: 2;
+        }
+        .storylineBulletHasText .storylineBulletText {
+            display: table-cell;
+            vertical-align: middle;
+        }
+        .storylineBulletHasText .storylineBulletSubtitle {
+            display: block;
+            font-size: 12px;
+            line-height: 1.1;
+            margin: 0;
+        }
+        .storylineBulletHasText .storylineBulletSubtitle+.storylineBulletTitle {
+            margin-top: -2px;
+        }
+        .storylineBulletHasText .storylineBulletTitle {
+            display: block;
+            font-size: 19px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .lifeStoryEvents .timelineItem .storyContent .textEditable {
+            text-align: left;
+            text-shadow: none;
+        }
+        .lifeStoryEvents .timelineItem .storyContent .storyNarr {
+            font-size: 20px;
+        }
+        .cardSubtitle, .cardTitle {
+            margin-top: 0;
+        }
+        .cardTitle {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .topSpacing {
+            margin-top: 10px!important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="pageWrap">
+    <div class="personView">
+        <div class="personViewPages">
+
+            {% if sorted_members %}
+                {% for member in sorted_members %}
+                    <div class="personPage personPageStory">
+                        <div class="lifeStory storyline">
+                            <section class="lifeStorySec lifeStoryNarrative storylineHasTrail">
+                                <h3>{{ member.person.last_name|underline }}, {{ member.person.first_name|underline }}</h3>
+                            </section>
+
+                            <section class="lifeStorySec lifeStoryNarrative storylineHasTrail">
+                                <div class="con conHasArrow conHasArrowLeftTop narrativeCon">
+                                    <header class="conHeader conHeaderFlush hideVisually">
+                                        <h2 class="conTitle">Erzählung der „Lebensgeschichten“</h2>
+                                    </header>
+                                    <div class="conBody lifeStoryEvents">
+                                        <div class="narrativeText colornormal" id="narrativeText" style="display: block;">
+                                            {{ member.person.summary }}
+                                        </div>
+                                    </div>
+                                    <div class="conArrow"></div>
+                                </div>
+                            </section>
+
+                            {% if member.person.birth_location %}
+                                <section class="lifeStorySec lifeStoryMap storylineHasTrail noTimeline">
+                                    <div class="con conHasArrow conHasArrowLeftTop">
+                                        <h2 class="conTitle hideVisually">Orte</h2>
+                                        <div class="conBody">
+                                            <figure class="mapFigure">
+                                                <div class="link showMapModal photo" id="showMapModal-FigureLifeEvents" ><img alt="Karte anzeigen" class="staticMap" src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-m-star+A6BCC6({{ member.person.birth_location.coordinate }})/{{ member.person.birth_location.coordinate }},6/750x262@2x?access_token=pk.eyJ1IjoibXJvbW1lbDgyIiwiYSI6ImNramVtNzFrcTJsb2YycXJ1MnJkZjNtanIifQ._XmEx_GVTa9BZS4IppCJfg"></div>
+                                            </figure>
+                                        </div>
+                                        <div class="conArrow"></div>
+
+                                        <div class="icon iconMap storylineBullet storylineBulletSize1"></div>
+                                    </div>
+                                </section>
+                            {% endif %}
+
+                            {% for item in member.person.events %}
+                                <section class="lifeStorySec lifeStoryEvent storylineHasTrail">
+                                    <div class="storylineBullet storylineBulletHasText">
+                                        <div class="storylineBulletText">
+                                            <p class="storylineBulletSubtitle">{{ item.date | date:"d.m" }}</p>
+                                            <h3 class="storylineBulletTitle">{{ item.date | date:"Y" }}</h3>
+                                            <p class="storylineBulletSubtitle">Alter {{ item.age }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="con conHasArrow conHasArrowLeftTop">
+                                        <h2 class="conTitle">{{ item.title }}</h2>
+                                        <div class="conBody">
+                                            <p class="storyNarr topSpacing textEditable colornormal">
+                                                {{ item.summary }}
+                                            </p>
+                                            <h4 class="cardTitle topSpacing storyDatePlace"><span class="dateField notEditableDateField">{{ item.date | date:"d.m.Y" }}</span>&nbsp;•&nbsp;<span class="locationField notEditableLocationField">{{ member.person.birth_location }}</span></h4>
+                                        </div>
+                                        <div class="conArrow"></div>
+                                    </div>
+                                </section>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
