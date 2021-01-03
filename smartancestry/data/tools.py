@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 
@@ -137,55 +140,55 @@ def ancestry_relation(from_person, to_person):
         if to_person.father.father is not None:
             if to_person.father.father.father is not None:
                 if to_person.father.father.father == from_person:
-                    return _('greatgrandfather')
+                    return _('great grandfather')
 
                 if to_person.father.father.father.father is not None:
 
                     if to_person.father.father.father.father == from_person:
-                        return _('greatgreatgrandfather')
+                        return _('great great grandfather')
 
                     if to_person.father.father.father.father.father == from_person:
-                        return _('greatgreatgreatgrandfather')
+                        return _('great great great grandfather')
 
                     if to_person.father.father.father.father.mother == from_person:
-                        return _('greatgreatgreatgrandmother')
+                        return _('great great great grandmother')
 
                 if to_person.father.father.father.mother is not None:
 
                     if to_person.father.father.father.mother == from_person:
-                        return _('greatgreatgrandmother')
+                        return _('great great grandmother')
 
                     if to_person.father.father.father.mother.father == from_person:
-                        return _('greatgreatgreatgrandfather')
+                        return _('great great great grandfather')
 
                     if to_person.father.father.father.mother.mother == from_person:
-                        return _('greatgreatgreatgrandmother')
+                        return _('great great great grandmother')
 
             if to_person.father.father.mother is not None:
                 if to_person.father.father.mother == from_person:
-                    return _('greatgrandmother')
+                    return _('great grandmother')
 
                 if to_person.father.father.mother.father is not None:
 
                     if to_person.father.father.mother.father == from_person:
-                        return _('greatgreatgrandfather')
+                        return _('great great grandfather')
 
                     if to_person.father.father.mother.father.father == from_person:
-                        return _('greatgreatgreatgrandfather')
+                        return _('great great great grandfather')
 
                     if to_person.father.father.mother.father.mother == from_person:
-                        return _('greatgreatgreatgrandmother')
+                        return _('great great great grandmother')
 
                 if to_person.father.father.mother.mother is not None:
 
                     if to_person.father.father.mother.mother == from_person:
-                        return _('greatgreatgrandmother')
+                        return _('great great grandmother')
 
                     if to_person.father.father.mother.mother.father == from_person:
-                        return _('greatgreatgreatgrandfather')
+                        return _('great great great grandfather')
 
                     if to_person.father.father.mother.mother.mother == from_person:
-                        return _('greatgreatgreatgrandmother')
+                        return _('great great great grandmother')
 
         if to_person.father.mother == from_person:
             return _('grandmother')
@@ -193,23 +196,23 @@ def ancestry_relation(from_person, to_person):
         if to_person.father.mother is not None:
             if to_person.father.mother.father is not None:
                 if to_person.father.mother.father == from_person:
-                    return _('greatgrandfather')
+                    return _('great grandfather')
 
                 if to_person.father.mother.father.father == from_person:
-                    return _('greatgreatgrandfather')
+                    return _('great great grandfather')
 
                 if to_person.father.mother.father.mother == from_person:
-                    return _('greatgreatgrandmother')
+                    return _('great great grandmother')
 
             if to_person.father.mother.mother is not None:
                 if to_person.father.mother.mother == from_person:
-                    return _('greatgrandmother')
+                    return _('great grandmother')
 
                 if to_person.father.mother.mother.father == from_person:
-                    return _('greatgreatgrandfather')
+                    return _('great great grandfather')
 
                 if to_person.father.mother.mother.mother == from_person:
-                    return _('greatgreatgrandmother')
+                    return _('great great grandmother')
 
     if to_person.mother == from_person:
         return _('mother')
@@ -252,23 +255,23 @@ def ancestry_relation(from_person, to_person):
         if to_person.mother.father is not None:
             if to_person.mother.father.father is not None:
                 if to_person.mother.father.father == from_person:
-                    return _('greatgrandfather')
+                    return _('great grandfather')
 
                 if to_person.mother.father.father.father == from_person:
-                    return _('greatgreatgrandfather')
+                    return _('great great grandfather')
 
                 if to_person.mother.father.father.mother == from_person:
-                    return _('greatgreatgrandmother')
+                    return _('great great grandmother')
 
             if to_person.mother.father.mother is not None:
                 if to_person.mother.father.mother == from_person:
-                    return _('greatgrandmother')
+                    return _('great grandmother')
 
                 if to_person.mother.father.mother.father == from_person:
-                    return _('greatgreatgrandfather')
+                    return _('great great grandfather')
 
                 if to_person.mother.father.mother.mother == from_person:
-                    return _('greatgreatgrandmother')
+                    return _('great great grandmother')
 
         if to_person.mother.mother == from_person:
             return _('grandmother')
@@ -276,23 +279,23 @@ def ancestry_relation(from_person, to_person):
         if to_person.mother.mother is not None:
             if to_person.mother.mother.father is not None:
                 if to_person.mother.mother.father == from_person:
-                    return _('greatgrandfather')
+                    return _('great grandfather')
 
                 if to_person.mother.mother.father.father == from_person:
-                    return _('greatgreatgrandfather')
+                    return _('great great grandfather')
 
                 if to_person.mother.mother.father.mother == from_person:
-                    return _('greatgreatgrandmother')
+                    return _('great great grandmother')
 
             if to_person.mother.mother.mother is not None:
                 if to_person.mother.mother.mother == from_person:
-                    return _('greatgrandmother')
+                    return _('great grandmother')
 
                 if to_person.mother.mother.mother.father == from_person:
-                    return _('greatgreatgrandfather')
+                    return _('great great grandfather')
 
                 if to_person.mother.mother.mother.mother == from_person:
-                    return _('greatgreatgrandmother')
+                    return _('great great grandmother')
 
     if from_person.wife() is not None:
         if from_person.wife().father == to_person or from_person.wife().mother == to_person:
