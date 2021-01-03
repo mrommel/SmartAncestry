@@ -377,7 +377,7 @@
 		{% for featured_member in featured %}
 			{% if member == featured_member %}
 				<para>
-					<h4>Lebensgeschichte</h4>
+					<h4>{% trans "History of" %} {% autoescape off %}{{ member.person.first_name|underline }} {{ member.person.last_name }}{% endautoescape %}</h4>
 
 					<div class="pageWrap">
 						<div class="personView">
@@ -390,7 +390,9 @@
 												<section class="lifeStorySec lifeStoryMap storylineHasTrail">
 													<div class="storylineBullet storylineBulletHasText">
 														<div class="storylineBulletText">
-															<h3 class="storylineBulletTitle"><img src="/static/data/images/map.png" width="32" height="32" /></h3>
+															<h3 class="storylineBulletTitle">
+																<img src="/static/data/images/map.png" width="32" height="32" />
+															</h3>
 														</div>
 													</div>
 
@@ -427,7 +429,15 @@
 															<p class="storyNarr topSpacing textEditable colornormal">
 																{{ item.summary }}
 															</p>
-															<h4 class="cardTitle topSpacing storyDatePlace"><span class="dateField notEditableDateField">{{ item.date | date:"d.m.Y" }}</span>&nbsp;•&nbsp;<span class="locationField notEditableLocationField">{{ member.person.birth_location }}</span></h4>
+															{% if member.person.birth_location %}
+																<h4 class="cardTitle topSpacing storyDatePlace">
+																	<span class="dateField notEditableDateField">{{ item.date | date:"d.m.Y" }}</span>&nbsp;•&nbsp;<span class="locationField notEditableLocationField">{{ member.person.birth_location }}</span>
+																</h4>
+															{% else %}
+																<h4 class="cardTitle topSpacing storyDatePlace">
+																	<span class="dateField notEditableDateField">{{ item.date | date:"d.m.Y" }}</span>
+																</h4>
+															{% endif %}
 														</div>
 														<div class="conArrow"></div>
 													</div>

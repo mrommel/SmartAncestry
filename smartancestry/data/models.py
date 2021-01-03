@@ -456,14 +456,18 @@ class Person(models.Model):
             birth_date_str = str(self.birth_year())
 
         if self.birth_location:
-            first_sentence_part1 = "Als %s am %s in %s geboren wurde, " % (self.full_name(), birth_date_str, self.birth_location)
+            first_sentence_part1 = _('When %s was born at %s in %s, ') % (self.full_name(), birth_date_str, self.birth_location)
         else:
-            first_sentence_part1 = "Als %s am %s geboren wurde, " % (self.full_name(), birth_date_str)
+            first_sentence_part1 = _('When %s was born at %s, ') % (self.full_name(), birth_date_str)
 
         if self.father and self.mother:
             age_father = calculate_age(self.father.birth_date, self.birth_date)
             age_mother = calculate_age(self.mother.birth_date, self.birth_date)
-            first_sentence_part2 = "war sein Vater %s %s Jahre und seine Mutter %s %s Jahre alt." % (self.father.first_name, age_father, self.mother.first_name, age_mother)
+
+            if self.male():
+                first_sentence_part2 = _('his father %s was %s years and his mother %s was %s years old.') % (self.father.first_name, age_father, self.mother.first_name, age_mother)
+            else:
+                first_sentence_part2 = _('her father %s was %s years and her mother %s was %s years old.') % (self.father.first_name, age_father, self.mother.first_name, age_mother)
 
             first_sentence = "%s%s" % (first_sentence_part1, first_sentence_part2)
         else:
@@ -477,7 +481,7 @@ class Person(models.Model):
 
         # second
         sons = 0
-        dauthers = 0
+        daughters = 0
         year_min = None
         year_max = None
 
@@ -485,7 +489,7 @@ class Person(models.Model):
             if child.male():
                 sons = sons + 1
             else:
-                dauthers = dauthers + 1
+                daughters = daughters + 1
 
             if not child.birth_date_unclear:
                 if year_min:
@@ -498,31 +502,31 @@ class Person(models.Model):
                 else:
                     year_max = self.birth_year()
 
-        if sons > 0 or dauthers > 0:
+        if sons > 0 or daughters > 0:
             if sons == 0:
                 sons_str = ""
             elif sons == 1:
                 sons_str = _('one son')
             else:
-                sons_str = "%d Soehne" % sons
+                sons_str = _('%d sons') % sons
 
-            if dauthers == 0:
-                dauthers_str = ""
-            elif dauthers == 1:
-                dauthers_str = "eine Tochter"
+            if daughters == 0:
+                daughters_str = ""
+            elif daughters == 1:
+                daughters_str = _('one daughter')
             else:
-                dauthers_str = "%d Toechter" % dauthers
+                daughters_str = _('%d daughters') % daughters
 
             if year_min != year_max:
                 year_date_str = "zwischen %s und %s" % (year_min, year_max)
             else:
                 year_date_str = "im Jahr %s" % year_min
 
-            if sons_str != "" and dauthers_str != "":
-                second_sentence = "Er hatte %s und %s %s." % (sons_str, dauthers_str, year_date_str)
+            if sons_str != "" and daughters_str != "":
+                second_sentence = "Er hatte %s und %s %s." % (sons_str, daughters_str, year_date_str)
             elif sons_str == "":
-                second_sentence = "Er hatte %s %s." % (dauthers_str, year_date_str)
-            elif dauthers_str == "":
+                second_sentence = "Er hatte %s %s." % (daughters_str, year_date_str)
+            elif daughters_str == "":
                 second_sentence = "Er hatte %s %s." % (sons_str, year_date_str)
             else:
                 second_sentence = ""
@@ -699,13 +703,29 @@ class Person(models.Model):
                 Q(man=self) & Q(status='M') & (Q(ended=False) | Q(ended=None))):
             if familyStatusRelation.date:
                 age = calculate_age(self.birth_date, familyStatusRelation.date)
-                event_list.append(PersonEventInfo(familyStatusRelation.date, age, "Heirat", "Heirat mit %s" % (familyStatusRelation.woman), familyStatusRelation.location))
+
+                marriage_title = _('marriage')
+
+                if familyStatusRelation.location:
+                    marriage_summary = _('%s married %s on %s at %s when he was %d years old.') % (self.full_name(), familyStatusRelation.woman.full_name(), familyStatusRelation.date, familyStatusRelation.location, age)
+                else:
+                    marriage_summary = _('%s married %s on %s when he was %d years old.') % (self.full_name(), familyStatusRelation.woman.full_name(), familyStatusRelation.date, age)
+
+                event_list.append(PersonEventInfo(familyStatusRelation.date, age, marriage_title, marriage_summary, familyStatusRelation.location))
 
         for familyStatusRelation in FamilyStatusRelation.objects.filter(
                 Q(woman=self) & Q(status='M') & (Q(ended=False) | Q(ended=None))):
             if familyStatusRelation.date:
                 age = calculate_age(self.birth_date, familyStatusRelation.date)
-                event_list.append(PersonEventInfo(familyStatusRelation.date, age, "Heirat", "Heirat mit %s" % (familyStatusRelation.man), familyStatusRelation.location))
+
+                marriage_title = _('marriage')
+
+                if familyStatusRelation.location:
+                    marriage_summary = _('%s married %s on %s at %s when she was %d years old.') % (self.full_name(), familyStatusRelation.man.full_name(), familyStatusRelation.date,familyStatusRelation.location, age)
+                else:
+                    marriage_summary = _('%s married %s on %s when she was %d years old.') % (self.full_name(), familyStatusRelation.man.full_name(), familyStatusRelation.date, age)
+
+            event_list.append(PersonEventInfo(familyStatusRelation.date, age, marriage_title, marriage_summary, familyStatusRelation.location))
 
         # death of parents
         if self.father:
