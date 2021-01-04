@@ -49,6 +49,15 @@ def calculate_age(born, death):
     return death.year - born.year - ((death.month, death.day) < (born.month, born.day))
 
 
+def nice_date(date, year_only):
+
+    date_str = date.strftime("%d.%m.%Y")
+
+    if year_only:
+        date_str = '{0.year:4d}'.format(date)
+
+    return date_str
+
 def name_of_ancestry(x):
     name = u'%s' % x.ancestry.name
     name = name.replace(u'ä', '&auml;')

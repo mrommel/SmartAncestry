@@ -79,7 +79,7 @@ class HusbandFamilyStatusRelationInline(admin.TabularInline):
     extra = 4
     exclude = ['husband_extern']
     verbose_name = u'Wife'
-    verbose_name_plural = u'Wifes'
+    verbose_name_plural = u'Wives'
     fields = ('status', 'date', 'date_only_year', 'woman', 'wife_link', 'wife_extern', 'location', 'ended')
     readonly_fields = ('wife_link',)
 
@@ -148,7 +148,8 @@ class PersonEventInline(admin.TabularInline):
 
 class PersonAdmin(admin.ModelAdmin):
     list_display = (
-        'user_name', 'birth_name', 'thumbnail', 'birth', 'death', 'father_name_linked', 'mother_name_linked', 'partner_names_linked', 'ancestry_names',
+        'user_name', 'birth_name', 'thumbnail', 'birth', 'death', 'father_name_linked', 'mother_name_linked',
+        'partner_names_linked', 'ancestry_names',
         'number_of_questions',)
     fieldsets = (
         (None, {
@@ -182,7 +183,7 @@ class PersonAdmin(admin.ModelAdmin):
         QuestionInline,
         PersonEventInline,
     ]
-    actions = None
+    actions = []
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         formfield = super(PersonAdmin, self).formfield_for_dbfield(db_field, **kwargs)
@@ -193,25 +194,15 @@ class PersonAdmin(admin.ModelAdmin):
 
 def export_pdf(modeladmin, request, queryset):
     selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-    ct = ContentType.objects.get_for_model(queryset.model)
     return HttpResponseRedirect("/data/export/ancestry/%s/" % (",".join(selected)))
 
 
 export_pdf.short_description = _("Create pdfs")
 
 
-class AncestryRelationInline(admin.TabularInline):
-    model = AncestryRelation
-    fk_name = "ancestry"
-    extra = 1
-
-    list_display = ['person', 'featured']
-    fields = ('person', 'featured', 'relation',)
-    readonly_fields = ('relation',)
-
-
 class AncestryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'thumbnail', 'number_of_members', 'featured_str', 'export', 'export_questions', 'export_no_documents', 'export_raw']
+    list_display = ['name', 'thumbnail', 'number_of_members', 'featured_str', 'export', 'export_questions',
+                    'export_no_documents', 'export_raw']
     fields = ('name', 'thumbnail', 'image', 'map', 'featured_str',)
     readonly_fields = ('thumbnail', 'featured_str',)
 
@@ -220,6 +211,10 @@ class AncestryAdmin(admin.ModelAdmin):
         AncestryRelationInline,
     ]
     actions = [export_pdf]
+
+
+class FamilyStatusRelationAdmin(admin.ModelAdmin):
+    list_display = ['status_name', 'husband_link', 'wife_link', 'date', 'location']
 
 
 class LocationBirthRelationInline(admin.TabularInline):
@@ -239,9 +234,6 @@ class LocationBirthRelationInline(admin.TabularInline):
 
     admin_url.allow_tags = True
 
-    def has_add_permission(self, request):
-        return False
-
 
 class LocationDeathRelationInline(admin.TabularInline):
     model = Person
@@ -260,19 +252,54 @@ class LocationDeathRelationInline(admin.TabularInline):
 
     admin_url.allow_tags = True
 
-    def has_add_permission(self, request):
-        return False
+
+class LocationFamilyStatusRelationInline(admin.TabularInline):
+    model = FamilyStatusRelation
+    fk_name = "location"
+
+    verbose_name_plural = _('List of family status locations')
+
+    can_delete = False
+    extra = 0
+
+    fields = ('status_name', 'husband_link', 'wife_link', 'admin_url',)
+    readonly_fields = ('status_name', 'husband_link', 'wife_link', 'admin_url',)
+
+    def admin_url(self, obj):
+        return '<a href="/admin/data/familystatusrelation/%s/" target="_blank">Admin</a>' % (obj.id)
+
+    admin_url.allow_tags = True
+
+
+class LocationEventRelationInline(admin.TabularInline):
+    model = PersonEvent
+    fk_name = "location"
+
+    verbose_name_plural = _('List of personal events')
+
+    can_delete = False
+    extra = 0
+
+    fields = ('event_type', 'first_name', 'last_name', 'admin_url',)
+    readonly_fields = ('event_type', 'first_name', 'last_name', 'admin_url',)
+
+    def admin_url(self, obj):
+        return '<a href="/admin/data/personevent/%s/" target="_blank">Admin</a>' % (obj.id)
+
+    admin_url.allow_tags = True
 
 
 class LocationAdmin(admin.ModelAdmin):
     list_display = ('city', 'state', 'country', 'thumbnail', 'lon', 'lat')
-    fields = ('thumbnail', 'city', 'state', 'country', 'image', 'lon', 'lat',)
-    readonly_fields = ('thumbnail',)
+    fields = ('thumbnail', 'city', 'state', 'country', 'image', 'lon', 'lat', 'map', )
+    readonly_fields = ('thumbnail', 'map', )
 
     ordering = ('city',)
     inlines = [
         LocationBirthRelationInline,
         LocationDeathRelationInline,
+        LocationFamilyStatusRelationInline,
+        LocationEventRelationInline,
     ]
     actions = None
 
@@ -301,5 +328,61 @@ class DocumentAdmin(admin.ModelAdmin):
 
     def admin_url(self, obj):
         return '<a href="/admin/data/document/%s/" target="_blank">Admin</a>' % obj.id
+
+    admin_url.allow_tags = True
+
+
+class QuestionAncestryListFilter(admin.SimpleListFilter):
+    title = _('Ancestry')
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'ancestry'
+
+    def lookups(self, request, model_admin):
+        """
+		Returns a list of tuples. The first element in each
+		tuple is the coded value for the option that will
+		appear in the URL query. The second element is the
+		human-readable name for the option that will appear
+		in the right sidebar.
+		"""
+        prompts = []
+        for ancestry in Ancestry.objects.all():
+            prompts.append((ancestry.id, _(ancestry.name)))
+
+        return prompts
+
+    def queryset(self, request, queryset):
+        """
+		Returns the filtered queryset based on the value
+		provided in the query string and retrievable via
+		`self.value()`.
+		"""
+        # print("abc=%s" % self.value())
+        # print(queryset)
+        if self.value():
+            ancestry_relations = AncestryRelation.objects.filter(ancestry=self.value())
+            persons = ancestry_relations.values_list('person', flat=True)
+            return queryset.filter(person__pk__in=persons)
+        else:
+            return queryset
+
+
+class QuestionAdmin(admin.ModelAdmin):
+    list_display = ('question', 'person', 'answer', 'admin_url')
+
+    list_filter = QuestionAncestryListFilter,
+
+    def admin_url(self, obj):
+        return '<a href="/admin/data/question/%s/">Admin</a>' % obj.id
+
+    admin_url.allow_tags = True
+
+
+class PersonEventAdmin(admin.ModelAdmin):
+    list_display = ('person', 'type', 'date', 'location', 'admin_url')
+
+    def admin_url(self, obj):
+        return '<a href="/admin/data/personevent/%s/">Admin</a>' % obj.id
 
     admin_url.allow_tags = True
