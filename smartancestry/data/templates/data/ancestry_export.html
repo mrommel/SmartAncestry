@@ -538,7 +538,7 @@
 	<h2>{% trans "Births and Deaths per month" %}<a id="chapter3-3">&nbsp;</a></h2>
 
 	<div class="chartContainer">
-		<img src="http://127.0.0.1:4444/bar.png?data1={{ statistics.birthPerMonthStr|encodeSpaces }}&data2={{ statistics.deathPerMonthStr|encodeSpaces }}&axis={% trans 'January' %},{% trans 'February' %},{% trans 'March' %},{% trans 'April' %},{% trans 'May' %},{% trans 'June' %},{% trans 'July' %},{% trans 'August' %},{% trans 'September' %},{% trans 'October' %},{% trans 'November' %},{% trans 'December' %}" id="birthsPerMonthChart" width="400" height="300" />
+		<img src="http://127.0.0.1:4444/bar.png?data1={{ statistics.birthPerMonthStr|encode_spaces }}&data2={{ statistics.deathPerMonthStr|encode_spaces }}&axis={% trans 'January' %},{% trans 'February' %},{% trans 'March' %},{% trans 'April' %},{% trans 'May' %},{% trans 'June' %},{% trans 'July' %},{% trans 'August' %},{% trans 'September' %},{% trans 'October' %},{% trans 'November' %},{% trans 'December' %}" id="birthsPerMonthChart" width="400" height="300" />
 	
 		<div class="chartBorder">
 			<div id="childrenLegend">
@@ -568,7 +568,7 @@
 	<h2>{% trans "Gender distribution" %}<a id="chapter3-4">&nbsp;</a></h2>
 	
 	<div class="chartContainer">
-		<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.genderValuesStr|encodeSpaces }}" id="genderChart" width="400" height="300" />
+		<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.genderValuesStr|encode_spaces }}" id="genderChart" width="400" height="300" />
 	
 		<div class="chartBorder">
 			<div id="childrenLegend">
@@ -597,7 +597,7 @@
 	<h2>{% trans "Birth locations" %}<a id="chapter3-5">&nbsp;</a></h2>
 			
 	<div class="chartContainer">
-		<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.birthLocationsValuesStr|encodeSpaces }}&colors={{ statistics.birthLocationsColorsStr|trimHash|encodeSpaces }}" id="birthLocationsChart" width="400" height="300" />
+		<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.birthLocationsValuesStr|encode_spaces }}&colors={{ statistics.birthLocationsColorsStr|trim_hash|encode_spaces }}" id="birthLocationsChart" width="400" height="300" />
 	
 		<div class="chartBorder">
 			<div id="childrenLegend">
@@ -608,7 +608,7 @@
 				<ul class="pie-legend">
 					{% for birthLocations in statistics.birthLocations.list %}
 					<li>
-						<span class="color color-{{ birthLocations.color|trimHash }}">&nbsp;</span>
+						<span class="color color-{{ birthLocations.color|trim_hash }}">&nbsp;</span>
 						<span class="title">{{ birthLocations.name }}</span>
 					</li>
 					{% endfor %}
@@ -624,7 +624,7 @@
 	<h2>{% trans "Children" %}<a id="chapter3-6">&nbsp;</a></h2>
 
 	<div class="chartContainer">
-		<img src="http://127.0.0.1:4444/bar.png?data={{ statistics.childrenValuesStr|encodeSpaces }}&axis=0,1,2,3,4,5,6,7,8,9,10" id="childrenChart" width="400" height="300" />
+		<img src="http://127.0.0.1:4444/bar.png?data={{ statistics.childrenValuesStr|encode_spaces }}&axis=0,1,2,3,4,5,6,7,8,9,10" id="childrenChart" width="400" height="300" />
 	
 		<div class="chartBorder">
 			<div id="childrenLegend">

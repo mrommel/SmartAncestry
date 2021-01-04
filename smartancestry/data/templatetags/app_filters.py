@@ -28,8 +28,8 @@ def location_without_country(value):
 
 
 @stringfilter
-@register.filter(name='encodeSpaces')
-def encodeSpaces(value):
+@register.filter(name='encode_spaces')
+def encode_spaces(value):
     return value.replace(' ', '')
 
 
@@ -76,14 +76,14 @@ def trim(value):
 
 
 @stringfilter
-@register.filter(name='trimHash')
-def trimHash(value):
+@register.filter(name='trim_hash')
+def trim_hash(value):
     return value.replace('#', '').replace('\'', '')
 
 
 @stringfilter
-@register.filter(name='trimAndUnescape')
-def trimAndUnescape(value):
+@register.filter(name='trim_and_unescape')
+def trim_and_unescape(value):
     val = value.strip()
     val = val.replace('<u>', '')
     val = val.replace('</u>', '')
@@ -94,15 +94,15 @@ def trimAndUnescape(value):
 
 
 @stringfilter
-@register.filter(name='htmlEncode')
-def htmlEncode(value):
+@register.filter(name='html_encode')
+def html_encode(value):
     val = value.replace('\xe4', '&auml;')
     return val
 
 
 @stringfilter
-@register.filter(name='underlineIndices')
-def underlineIndices(value):
+@register.filter(name='underline_indices')
+def underline_indices(value: object) -> object:
     val = value.strip()
     # val = val.replace('&auml;', 'ae')
     val = val.replace('  ', ' ')

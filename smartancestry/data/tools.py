@@ -19,7 +19,7 @@ def ellipses(original_string, max_length):
         return original_string[:max_length - 4] + " ..."
 
 
-def trimAndUnescape(value):
+def trim_and_unescape(value):
     val = value.strip()
     val = val.replace('<u>', '')
     val = val.replace('</u>', '')
@@ -28,7 +28,7 @@ def trimAndUnescape(value):
     return val
 
 
-def underlineIndices(value):
+def underline_indices(value):
     val = value.strip()
     val = val.replace('  ', ' ')
     val = val.replace('  ', ' ')
@@ -50,13 +50,13 @@ def calculate_age(born, death):
 
 
 def nice_date(date, year_only):
-
     date_str = date.strftime("%d.%m.%Y")
 
     if year_only:
         date_str = '{0.year:4d}'.format(date)
 
     return date_str
+
 
 def name_of_ancestry(x):
     name = u'%s' % x.ancestry.name

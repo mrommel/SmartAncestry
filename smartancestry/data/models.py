@@ -13,7 +13,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from typing import Tuple
 
-from .tools import calculate_age, ancestry_relation, trimAndUnescape, underlineIndices, ellipses, is_empty, nice_date
+from .tools import calculate_age, ancestry_relation, trim_and_unescape, underline_indices, ellipses, is_empty, nice_date
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -123,8 +123,8 @@ class TreeInfo(object):
         sign = self.person.gender_sign()
         tmp = self.person.full_name()
         tmp = tmp.replace(u'\xe4', '&auml;')
-        name = trimAndUnescape(str(tmp))
-        indices = underlineIndices(str(tmp))
+        name = trim_and_unescape(str(tmp))
+        indices = underline_indices(str(tmp))
 
         # born str construction
         if self.person.birth_date is not None:
