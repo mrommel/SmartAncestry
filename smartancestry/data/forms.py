@@ -234,6 +234,9 @@ class LocationBirthRelationInline(admin.TabularInline):
 
     admin_url.allow_tags = True
 
+    def has_add_permission(self, request):
+        return False
+
 
 class LocationDeathRelationInline(admin.TabularInline):
     model = Person
@@ -251,6 +254,9 @@ class LocationDeathRelationInline(admin.TabularInline):
         return '<a href="/admin/data/person/%s/" target="_blank">Admin</a>' % (obj.id)
 
     admin_url.allow_tags = True
+
+    def has_add_permission(self, request):
+        return False
 
 
 class LocationFamilyStatusRelationInline(admin.TabularInline):
@@ -270,6 +276,9 @@ class LocationFamilyStatusRelationInline(admin.TabularInline):
 
     admin_url.allow_tags = True
 
+    def has_add_permission(self, request):
+        return False
+
 
 class LocationEventRelationInline(admin.TabularInline):
     model = PersonEvent
@@ -287,6 +296,9 @@ class LocationEventRelationInline(admin.TabularInline):
         return '<a href="/admin/data/personevent/%s/" target="_blank">Admin</a>' % (obj.id)
 
     admin_url.allow_tags = True
+
+    def has_add_permission(self, request):
+        return False
 
 
 class LocationAdmin(admin.ModelAdmin):
