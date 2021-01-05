@@ -500,29 +500,29 @@ class Person(models.Model):
                 if child.birth_location:
                     if self.male():
                         birth_child_summary = _('His son %s was born %s in %s.') % (
-                            child.first_name, nice_date(child.birth_date, child.birth_date_year_only), child.birth_location)
+                            child.first_name, nice_date(child.birth_date, child.birth_date_only_year), child.birth_location)
                     else:
                         birth_child_summary = _('Her son %s was born %s in %s.') % (
-                            child.first_name, nice_date(child.birth_date, child.birth_date_year_only), child.birth_location)
+                            child.first_name, nice_date(child.birth_date, child.birth_date_only_year), child.birth_location)
                 else:
                     if self.male():
-                        birth_child_summary = _('His son %s was born %s.') % (child.first_name, nice_date(child.birth_date, child.birth_date_year_only))
+                        birth_child_summary = _('His son %s was born %s.') % (child.first_name, nice_date(child.birth_date, child.birth_date_only_year))
                     else:
-                        birth_child_summary = _('Her son %s was born %s.') % (child.first_name, nice_date(child.birth_date, child.birth_date_year_only))
+                        birth_child_summary = _('Her son %s was born %s.') % (child.first_name, nice_date(child.birth_date, child.birth_date_only_year))
             else:
                 birth_child_title = _('Birth of daughter')
                 if child.birth_location:
                     if self.male():
                         birth_child_summary = _('His daughter %s was born %s in %s.') % (
-                            child.first_name, nice_date(child.birth_date, child.birth_date_year_only), child.birth_location)
+                            child.first_name, nice_date(child.birth_date, child.birth_date_only_year), child.birth_location)
                     else:
                         birth_child_summary = _('Her daughter %s was born %s in %s.') % (
-                            child.first_name, nice_date(child.birth_date, child.birth_date_year_only), child.birth_location)
+                            child.first_name, nice_date(child.birth_date, child.birth_date_only_year), child.birth_location)
                 else:
                     if self.male():
-                        birth_child_summary = _('His daughter %s was born %s.') % (child.first_name, nice_date(child.birth_date, child.birth_date_year_only))
+                        birth_child_summary = _('His daughter %s was born %s.') % (child.first_name, nice_date(child.birth_date, child.birth_date_only_year))
                     else:
-                        birth_child_summary = _('Her daughter %s was born %s.') % (child.first_name, nice_date(child.birth_date, child.birth_date_year_only))
+                        birth_child_summary = _('Her daughter %s was born %s.') % (child.first_name, nice_date(child.birth_date, child.birth_date_only_year))
 
             event_list.append(
                 PersonEventInfo(child.birth_date, age, birth_child_title, birth_child_summary, child.birth_location))
@@ -577,7 +577,7 @@ class Person(models.Model):
         # birth/death of siblings
         for sibling in self.siblings():
             age = calculate_age(self.birth_date, sibling.birth_date)
-            sibling_birth_date_str = nice_date(sibling.birth_date, sibling.birth_date_year_only)
+            sibling_birth_date_str = nice_date(sibling.birth_date, sibling.birth_date_only_year)
 
             if sibling.male():
                 sibling_title = _('Birth of brother')

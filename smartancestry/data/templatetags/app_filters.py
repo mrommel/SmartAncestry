@@ -102,7 +102,7 @@ def html_encode(value):
 
 @stringfilter
 @register.filter(name='underline_indices')
-def underline_indices(value: object) -> object:
+def underline_indices(value):
     val = value.strip()
     # val = val.replace('&auml;', 'ae')
     val = val.replace('  ', ' ')
