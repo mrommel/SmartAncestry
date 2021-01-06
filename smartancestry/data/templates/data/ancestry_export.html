@@ -397,11 +397,15 @@
 													</div>
 
 													<div class="con conHasArrow conHasArrowLeftTop">
-														<h2 class="conTitle hideVisually">Orte</h2>
+														<h2 class="conTitle hideVisually">{% trans "Places" %}</h2>
 														<div class="conBody">
 															<figure class="mapFigure">
 																<div class="link showMapModal photo" id="showMapModal-FigureLifeEvents">
-																	<img alt="Karte anzeigen" class="staticMap" src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-m-star+A6BCC6({{ member.person.birth_location.coordinate }})/{{ member.person.birth_location.coordinate }},6/750x262@2x?access_token=pk.eyJ1IjoibXJvbW1lbDgyIiwiYSI6ImNramVtNzFrcTJsb2YycXJ1MnJkZjNtanIifQ._XmEx_GVTa9BZS4IppCJfg">
+																	{% if member.person.death_location %}
+																		<img alt="{% trans 'Places' %}" class="staticMap" src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-m-star+A6BCC6({{ member.person.birth_location.coordinate }}),pin-m-cemetery+000000({{ member.person.death_location.coordinate }})/{{ member.person.birth_location.coordinate }},6/750x262@2x?access_token=pk.eyJ1IjoibXJvbW1lbDgyIiwiYSI6ImNramVtNzFrcTJsb2YycXJ1MnJkZjNtanIifQ._XmEx_GVTa9BZS4IppCJfg" />
+																	{% else %}
+																		<img alt="{% trans 'Places' %}" class="staticMap" src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-m-star+A6BCC6({{ member.person.birth_location.coordinate }})/{{ member.person.birth_location.coordinate }},6/750x262@2x?access_token=pk.eyJ1IjoibXJvbW1lbDgyIiwiYSI6ImNramVtNzFrcTJsb2YycXJ1MnJkZjNtanIifQ._XmEx_GVTa9BZS4IppCJfg" />
+																	{% endif %}
 																</div>
 															</figure>
 														</div>
