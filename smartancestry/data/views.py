@@ -1,14 +1,19 @@
 import logging
 import os
 import urllib
+from django.utils.translation import ugettext as _
 from operator import attrgetter
 from random import randint
+
+from django.utils.safestring import mark_safe
 
 from .models import Person, Ancestry, Location
 from django.http import HttpResponse, Http404
 from django.template.loader import render_to_string
 
 # Get an instance of a logger
+from .tools import ancestry_relation
+
 logger = logging.getLogger(__name__)
 
 
@@ -78,7 +83,17 @@ def ancestry_export(request, ancestry_id):
 
     members = []
     for member in ancestry.members():
-        member.person.template_value1 = member.person.relation_in_str(ancestry)
+        template_value1 = ''
+        for featured_person in ancestry.featured():
+            relation = ancestry_relation(member.person, featured_person.person)
+
+            if relation is not None:
+                if template_value1 == '':
+                    template_value1 = '%s %s %s' % (relation, _('of'), featured_person.person.full_name())
+                else:
+                    template_value1 = template_value1 + '<br />' + '%s %s %s' % (relation, _('of'), featured_person.person.full_name())
+
+        member.person.template_value1 = mark_safe(template_value1)
 
         members.append(member)
 
@@ -154,6 +169,7 @@ def ancestry_history(request, ancestry_id):
         'include_css': include_css
     }))
 
+
 def ancestry_export_no_documents(request, ancestry_id):
     try:
         ancestry = Ancestry.objects.get(pk=ancestry_id)
@@ -166,7 +182,17 @@ def ancestry_export_no_documents(request, ancestry_id):
 
     members = []
     for member in ancestry.members():
-        member.person.template_value1 = member.person.relation_in_str(ancestry)
+        template_value1 = ''
+        for featured_person in ancestry.featured():
+            relation = ancestry_relation(member.person, featured_person.person)
+
+            if relation is not None:
+                if template_value1 == '':
+                    template_value1 = '%s %s %s' % (relation, _('of'), featured_person.person.full_name())
+                else:
+                    template_value1 = template_value1 + '<br />' + '%s %s %s' % (relation, _('of'), featured_person.person.full_name())
+
+        member.person.template_value1 = mark_safe(template_value1)
 
         members.append(member)
 
@@ -222,42 +248,41 @@ def location(request, location_id):
 
 
 def export(request, ancestry_id):
-
     os.system(
-		"prince --no-author-style --javascript -s http://127.0.0.1:7000/static/data/style_print.css "
-		"http://127.0.0.1:7000/data/ancestry_export/%s/Kliemank -o tmp.pdf" % ancestry_id)
+        "prince --no-author-style --javascript -s http://127.0.0.1:7000/static/data/style_print.css "
+        "http://127.0.0.1:7000/data/ancestry_export/%s/Kliemank -o tmp.pdf" % ancestry_id)
 
     image_data = open('tmp.pdf', "rb").read()
     return HttpResponse(image_data, content_type='application/pdf')
 
 
 def export_no_documents(request, ancestry_id):
-
     os.system(
-		"prince --no-author-style --javascript -s http://127.0.0.1:7000/static/data/style_print.css "
-		"http://127.0.0.1:7000/data/ancestry_export_no_documents/%s/Kliemank -o tmp.pdf" % ancestry_id)
+        "prince --no-author-style --javascript -s http://127.0.0.1:7000/static/data/style_print.css "
+        "http://127.0.0.1:7000/data/ancestry_export_no_documents/%s/Kliemank -o tmp.pdf" % ancestry_id)
 
     image_data = open('tmp.pdf', "rb").read()
     return HttpResponse(image_data, content_type='application/pdf')
 
 
 def export_questions(request, ancestry_id):
-
     try:
         ancestry = Ancestry.objects.get(pk=ancestry_id)
     except Ancestry.DoesNotExist:
         raise Http404("Ancestry does not exist")
 
-    path = "http://127.0.0.1:7000/data/ancestry_questions/%s/%s/ -o tmp.pdf" % (ancestry_id, urllib.quote(ancestry.name))
+    path = "http://127.0.0.1:7000/data/ancestry_questions/%s/%s/ -o tmp.pdf" % (
+    ancestry_id, urllib.quote(ancestry.name))
 
     # write html to tmp.pdf
     os.system(
-		"prince --no-author-style --javascript -s http://127.0.0.1:7000/static/data/style_print.css %s" % path)
+        "prince --no-author-style --javascript -s http://127.0.0.1:7000/static/data/style_print.css %s" % path)
 
     pdf_data = open('tmp.pdf', "rb").read()
     return HttpResponse(pdf_data, content_type='application/pdf')
 
-#def export_history
+
+# def export_history
 
 def person_image(request, person_id, person2_id):
     person_id = person2_id

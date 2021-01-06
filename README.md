@@ -28,6 +28,8 @@ npm i canvas
 
 ## run web server
 
+cd ~/Prog/SmartAncestry/smartancestry/
+source vsmartancentry/bin/activate
 python3 manage.py runserver 7000
 
 ## data migration
