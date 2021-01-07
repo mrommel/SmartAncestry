@@ -695,8 +695,7 @@ class Person(models.Model):
                 age = calculate_age(self.birth_date, familyStatusRelation.date)
 
                 marriage_title = _('marriage')
-                #marriage_date_str = nice_date(familyStatusRelation.date, familyStatusRelation.date_year_only)
-                marriage_date_str = nice_date(familyStatusRelation.date, False)
+                marriage_date_str = nice_date(familyStatusRelation.date, familyStatusRelation.date_only_year)
 
                 if familyStatusRelation.location:
                     marriage_summary = _('%s married %s on %s at %s when she was %d years old.') % (
