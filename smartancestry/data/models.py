@@ -244,7 +244,7 @@ class Person(models.Model):
     birth_location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True,
                                        related_name='birth_location')
     death_date = models.DateField(_('date of death'), null=True, blank=True)
-    death_date_only_year = models.BooleanField(default=False)
+    death_date_only_year = models.BooleanField(default=False) # death_date_year_only
     death_location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True,
                                        related_name='death_location')
     cause_of_death = models.CharField(max_length=100, blank=True, null=True)
@@ -540,7 +540,7 @@ class Person(models.Model):
             if show_death_of_child:
                 if child.male():
                     death_child_title = _('Death of son')
-                    death_date_str = nice_date(child.death_date, child.death_date_year_only)
+                    death_date_str = nice_date(child.death_date, child.death_date_only_year)
                     if child.death_location:
                         if self.male():
                             death_child_summary = _('His son %s died at %s in %s.') % (
@@ -628,7 +628,7 @@ class Person(models.Model):
                     age = calculate_age(self.birth_date, sibling.death_date)
 
             if show_death_of_sibling:
-                sibling_death_date_str = nice_date(sibling.death_date, sibling.death_date_year_only)
+                sibling_death_date_str = nice_date(sibling.death_date, sibling.death_date_only_year)
 
                 if sibling.male():
                     sibling_title = _('Death of brother')
