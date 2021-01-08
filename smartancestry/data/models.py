@@ -859,11 +859,22 @@ class Person(models.Model):
         result = ''
 
         for partner_info in self.partner_relations():
+            name_str = ''
+            date_str = ''
+            location_str = ''
+
+            if partner_info.date:
+                date_str = ' - ' + nice_date(partner_info.date, partner_info.date_year_only)
+
             if partner_info.partner is not None:
-                result = result + mark_safe('<a href="/admin/data/person/%s/">%s</a>' % (
-                    partner_info.partner.id, str(partner_info.partner))) + ", "
+                name_str = mark_safe('<a href="/admin/data/person/%s/">%s</a>' % (partner_info.partner.id, str(partner_info.partner)))
             else:
-                result = result + partner_info.partner_name + ", "
+                name_str + partner_info.partner_name
+
+            if partner_info.location:
+                location_str = ' - ' + str(partner_info.location)
+
+            result = result + name_str + date_str + location_str + ", "
 
         return result
 
