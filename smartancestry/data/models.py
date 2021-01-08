@@ -676,7 +676,7 @@ class Person(models.Model):
                 age = calculate_age(self.birth_date, familyStatusRelation.date)
 
                 marriage_title = _('marriage')
-                marriage_date_str = nice_date(familyStatusRelation.date, familyStatusRelation.date_year_only)
+                marriage_date_str = nice_date(familyStatusRelation.date, familyStatusRelation.date_only_year)
 
                 if familyStatusRelation.location:
                     marriage_summary = _('%s married %s on %s at %s when he was %d years old.') % (
@@ -722,7 +722,7 @@ class Person(models.Model):
 
             if show_death_of_father:
                 death_father_title = _('Death of father')
-                death_father_str = nice_date(self.father.death_date, self.father.death_date_year_only)
+                death_father_str = nice_date(self.father.death_date, self.father.death_date_only_year)
 
                 if self.father.death_location:
                     if self.male():
@@ -757,7 +757,7 @@ class Person(models.Model):
 
             if show_death_of_mother:
                 death_mother_title = _('Death of mother')
-                death_mother_str = nice_date(self.mother.death_date, self.mother.death_date_year_only)
+                death_mother_str = nice_date(self.mother.death_date, self.mother.death_date_only_year)
 
                 if self.mother.death_location:
                     if self.male():

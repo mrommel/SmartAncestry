@@ -303,9 +303,13 @@
 										</td>
 										<td width="80%" colspan="3">
 											{% if partner_relation.partner.children %}
-												{% for child in partner_relation.partner.children %}
-													<a href="#chapter1-{{ child.id }}" class="nolink">{{ child.full_name|underline }}</a>
-												{% endfor %}
+												<ul class="commalist">
+													{% for child in partner_relation.partner.children %}
+														{% if child.father == partner_relation.partner and child.mother == member.person or child.mother == partner_relation.partner and child.father == member.person %}
+															<li><a href="#chapter1-{{ child.id }}" class="nolink">{{ child.full_name|underline }}</a></li>
+														{% endif %}
+													{% endfor %}
+												</ul>
 											{% endif %}
 										</td>
 									</tr>
