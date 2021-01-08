@@ -241,18 +241,18 @@ class Person(models.Model):
     birth_date = models.DateField(_('date of birth'))
     birth_date_only_year = models.BooleanField(default=False)
     birth_date_unclear = models.BooleanField(default=False)
-    birth_location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True,
+    birth_location = models.ForeignKey(Location, on_delete=models.DO_NOTHING, blank=True, null=True,
                                        related_name='birth_location')
     death_date = models.DateField(_('date of death'), null=True, blank=True)
-    death_date_only_year = models.BooleanField(default=False) # death_date_year_only
-    death_location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True,
+    death_date_only_year = models.BooleanField(default=False)
+    death_location = models.ForeignKey(Location, on_delete=models.DO_NOTHING, blank=True, null=True,
                                        related_name='death_location')
     cause_of_death = models.CharField(max_length=100, blank=True, null=True)
     already_died = models.NullBooleanField(default=False, blank=True, null=True)
     profession = models.CharField(max_length=50, blank=True, null=True)
-    father = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='children_father')
+    father = models.ForeignKey('self', on_delete=models.DO_NOTHING, blank=True, null=True, related_name='children_father')
     father_extern = models.CharField(max_length=200, blank=True, null=True)
-    mother = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='children_mother')
+    mother = models.ForeignKey('self', on_delete=models.DO_NOTHING, blank=True, null=True, related_name='children_mother')
     mother_extern = models.CharField(max_length=200, blank=True, null=True)
     children_extern = models.CharField(max_length=600, blank=True, null=True)
     siblings_extern = models.CharField(max_length=600, blank=True, null=True)  # type: CharField
@@ -1790,8 +1790,8 @@ class DistributionRelation(models.Model):
     """
 		class that links ancestry with distribution
 	"""
-    distribution = models.ForeignKey(Distribution, on_delete=models.CASCADE)
-    ancestry = models.ForeignKey(Ancestry, on_delete=models.CASCADE)
+    distribution = models.ForeignKey(Distribution, on_delete=models.DO_NOTHING)
+    ancestry = models.ForeignKey(Ancestry, on_delete=models.DO_NOTHING)
 
     def __unicode__(self):
         return '%s - %s' % (self.ancestry.name, self.distribution.family_name)
@@ -1880,8 +1880,8 @@ class DocumentRelation(models.Model):
     """
 		class that links a Document with a person
 	"""
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    document = models.ForeignKey(Document, on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.DO_NOTHING)
+    document = models.ForeignKey(Document, on_delete=models.DO_NOTHING)
 
     def __unicode__(self):
         return mark_safe(u'%s - %s' % (self.person, self.document.name))
@@ -1894,8 +1894,8 @@ class DocumentAncestryRelation(models.Model):
     """
 		class that links a Document with an ancestry
 	"""
-    ancestry = models.ForeignKey(Ancestry, on_delete=models.CASCADE)
-    document = models.ForeignKey(Document, on_delete=models.CASCADE)
+    ancestry = models.ForeignKey(Ancestry, on_delete=models.DO_NOTHING)
+    document = models.ForeignKey(Document, on_delete=models.DO_NOTHING)
 
     def __unicode__(self):
         return mark_safe(u'%s - %s' % (self.ancestry, self.document.name))
@@ -1905,7 +1905,7 @@ class DocumentAncestryRelation(models.Model):
 
 
 class Question(models.Model):
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.DO_NOTHING)
     question = models.CharField(max_length=100)
     answer = models.CharField(max_length=100, null=True, blank=True)  # type: CharField
     date = models.DateField(_('date of answer'), null=True, blank=True)
@@ -1929,8 +1929,8 @@ class Question(models.Model):
 
 
 class AncestryRelation(models.Model):
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    ancestry = models.ForeignKey(Ancestry, on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.DO_NOTHING)
+    ancestry = models.ForeignKey(Ancestry, on_delete=models.DO_NOTHING)
     featured = models.NullBooleanField(default=False, blank=True, null=True)
 
     def relation(self):
@@ -1951,11 +1951,11 @@ class FamilyStatusRelation(models.Model):
                                   ('A', _('Adoption'))))  # type: CharField
     date = models.DateField(_('date of marriage or divorce'), null=True, blank=True)
     date_only_year = models.BooleanField(default=False)
-    man = models.ForeignKey(Person, on_delete=models.CASCADE, related_name=_('husband'), blank=True, null=True)
-    woman = models.ForeignKey(Person, on_delete=models.CASCADE, related_name=_('wife'), blank=True, null=True)
+    man = models.ForeignKey(Person, on_delete=models.DO_NOTHING, related_name=_('husband'), blank=True, null=True)
+    woman = models.ForeignKey(Person, on_delete=models.DO_NOTHING, related_name=_('wife'), blank=True, null=True)
     husband_extern = models.CharField(max_length=50, blank=True, null=True)
     wife_extern = models.CharField(max_length=50, blank=True, null=True)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
+    location = models.ForeignKey(Location, on_delete=models.DO_NOTHING, blank=True, null=True)
     ended = models.NullBooleanField(default=False, blank=True, null=True)
 
     def husband_name(self):
@@ -2037,10 +2037,10 @@ class PersonEvent(models.Model):
 		additional events for persons
 	"""
     type = models.CharField(max_length=1, choices=EVENT_TYPES)
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
+    person = models.ForeignKey(Person, on_delete=models.DO_NOTHING, blank=True, null=True)
     date = models.DateField(_('date of marriage or divorce'), null=True, blank=True)
     date_only_year = models.BooleanField(default=False)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
+    location = models.ForeignKey(Location, on_delete=models.DO_NOTHING, blank=True, null=True)
     description = models.CharField(max_length=200, null=True, blank=True)
 
     def event_type(self):
