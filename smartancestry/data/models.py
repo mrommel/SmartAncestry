@@ -1832,7 +1832,7 @@ class Document(models.Model):
         """
 			Returns a comma separated list of person related to this document
 		"""
-        return mark_safe(','.join(map(str, self.persons())))
+        return mark_safe(', '.join(map(str, self.persons())))
 
     def ancestries(self):
         """
@@ -1870,10 +1870,10 @@ class Document(models.Model):
     thumbnail.allow_tags = True
 
     def __unicode__(self):
-        return self.name
+        return '%s - %s' % (self.name, self.person_names())
 
     def __str__(self):
-        return self.name
+        return '%s - %s' % (self.name, self.person_names())
 
 
 class DocumentRelation(models.Model):
