@@ -938,6 +938,9 @@ class Person(models.Model):
         return children_list
 
     def children_extern_list(self):
+        if self.children_extern == '-':
+            return None
+
         if self.children_extern is not None and self.children_extern != '':
             return self.children_extern.split(',')
 

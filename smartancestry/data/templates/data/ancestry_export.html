@@ -318,7 +318,7 @@
 						{% endif %}
 					{% endfor %}
 				{% endif %}
-				{% if member.person.children_extern_list and member.person.children_extern_list != '-' %}
+				{% if member.person.children_extern_list %}
 					<tr class="{% cycle row_style %}">
 						<td width="20%" class="label">{% trans "other Children" %}:</td>
 						<td width="80%" colspan="3">
