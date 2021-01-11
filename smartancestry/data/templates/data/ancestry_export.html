@@ -231,11 +231,11 @@
 						<td width="80%" colspan="3" class="first">{{ member.person.template_value1 }}</td>
 					</tr>
 				{% endif %}
-				{% if member.person.profession %}
-				<tr class="{% cycle row_style %}">
-					<td width="20%" class="label first">{% trans "Profession" %}:</td>
-					<td width="80%" colspan="3">{{ member.person.profession }}</td>
-				</tr>
+				{% if member.person.profession and member.person.profession != '-' %}
+					<tr class="{% cycle row_style %}">
+						<td width="20%" class="label first">{% trans "Profession" %}:</td>
+						<td width="80%" colspan="3">{{ member.person.profession }}</td>
+					</tr>
 				{% endif %}
 				<tr class="{% cycle row_style %}">
 					<td width="20%" class="label">{% trans "Father" %}:</td>
@@ -437,9 +437,9 @@
 															<p class="storyNarr topSpacing textEditable colornormal">
 																{{ item.summary }}
 															</p>
-															{% if member.person.birth_location %}
+															{% if item.location %}
 																<h4 class="cardTitle topSpacing storyDatePlace">
-																	<span class="dateField notEditableDateField">{{ item.date | date:"d.m.Y" }}</span>&nbsp;•&nbsp;<span class="locationField notEditableLocationField">{{ member.person.birth_location }}</span>
+																	<span class="dateField notEditableDateField">{{ item.date | date:"d.m.Y" }}</span>&nbsp;•&nbsp;<span class="locationField notEditableLocationField">{{ item.location }}</span>
 																</h4>
 															{% else %}
 																<h4 class="cardTitle topSpacing storyDatePlace">

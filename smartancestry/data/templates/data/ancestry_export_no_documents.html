@@ -94,8 +94,8 @@
 
 {% if distributions %}
 	{% for distribution in distributions %}
-		<item href="#chapter5-{{ distribution.distribution.id }}" class="sub-chapter">
-			<a href="#chapter5-{{ distribution.distribution.id }}" class="nolink">
+		<item href="#chapter5-{{ distribution.distribution.id }}" class="sub-chapter">
+			<a href="#chapter5-{{ distribution.distribution.id }}" class="nolink">
 				{{ distribution.distribution }}
 			</a>
 		</item>
@@ -199,12 +199,36 @@
 						<td width="80%" colspan="3" class="first">{{ member.person.template_value1 }}</td>
 					</tr>
 				{% endif %}
-				{% if member.person.profession %}
-				<tr class="{% cycle row_style %}">
-					<td width="20%" class="label first">{% trans "Profession" %}:</td>
-					<td width="80%" colspan="3">{{ member.person.profession }}</td>
-				</tr>
+				{% if member.person.profession and member.person.profession != '-' %}
+					<tr class="{% cycle row_style %}">
+						<td width="20%" class="label first">{% trans "Profession" %}:</td>
+						<td width="80%" colspan="3">{{ member.person.profession }}</td>
+					</tr>
 				{% endif %}
+				<tr class="{% cycle row_style %}">
+					<td width="20%" class="label">{% trans "Father" %}:</td>
+					<td width="80%" colspan="3">
+						{% if member.person.father %}
+							<a href="#chapter1-{{ member.person.father.id }}" class="nolink">{{ member.person.father }}</a>
+						{% else %}
+							{% if member.person.father_extern %}
+								{{ member.person.father_extern|underline }}
+							{% endif %}
+						{% endif %}
+					</td>
+				</tr>
+				<tr class="{% cycle row_style %}">
+					<td width="20%" class="label">{% trans "Mother" %}:</td>
+					<td width="80%" colspan="3">
+						{% if member.person.mother %}
+							<a href="#chapter1-{{ member.person.mother.id }}" class="nolink">{{ member.person.mother }}</a>
+						{% else %}
+							{% if member.person.mother_extern %}
+								{{ member.person.mother_extern|underline }}
+							{% endif %}
+						{% endif %}
+					</td>
+				</tr>
 				{% if member.person.partner_relations %}
 					{% for partner_relation in member.person.partner_relations %}
 						<tr class="{% cycle row_style %}">
@@ -238,51 +262,42 @@
 								{% endif %}
 							</td>
 						</tr>
-					{% endfor %}
-				{% endif %}
-				<tr class="{% cycle row_style %}">
-					<td width="20%" class="label">{% trans "Father" %}:</td>
-					<td width="80%" colspan="3">
-						{% if member.person.father %}
-							<a href="#chapter1-{{ member.person.father.id }}" class="nolink">{{ member.person.father }}</a>
-						{% else %}
-							{% if member.person.father_extern %}
-								{{ member.person.father_extern|underline }}
-							{% endif %}	
-						{% endif %}
-					</td>
-				</tr>
-				<tr class="{% cycle row_style %}">
-					<td width="20%" class="label">{% trans "Mother" %}:</td>
-					<td width="80%" colspan="3">
-						{% if member.person.mother %}
-							<a href="#chapter1-{{ member.person.mother.id }}" class="nolink">{{ member.person.mother }}</a>
-						{% else %}
-							{% if member.person.mother_extern %}
-								{{ member.person.mother_extern|underline }}
+						{% if partner_relation.partner %}
+							{% if partner_relation.state == 'M' %}
+								{% if partner_relation.partner.children %}
+									<tr class="{% cycle row_style %}">
+										<td width="20%" class="label">
+											<img src="/static/data/images/children_of.png" width="20" height="10" />&nbsp;{% trans "Children" %}:
+										</td>
+										<td width="80%" colspan="3">
+											{% if partner_relation.partner.children %}
+												<ul class="commalist">
+													{% for child in partner_relation.partner.children %}
+														{% if child.father == partner_relation.partner and child.mother == member.person or child.mother == partner_relation.partner and child.father == member.person %}
+															<li><a href="#chapter1-{{ child.id }}" class="nolink">{{ child.full_name|underline }}</a></li>
+														{% endif %}
+													{% endfor %}
+												</ul>
+											{% endif %}
+										</td>
+									</tr>
+								{% endif %}
 							{% endif %}
 						{% endif %}
-					</td>
-				</tr>
-				<tr class="{% cycle row_style %}">
-					<td width="20%" class="label">{% trans "Children" %}:</td>
-					<td width="80%" colspan="3">
-						<ul class="commalist">
-						{% if member.person.children %}
-    						{% for child in member.person.children %}
-        						<li><a href="#chapter1-{{ child.id }}" class="nolink">{{ child.full_name|underline }}</a></li>
-    						{% endfor %}
-						{% endif %}
-						{% if member.person.children_extern_list %}
-							{% if member.person.children_extern_list %}
+					{% endfor %}
+				{% endif %}
+				{% if member.person.children_extern_list %}
+					<tr class="{% cycle row_style %}">
+						<td width="20%" class="label">{% trans "other Children" %}:</td>
+						<td width="80%" colspan="3">
+							<ul class="commalist">
 								{% for child in member.person.children_extern_list %}
         							<li>{{ child }}</li>
     							{% endfor %}
-    						{% endif %}
-						{% endif %}
-						</ul>
-					</td>
-				</tr>
+							</ul>
+						</td>
+					</tr>
+				{% endif %}
 				<tr class="{% cycle row_style %}">
 					<td width="20%" class="label">{% trans "Siblings" %}:</td>
 					<td width="80%" colspan="3">
@@ -314,10 +329,93 @@
 				</tr>
 				{% endif %}
 			</table>
-			</div>			
+			</div>
 		</para>
-		
+
 		{# resetcycle #}
+
+		{% for featured_member in featured %}
+			{% if member == featured_member %}
+				<para>
+					<h4>{% trans "History of" %} {% autoescape off %}{{ member.person.first_name|underline }} {{ member.person.last_name }}{% endautoescape %}</h4>
+
+					<div class="pageWrap">
+						<div class="personView">
+							<div class="personViewPages">
+								<div class="personPage personPageStory">
+									<div class="lifeStory storyline">
+
+										<div class="not_breaking">
+											{% if member.person.birth_location %}
+												<section class="lifeStorySec lifeStoryMap storylineHasTrail">
+													<div class="storylineBullet storylineBulletHasText">
+														<div class="storylineBulletText">
+															<h3 class="storylineBulletTitle">
+																<img src="/static/data/images/map.png" width="32" height="32" />
+															</h3>
+														</div>
+													</div>
+
+													<div class="con conHasArrow conHasArrowLeftTop">
+														<h2 class="conTitle hideVisually">{% trans "Places" %}</h2>
+														<div class="conBody">
+															<figure class="mapFigure">
+																<div class="link showMapModal photo" id="showMapModal-FigureLifeEvents">
+																	{% if member.person.death_location %}
+																		<img alt="{% trans 'Places' %}" class="staticMap" src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-m-star+A6BCC6({{ member.person.birth_location.coordinate }}),pin-m-cemetery+000000({{ member.person.death_location.coordinate }})/{{ member.person.birth_location.coordinate }},6/750x262@2x?access_token=pk.eyJ1IjoibXJvbW1lbDgyIiwiYSI6ImNramVtNzFrcTJsb2YycXJ1MnJkZjNtanIifQ._XmEx_GVTa9BZS4IppCJfg" />
+																	{% else %}
+																		<img alt="{% trans 'Places' %}" class="staticMap" src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-m-star+A6BCC6({{ member.person.birth_location.coordinate }})/{{ member.person.birth_location.coordinate }},6/750x262@2x?access_token=pk.eyJ1IjoibXJvbW1lbDgyIiwiYSI6ImNramVtNzFrcTJsb2YycXJ1MnJkZjNtanIifQ._XmEx_GVTa9BZS4IppCJfg" />
+																	{% endif %}
+																</div>
+															</figure>
+														</div>
+														<div class="conArrow"></div>
+													</div>
+												</section>
+											{% endif %}
+										</div>
+
+										{% for item in member.person.events %}
+											<div class="not_breaking">
+												<section class="lifeStorySec lifeStoryEvent storylineHasTrail">
+													<div class="storylineBullet storylineBulletHasText">
+														<div class="storylineBulletText">
+															<p class="storylineBulletSubtitle">{{ item.date | date:"d.m" }}</p>
+															<h3 class="storylineBulletTitle">{{ item.date | date:"Y" }}</h3>
+															{% if item.age != -1 %}
+																<p class="storylineBulletSubtitle">Alter {{ item.age }}</p>
+															{% endif %}
+														</div>
+													</div>
+													<div class="con conHasArrow conHasArrowLeftTop">
+														<h2 class="conTitle">{{ item.title }}</h2>
+														<div class="conBody">
+															<p class="storyNarr topSpacing textEditable colornormal">
+																{{ item.summary }}
+															</p>
+															{% if item.location %}
+																<h4 class="cardTitle topSpacing storyDatePlace">
+																	<span class="dateField notEditableDateField">{{ item.date | date:"d.m.Y" }}</span>&nbsp;•&nbsp;<span class="locationField notEditableLocationField">{{ item.location }}</span>
+																</h4>
+															{% else %}
+																<h4 class="cardTitle topSpacing storyDatePlace">
+																	<span class="dateField notEditableDateField">{{ item.date | date:"d.m.Y" }}</span>
+																</h4>
+															{% endif %}
+														</div>
+														<div class="conArrow"></div>
+													</div>
+												</section>
+											</div>
+										{% endfor %}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</para>
+			{% endif %}
+		{% endfor %}
 	{% endfor %}
 {% else %}
 	<para>{% trans "No members are available." %}</para>
