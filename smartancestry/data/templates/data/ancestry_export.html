@@ -318,7 +318,7 @@
 						{% endif %}
 					{% endfor %}
 				{% endif %}
-				{% if member.person.children_extern_list %}
+				{% if member.person.children_extern_list and member.person.children_extern_list != '-' %}
 					<tr class="{% cycle row_style %}">
 						<td width="20%" class="label">{% trans "other Children" %}:</td>
 						<td width="80%" colspan="3">
@@ -685,7 +685,7 @@
 	{% for distribution in distributions %}
 		<para>
 			<div class="not_breaking">
-			<h2>{{ distribution.distribution.family_name }}<a id="chapter5-{{ distribution.distribution.id }}">&nbsp;</a></h2>
+			<h2>{{ distribution.distribution.family_name }}<a id="chapter5-{{ distribution.distribution.id }}">&nbsp;</a></h2>
 			<img src="/{{ MEDIA_URL }}..{{ distribution.distribution.image.url }}" class="distribution" />
 			</div>
 		</para>

@@ -49,6 +49,8 @@ deactivate
 brew install gettext
 brew link gettext --force
 
+### tranlations
+
 cd ~/Prog/SmartAncestry/smartancestry/
 source vsmartancentry/bin/activate
 cd data

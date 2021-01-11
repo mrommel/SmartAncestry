@@ -113,7 +113,8 @@ def ancestry_export(request, ancestry_id):
         'questions': questions,
         'ancestry_documents': ancestry.ancestry_documents(),
         'person_documents': ancestry.documents(),
-        'include_css': include_css
+        'include_css': include_css,
+        'MEDIA_URL': 'media/'
     }))
 
 
