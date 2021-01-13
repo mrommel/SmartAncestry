@@ -25,7 +25,7 @@ DEBUG = True
 
 #TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '127.0.0.1:7000']
 
 PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
 
@@ -87,13 +87,13 @@ LOGGING = {
         },
     },
     'handlers': {
-        'file': {
+        'file_models': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': 'debug.log',
             'formatter': 'verbose'
         },
-        'file2': {
+        'file_django': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': 'django.log',
@@ -108,12 +108,12 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['file2'],
+            'handlers': ['file_django'],
             'propagate': True,
-            'level': 'DEBUG',
+            'level': 'INFO',
         },
         'data.models': {
-            'handlers': ['file'],
+            'handlers': ['file_models'],
             'level': 'DEBUG',
         },
         'data.forms': {

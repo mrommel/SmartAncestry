@@ -97,6 +97,11 @@ def ancestry_export(request, ancestry_id):
 
         members.append(member)
 
+    featured = ancestry.featured()
+    ancestry_distributions = ancestry.distributions()
+    ancestry_documents = ancestry.ancestry_documents()
+    person_documents = ancestry.documents()
+
     if request.GET.get('with') is not None:
         include_css = True
     else:
@@ -106,13 +111,13 @@ def ancestry_export(request, ancestry_id):
         'ancestry': ancestry,
         'sorted_members': sorted_members,
         'member_list': members,
-        'featured': ancestry.featured(),
-        'distributions': ancestry.distributions(),
+        'featured': featured,
+        'distributions': ancestry_distributions,
         'locations': ancestry.locations,
         'statistics': ancestry.statistics,
         'questions': questions,
-        'ancestry_documents': ancestry.ancestry_documents(),
-        'person_documents': ancestry.documents(),
+        'ancestry_documents': ancestry_documents,
+        'person_documents': person_documents,
         'include_css': include_css,
         'MEDIA_URL': 'media/'
     }))
