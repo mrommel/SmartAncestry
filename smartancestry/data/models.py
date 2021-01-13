@@ -250,9 +250,11 @@ class Person(models.Model):
     cause_of_death = models.CharField(max_length=100, blank=True, null=True)
     already_died = models.NullBooleanField(default=False, blank=True, null=True)
     profession = models.CharField(max_length=50, blank=True, null=True)
-    father = models.ForeignKey('self', on_delete=models.DO_NOTHING, blank=True, null=True, related_name='children_father')
+    father = models.ForeignKey('self', on_delete=models.DO_NOTHING, blank=True, null=True,
+                               related_name='children_father')
     father_extern = models.CharField(max_length=200, blank=True, null=True)
-    mother = models.ForeignKey('self', on_delete=models.DO_NOTHING, blank=True, null=True, related_name='children_mother')
+    mother = models.ForeignKey('self', on_delete=models.DO_NOTHING, blank=True, null=True,
+                               related_name='children_mother')
     mother_extern = models.CharField(max_length=200, blank=True, null=True)
     children_extern = models.CharField(max_length=600, blank=True, null=True)
     siblings_extern = models.CharField(max_length=600, blank=True, null=True)  # type: CharField
@@ -348,7 +350,8 @@ class Person(models.Model):
                 if self.birth_location:
                     first_sentence = _(
                         '%s was born on %s in %s as son of %s (%s years old) and his mother %s (%s years old).') % (
-                                         self.full_name(), birth_date_str, self.birth_location, self.father.first_name_nice(),
+                                         self.full_name(), birth_date_str, self.birth_location,
+                                         self.father.first_name_nice(),
                                          age_father, self.mother.first_name_nice(), age_mother)
                 else:
                     first_sentence = _(
@@ -359,7 +362,8 @@ class Person(models.Model):
                 if self.birth_location:
                     first_sentence = _(
                         '%s was born on %s in %s as daughter of %s (%s years old) and her mother %s (%s years old).') % (
-                                         self.full_name(), birth_date_str, self.birth_location, self.father.first_name_nice(),
+                                         self.full_name(), birth_date_str, self.birth_location,
+                                         self.father.first_name_nice(),
                                          age_father, self.mother.first_name_nice(), age_mother)
                 else:
                     first_sentence = _(
@@ -508,32 +512,41 @@ class Person(models.Model):
                 if child.birth_location:
                     if self.male():
                         birth_child_summary = _('His son %s was born %s in %s.') % (
-                            child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year), child.birth_location)
+                            child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year),
+                            child.birth_location)
                     else:
                         birth_child_summary = _('Her son %s was born %s in %s.') % (
-                            child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year), child.birth_location)
+                            child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year),
+                            child.birth_location)
                 else:
                     if self.male():
-                        birth_child_summary = _('His son %s was born %s.') % (child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
+                        birth_child_summary = _('His son %s was born %s.') % (
+                        child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
                     else:
-                        birth_child_summary = _('Her son %s was born %s.') % (child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
+                        birth_child_summary = _('Her son %s was born %s.') % (
+                        child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
             else:
                 birth_child_title = _('Birth of daughter')
                 if child.birth_location:
                     if self.male():
                         birth_child_summary = _('His daughter %s was born %s in %s.') % (
-                            child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year), child.birth_location)
+                            child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year),
+                            child.birth_location)
                     else:
                         birth_child_summary = _('Her daughter %s was born %s in %s.') % (
-                            child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year), child.birth_location)
+                            child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year),
+                            child.birth_location)
                 else:
                     if self.male():
-                        birth_child_summary = _('His daughter %s was born %s.') % (child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
+                        birth_child_summary = _('His daughter %s was born %s.') % (
+                        child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
                     else:
-                        birth_child_summary = _('Her daughter %s was born %s.') % (child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
+                        birth_child_summary = _('Her daughter %s was born %s.') % (
+                        child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
 
             event_list.append(
-                PersonEventInfo(child.birth_date, age, birth_child_title, mark_safe(birth_child_summary), child.birth_location))
+                PersonEventInfo(child.birth_date, age, birth_child_title, mark_safe(birth_child_summary),
+                                child.birth_location))
 
             show_death_of_child = False
             if child.death_date:
@@ -558,9 +571,11 @@ class Person(models.Model):
                                 child.first_name_nice(), death_date_str, child.death_location)
                     else:
                         if self.male():
-                            death_child_summary = _('His son %s died at %s.') % (child.first_name_nice(), death_date_str)
+                            death_child_summary = _('His son %s died at %s.') % (
+                            child.first_name_nice(), death_date_str)
                         else:
-                            death_child_summary = _('Her son %s died at %s.') % (child.first_name_nice(), death_date_str)
+                            death_child_summary = _('Her son %s died at %s.') % (
+                            child.first_name_nice(), death_date_str)
                 else:
                     death_child_title = _('Death of daughter')
                     if child.death_location:
@@ -593,10 +608,12 @@ class Person(models.Model):
                 if self.birth_location:
                     if self.male():
                         sibling_summary = _("His brother %s was born at %s in %s, when %s was %d years old.") % (
-                            sibling.first_name_nice(), sibling_birth_date_str, sibling.birth_location, self.first_name_nice(), age)
+                            sibling.first_name_nice(), sibling_birth_date_str, sibling.birth_location,
+                            self.first_name_nice(), age)
                     else:
                         sibling_summary = _("Her brother %s was born at %s in %s, when %s was %d years old.") % (
-                            sibling.first_name_nice(), sibling_birth_date_str, sibling.birth_location, self.first_name_nice(), age)
+                            sibling.first_name_nice(), sibling_birth_date_str, sibling.birth_location,
+                            self.first_name_nice(), age)
                 else:
                     if self.male():
                         sibling_summary = _("His brother %s was born at %s, when %s was %d years old.") % (
@@ -610,10 +627,12 @@ class Person(models.Model):
                 if self.birth_location:
                     if self.male():
                         sibling_summary = _("His sister %s was born at %s in %s, when %s was %d years old.") % (
-                            sibling.first_name_nice(), sibling_birth_date_str, sibling.birth_location, self.first_name_nice(), age)
+                            sibling.first_name_nice(), sibling_birth_date_str, sibling.birth_location,
+                            self.first_name_nice(), age)
                     else:
                         sibling_summary = _("Her sister %s was born at %s in %s, when %s was %d years old.") % (
-                            sibling.first_name_nice(), sibling_birth_date_str, sibling.birth_location, self.first_name_nice(), age)
+                            sibling.first_name_nice(), sibling_birth_date_str, sibling.birth_location,
+                            self.first_name_nice(), age)
                 else:
                     if self.male():
                         sibling_summary = _("His sister %s was born at %s, when %s was %d years old.") % (
@@ -644,10 +663,12 @@ class Person(models.Model):
                     if self.death_location:
                         if self.male():
                             sibling_summary = _('His brother %s died at %s in %s, when %s was %d years old.') % (
-                                sibling.first_name_nice(), sibling_death_date_str, sibling.death_location, self.first_name_nice(), age)
+                                sibling.first_name_nice(), sibling_death_date_str, sibling.death_location,
+                                self.first_name_nice(), age)
                         else:
                             sibling_summary = _('Her brother %s died at %s in %s, when %s was %d years old.') % (
-                                sibling.first_name_nice(), sibling_death_date_str, sibling.death_location, self.first_name_nice(), age)
+                                sibling.first_name_nice(), sibling_death_date_str, sibling.death_location,
+                                self.first_name_nice(), age)
                     else:
                         if self.male():
                             sibling_summary = _('His brother %s died at %s, when %s was %d years old.') % (
@@ -662,10 +683,12 @@ class Person(models.Model):
                     if self.death_location:
                         if self.male():
                             sibling_summary = _('His sister %s died at %s in %s, when %s was %d years old.') % (
-                                sibling.first_name_nice(), sibling_death_date_str, sibling.death_location, self.first_name_nice(), age)
+                                sibling.first_name_nice(), sibling_death_date_str, sibling.death_location,
+                                self.first_name_nice(), age)
                         else:
                             sibling_summary = _('Her sister %s died at %s in %s, when %s was %d years old.') % (
-                                sibling.first_name_nice(), sibling_death_date_str, sibling.death_location, self.first_name_nice(), age)
+                                sibling.first_name_nice(), sibling_death_date_str, sibling.death_location,
+                                self.first_name_nice(), age)
                     else:
                         if self.male():
                             sibling_summary = _('His sister %s died at %s, when %s was %d years old.') % (
@@ -675,7 +698,8 @@ class Person(models.Model):
                                 sibling.first_name_nice(), sibling_death_date_str, self.first_name_nice(), age)
 
                 event_list.append(
-                    PersonEventInfo(sibling.death_date, age, sibling_title, mark_safe(sibling_summary), sibling.death_location))
+                    PersonEventInfo(sibling.death_date, age, sibling_title, mark_safe(sibling_summary),
+                                    sibling.death_location))
 
         # marriage
         for familyStatusRelation in FamilyStatusRelation.objects.filter(
@@ -694,8 +718,9 @@ class Person(models.Model):
                     marriage_summary = _('%s married %s on %s when he was %d years old.') % (
                         self.full_name(), familyStatusRelation.woman.full_name(), marriage_date_str, age)
 
-                event_list.append(PersonEventInfo(familyStatusRelation.date, age, marriage_title, mark_safe(marriage_summary),
-                                                  familyStatusRelation.location))
+                event_list.append(
+                    PersonEventInfo(familyStatusRelation.date, age, marriage_title, mark_safe(marriage_summary),
+                                    familyStatusRelation.location))
 
         for familyStatusRelation in FamilyStatusRelation.objects.filter(
                 Q(woman=self) & Q(status='M') & (Q(ended=False) | Q(ended=None))):
@@ -713,8 +738,9 @@ class Person(models.Model):
                     marriage_summary = _('%s married %s on %s when she was %d years old.') % (
                         self.full_name(), familyStatusRelation.man.full_name(), marriage_date_str, age)
 
-            event_list.append(PersonEventInfo(familyStatusRelation.date, age, marriage_title, mark_safe(marriage_summary),
-                                              familyStatusRelation.location))
+            event_list.append(
+                PersonEventInfo(familyStatusRelation.date, age, marriage_title, mark_safe(marriage_summary),
+                                familyStatusRelation.location))
 
         # death of parents
         if self.father:
@@ -734,11 +760,13 @@ class Person(models.Model):
                 if self.father.death_location:
                     if self.male():
                         death_father_summary = _('His father %s died at %s in %s, when %s was %d years old.') % (
-                            self.father.first_name_nice(), death_father_str, self.father.death_location, self.first_name_nice(),
+                            self.father.first_name_nice(), death_father_str, self.father.death_location,
+                            self.first_name_nice(),
                             age)
                     else:
                         death_father_summary = _('Her father %s died at %s in %s, when %s was %d years old.') % (
-                            self.father.first_name_nice(), death_father_str, self.father.death_location, self.first_name_nice(),
+                            self.father.first_name_nice(), death_father_str, self.father.death_location,
+                            self.first_name_nice(),
                             age)
                 else:
                     if self.male():
@@ -768,11 +796,13 @@ class Person(models.Model):
                 if self.mother.death_location:
                     if self.male():
                         death_mother_summary = _('His mother %s died at %s in %s, when %s was %d years old.') % (
-                            self.mother.first_name_nice(), death_mother_str, self.mother.death_location, self.first_name_nice(),
+                            self.mother.first_name_nice(), death_mother_str, self.mother.death_location,
+                            self.first_name_nice(),
                             age)
                     else:
                         death_mother_summary = _('Her mother %s died at %s in %s, when %s was %d years old.') % (
-                            self.mother.first_name_nice(), death_mother_str, self.mother.death_location, self.first_name_nice(),
+                            self.mother.first_name_nice(), death_mother_str, self.mother.death_location,
+                            self.first_name_nice(),
                             age)
                 else:
                     if self.male():
@@ -799,7 +829,8 @@ class Person(models.Model):
             else:
                 death_summary = _('%s died at %s at the age of %d years.') % (self.full_name(), death_date_str, age)
 
-            event_list.append(PersonEventInfo(self.death_date, age, death_title, mark_safe(death_summary), self.death_location))
+            event_list.append(
+                PersonEventInfo(self.death_date, age, death_title, mark_safe(death_summary), self.death_location))
 
         event_list = sorted(event_list, key=attrgetter('date'))
 
@@ -873,7 +904,8 @@ class Person(models.Model):
                 date_str = ' - ' + nice_date(partner_info.date, partner_info.date_year_only)
 
             if partner_info.partner is not None:
-                name_str = mark_safe('<a href="/admin/data/person/%s/">%s</a>' % (partner_info.partner.id, str(partner_info.partner)))
+                name_str = mark_safe(
+                    '<a href="/admin/data/person/%s/">%s</a>' % (partner_info.partner.id, str(partner_info.partner)))
             else:
                 name_str + partner_info.partner_name
 
@@ -1343,15 +1375,20 @@ class Person(models.Model):
 
         if self.birth_date_only_year:
             if self.male():
-                question_list.append(_('The birth date of %s is missing day and month. It is only clear that he was born in %d.') % (self.full_name(), self.birth_year()))
+                question_list.append(_(
+                    'The exact birth date of %s is missing day and month. It is only clear that he was born in %d.') % (
+                                     self.full_name(), self.birth_year()))
             else:
-                question_list.append(_('The birth date of %s is missing day and month. It is only clear that she was born in %d.') % (self.full_name(), self.birth_year()))
+                question_list.append(_(
+                    'The exact birth date of %s is missing day and month. It is only clear that she was born in %d.') % (
+                                     self.full_name(), self.birth_year()))
 
         if self.birth_date_unclear:
-            question_list.append(_('The birth date of %s is completely unclear. It is currently assumed ca. %d') % (self.full_name(), self.birth_year()))
+            question_list.append(_('The birth date of %s is completely unclear. It is currently assumed ca. %d') % (
+            self.full_name(), self.birth_year()))
 
         if self.birth_location is None:
-            question_list.append(_('The birth location of %s not be determined.') % (self.full_name()))
+            question_list.append(_('The birth location of %s could not be determined.') % (self.full_name()))
 
         if self.father is None and self.father_extern == '':
             question_list.append(_('The father of %s could not be determined.') % (self.full_name()))
@@ -1364,18 +1401,19 @@ class Person(models.Model):
 
         if self.death_date is not None or self.already_died == True:
             if self.death_location is None:
-                question_list.append(_('The death location of %s not be determined.') % (self.full_name()))
+                question_list.append(_('The death location of %s could not be determined.') % (self.full_name()))
 
         for relation in self.partner_relations():
-            if relation.status == 'M':
-
+            if relation.state == 'M':
                 if relation.partner:
                     partner_name = relation.partner.full_name()
                 else:
                     partner_name = relation.partner_name
 
                 if relation.date_year_only:
-                    question_list.append(_('The exact date of the marriage of %s and %s is unclear. It happened in %d.') % (self.full_name(), partner_name, relation.date.year))
+                    question_list.append(
+                        _('The exact date of the marriage of %s and %s is unclear. It happened in %d.') % (
+                        self.full_name(), partner_name, relation.date.year))
 
                 if relation.location is None:
                     question_list.append(

@@ -13,53 +13,82 @@
 
 <chapheader>
 <chapnum></chapnum>
-<title>{% trans "Questions" %}</title>
+<title>{% trans "Questions" %} {% trans "Ancestrybook" %} {{ ancestry.name }}</title>
 <a id="chapter1" class="small">&nbsp;</a>
 </chapheader>
 
-{% if questions %}
-	{% for question in questions %}
-		<table class="question_table">
-			<tbody>
-			<tr class="row">
-				<td colspan="2">
-					<strong>{{ question.person.last_name|underline }}, {{ question.person.first_name|underline }}</strong>
-					{% if question.person.person.birth_name %}<br />(geb. {{ question.person.person.birth_name }}){% endif %}
-				</td>
-			</tr>
-			{% if not question.person.birth_date_unclear %}
-				<tr>
-					<td>
-						geb.
-						{% if question.person.birth_date_only_year %}
-							{{ question.person.birth_date | date:"Y" }}
-						{% else %}
-							{{ question.person.birth_date | date:"d.m.Y" }}
+<!-- fake table -->
+<para><table><tr><td></td></tr></table></para>
+
+{% if sorted_members %}
+	{% for member in sorted_members %}
+		{% if member.person.questions|length > 0 and member.person.automatic_questions|length > 0 %}
+			<para>
+				<div class="not_breaking">
+					<table class="question_table">
+						<tbody>
+						<tr class="{% cycle 'row' 'alternating' as row_style %}">
+							<td colspan="2">
+								<strong>{{ member.person.last_name|underline }}, {{ member.person.first_name|underline }}</strong>
+								{% if member.person.person.birth_name %}<br />(geb. {{ member.person.person.birth_name }}){% endif %}
+							</td>
+						</tr>
+						{% if not member.person.birth_date_unclear %}
+							<tr class="{% cycle row_style %}">
+								<td>
+									geb.
+									{% if member.person.birth_date_only_year %}
+										{{ member.person.birth_date | date:"Y" }}
+									{% else %}
+										{{ member.person.birth_date | date:"d.m.Y" }}
+									{% endif %}
+									{% if member.person.birth_location %}
+										{% trans "in" %}
+										{% if member.person.birth_location.image %}
+											<img src="/{{ MEDIA_URL }}..{{ member.person.birth_location.image.url }}" class="location" />
+										{% endif %}
+										{{ member.person.birth_location|location_without_country }}
+									{% endif %}
+								</td>
+							</tr>
 						{% endif %}
-						{% if question.person.birth_location %}
-							{% trans "in" %}
-							{% if question.person.birth_location.image %}
-								<img src="/{{ MEDIA_URL }}..{{ question.person.birth_location.image.url }}" class="location" />
-							{% endif %}
-							{{ question.person.birth_location|location_without_country }}
-						{% endif %}
-					</td>
-				</tr>
-			{% endif %}
-			<tr class="alternating">
-				<td>
-					{{ question.question }}
-				</td>
-				<td>
-					&nbsp;<br />
-					&nbsp;<br />
-					&nbsp;<br />
-					&nbsp;<br />
-				</td>
-			</tr>
-			</tbody>
-		</table>
-		&nbsp;<br />
+
+						{% for question in member.person.questions %}
+							<tr class="{% cycle row_style %}">
+								<td>
+									{{ question.question }}
+								</td>
+								<td>
+									&nbsp;<br />
+									&nbsp;<br />
+									&nbsp;<br />
+									&nbsp;<br />
+								</td>
+							</tr>
+						{% endfor %}
+
+						{% for question in member.person.automatic_questions %}
+							<tr class="{% cycle row_style %}">
+								<td>
+									{% autoescape off %}
+    									{{ question }}
+									{% endautoescape %}
+								</td>
+								<td>
+									&nbsp;<br />
+									&nbsp;<br />
+									&nbsp;<br />
+									&nbsp;<br />
+								</td>
+							</tr>
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</para>
+		{% endif %}
+
+		{# resetcycle #}
 	{% endfor %}
 {% endif %}
 </chapter>

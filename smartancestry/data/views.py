@@ -133,11 +133,6 @@ def ancestry_questions(request, ancestry_id):
     sorted_members = sorted(sorted_members, key=attrgetter('person.first_name'))
     sorted_members = sorted(sorted_members, key=attrgetter('person.last_name'))
 
-    questions = []
-    for member in sorted_members:
-        for question in member.person.questions():
-            questions.append(question)
-
     if request.GET.get('with') is not None:
         include_css = True
     else:
@@ -145,7 +140,7 @@ def ancestry_questions(request, ancestry_id):
 
     return HttpResponse(render_to_string('data/ancestry_questions.html', {
         'ancestry': ancestry,
-        'questions': questions,
+        'sorted_members': sorted_members,
         'include_css': include_css
     }))
 
@@ -277,8 +272,7 @@ def export_questions(request, ancestry_id):
     except Ancestry.DoesNotExist:
         raise Http404("Ancestry does not exist")
 
-    path = "http://127.0.0.1:7000/data/ancestry_questions/%s/%s/ -o tmp.pdf" % (
-    ancestry_id, urllib.quote(ancestry.name))
+    path = "http://127.0.0.1:7000/data/ancestry_questions/%s/questions/ -o tmp.pdf" % (ancestry_id)
 
     # write html to tmp.pdf
     os.system(
