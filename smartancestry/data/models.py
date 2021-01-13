@@ -1337,6 +1337,62 @@ class Person(models.Model):
     def questions(self):
         return Question.objects.filter(person=self)
 
+    def automatic_questions(self):
+
+        question_list = []
+
+        if self.birth_date_only_year:
+            if self.male():
+                question_list.append(_('The birth date of %s is missing day and month. It is only clear that he was born in %d.') % (self.full_name(), self.birth_year()))
+            else:
+                question_list.append(_('The birth date of %s is missing day and month. It is only clear that she was born in %d.') % (self.full_name(), self.birth_year()))
+
+        if self.birth_date_unclear:
+            question_list.append(_('The birth date of %s is completely unclear. It is currently assumed ca. %d') % (self.full_name(), self.birth_year()))
+
+        if self.birth_location is None:
+            question_list.append(_('The birth location of %s not be determined.') % (self.full_name()))
+
+        if self.father is None and self.father_extern == '':
+            question_list.append(_('The father of %s could not be determined.') % (self.full_name()))
+
+        if self.mother is None and self.mother_extern == '':
+            question_list.append(_('The father of %s could not be determined.') % (self.full_name()))
+
+        if self.death_date is None and self.already_died == True:
+            question_list.append(_('The death date of %s is completely unclear.') % (self.full_name()))
+
+        if self.death_date is not None or self.already_died == True:
+            if self.death_location is None:
+                question_list.append(_('The death location of %s not be determined.') % (self.full_name()))
+
+        for relation in self.partner_relations():
+            if relation.status == 'M':
+
+                if relation.partner:
+                    partner_name = relation.partner.full_name()
+                else:
+                    partner_name = relation.partner_name
+
+                if relation.date_year_only:
+                    question_list.append(_('The exact date of the marriage of %s and %s is unclear. It happened in %d.') % (self.full_name(), partner_name, relation.date.year))
+
+                if relation.location is None:
+                    question_list.append(
+                        _('The location of the marriage of %s and %s is unclear.') % (self.full_name(), partner_name))
+
+        return question_list
+
+    def automatic_questions_str(self):
+        value = '<ul>'
+
+        for automatic_question in self.automatic_questions():
+            value = value + '<li>' + automatic_question + '</li>'
+
+        value = value + '</ul>'
+
+        return mark_safe(value)
+
     def is_alive(self):
         if self.already_died:
             return False

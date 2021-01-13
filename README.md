@@ -68,17 +68,12 @@ node bar.js
 node colors.js 
 ==> prints colors (hsl / 12)
 
-node tree.js
+node ancestryTree.js
 ==> create ancestry trees
 
-## misc
+## distributions
 
-http://www.verwandt.de/karten/absolut/schossig.html
-
-## jsdoc
-
-cd ~/Prog/SmartAncestry/smartancestry/data/static/data/js
-../../../../../../../node_modules/jsdoc/jsdoc -d ../doc ../ancestryTree.js 
+https://www.namenskarte.com/nachname/Name?
 
 ## pdf generator
 

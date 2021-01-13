@@ -165,12 +165,12 @@ class PersonAdmin(admin.ModelAdmin):
                 'children_text', 'siblings_extern', 'siblings_text', 'relation_str')
         }),
         ('Notes', {
-            'fields': ('profession', 'notes', 'external_identifier', 'thumbnail', 'image', 'tree_link')
+            'fields': ('profession', 'notes', 'external_identifier', 'thumbnail', 'image', 'tree_link', 'automatic_questions_str')
         }),
     )
     search_fields = ['first_name', 'last_name', ]
     readonly_fields = (
-        'children_text', 'father_link', 'mother_link', 'thumbnail', 'tree_link', 'siblings_text', 'relation_str')
+        'children_text', 'father_link', 'mother_link', 'thumbnail', 'tree_link', 'siblings_text', 'relation_str', 'automatic_questions_str')
     # raw_id_fields = ('father', 'mother',)
     # list_filter = ('birth_date', 'ancestries', ) #PersonAncestryListFilter,
     list_filter = PersonAncestryListFilter,
