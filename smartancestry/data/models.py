@@ -822,7 +822,7 @@ class Person(models.Model):
             age = calculate_age(self.birth_date, self.death_date)
 
             death_title = _('Death')
-            death_date_str = nice_date(self.death_date, self.death_date_year_only)
+            death_date_str = nice_date(self.death_date, self.death_date_only_year)
 
             if self.death_location:
                 death_summary = _('%s died at %s in %s at the age of %d years.') % (
