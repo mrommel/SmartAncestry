@@ -214,8 +214,7 @@ class DocumentAncestryAncestryRelationInline(admin.TabularInline):
 
 
 class AncestryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'thumbnail', 'number_of_members', 'featured_str', 'export', 'export_questions',
-                    'export_no_documents', 'export_raw']
+    list_display = ['name', 'thumbnail', 'number_of_members', 'featured_str', 'exports']
     fields = ('name', 'thumbnail', 'image', 'map', 'featured_str',)
     readonly_fields = ('thumbnail', 'featured_str',)
 

@@ -1622,6 +1622,11 @@ class Ancestry(models.Model):
     def number_of_members(self):
         return '%d persons' % len(AncestryRelation.objects.filter(ancestry=self))
 
+    def exports(self):
+        return mark_safe(self.export() + '&nbsp;|&nbsp;' + self.export_no_documents() + '&nbsp;|&nbsp;' + self.export_questions() + '&nbsp;|&nbsp;' + self.export_raw() + '&nbsp;|&nbsp;' + self.export_gedcom())
+
+    exports.allow_tags = True
+
     def export(self):
         return mark_safe(
             '<a href="/data/export/ancestry/%d/%s.pdf" target="_blank">PDF</a>' % (self.id, self.name))
@@ -1647,6 +1652,12 @@ class Ancestry(models.Model):
             self.id, self.name))
 
     export_raw.allow_tags = True
+
+    def export_gedcom(self):
+        return mark_safe('<a href="/data/ancestry_gedcom/%d/%s.ged" target="_blank">GEDCOM</a>' % (
+            self.id, self.name))
+
+    export_gedcom.allow_tags = True
 
     def members(self):
         """

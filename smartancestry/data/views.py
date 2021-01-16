@@ -1,13 +1,15 @@
 import logging
 import os
 import urllib
+
+from django.db.models import Q
 from django.utils.translation import ugettext as _
 from operator import attrgetter
 from random import randint
 
 from django.utils.safestring import mark_safe
 
-from .models import Person, Ancestry, Location
+from .models import Person, Ancestry, Location, FamilyStatusRelation
 from django.http import HttpResponse, Http404
 from django.template.loader import render_to_string
 
@@ -212,6 +214,110 @@ def ancestry_export_no_documents(request, ancestry_id):
         'statistics': ancestry.statistics,
         'include_css': include_css
     }))
+
+
+class GedcomFamily(object):
+    def __init__(self, id, husband, wife, children, date, location):
+        self.id = id
+        self.husband = husband
+        self.wife = wife
+        self.children = children
+        self.date = date
+        self.location = location
+
+
+def ancestry_gedcom(request, ancestry_id):
+    try:
+        ancestry = Ancestry.objects.get(pk=ancestry_id)
+    except Ancestry.DoesNotExist:
+        raise Http404("Ancestry does not exist")
+
+    sorted_members = ancestry.members()
+    sorted_members = sorted(sorted_members, key=attrgetter('person.first_name'))
+    sorted_members = sorted(sorted_members, key=attrgetter('person.last_name'))
+
+    relations = []
+    for member in sorted_members:
+        member_relations = []
+        if member.person.sex == 'M':
+            for relation in FamilyStatusRelation.objects.filter(man=member.person):
+                children_list = Person.objects.filter(Q(father=member.person) & Q(mother=relation.woman))
+                children_list = sorted(children_list, key=attrgetter('birth_date'), reverse=False)
+
+                member_relations.append(relation.id)
+
+                if relation.date:
+                    if relation.date_only_year:
+                        date_str = relation.date.strftime("%Y")
+                    else:
+                        date_str = relation.date.strftime("%d %b %Y")
+                else:
+                    date_str = None
+                relations.append(GedcomFamily(relation.id, member.person, relation.woman, children_list, date_str, relation.location))
+
+        member.ged_data = []
+
+        member.ged_data.append('0 @P%s@ INDI' % member.person.id)
+        if not member.person.birth_date_unclear:
+            member.ged_data.append('1 BIRT')
+            if member.person.birth_date_only_year:
+                member.ged_data.append('2 DATE %s' % member.person.birth_date.strftime("%Y"))
+            else:
+                member.ged_data.append('2 DATE %s' % member.person.birth_date.strftime("%d %b %Y"))
+
+            if member.person.birth_location:
+                member.ged_data.append('2 PLAC %s' % member.person.birth_location)
+
+        if member.person.death_date:
+            member.ged_data.append('1 DEAT ')
+            if member.person.death_date_only_year:
+                member.ged_data.append('2 DATE %s' % member.person.death_year())
+            else:
+                member.ged_data.append('2 DATE %s' % member.person.death_date.strftime("%d %b %Y"))
+
+            if member.person.death_location:
+                member.ged_data.append('2 PLAC %s' % member.person.death_location)
+
+        member.ged_data.append('1 SEX %s' % member.person.sex)
+        member.ged_data.append('1 NAME %s /%s/' % (member.person.first_name.replace("_", ""), member.person.last_name))
+
+    # add relation ref to each child
+    # todo: optimize
+    for relation in relations:
+        for child in relation.children:
+            for member in sorted_members:
+                if child.id == member.person.id:
+                    member.ged_data.append('1 FAMC @F%s@' % relation.id)
+
+        for member in sorted_members:
+            if relation.husband.id == member.person.id:
+                member.ged_data.append('1 FAMS @F%s@' % relation.id)
+
+            if relation.wife.id == member.person.id:
+                member.ged_data.append('1 FAMS @F%s@' % relation.id)
+
+    for relation in relations:
+        relation.ged_data = []
+
+        relation.ged_data.append('0 @F%s@ FAM' % relation.id)
+        relation.ged_data.append('1 HUSB @P%s@' % relation.husband.id)
+        relation.ged_data.append('1 WIFE @P%s@' % relation.wife.id)
+
+        for child in relation.children:
+            relation.ged_data.append('1 CHIL @P%s@' % child.id)
+
+        if relation.date:
+            relation.ged_data.append('1 MARR')
+            relation.ged_data.append('2 DATE %s' % relation.date)
+
+            if relation.location:
+                relation.ged_data.append('2 PLAC %s' % relation.location)
+
+    return HttpResponse(render_to_string('data/ancestry_gedcom.html', {
+        'ancestry': ancestry,
+        'sorted_members': sorted_members,
+        'relations': relations
+    }), content_type='application/x-gedcomx-v1+xml')
 
 
 def dot_tree(request, person_id, max_level):

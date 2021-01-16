@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^ancestry_export_no_documents/(?P<ancestry_id>\d+)/', views.ancestry_export_no_documents, name='data.views.ancestry_export_no_documents'),
     url(r'^ancestry_questions/(?P<ancestry_id>\d+)/', views.ancestry_questions, name='data.views.ancestry_questions'),
     url(r'^ancestry_history/(?P<ancestry_id>\d+)/', views.ancestry_history, name='data.views.ancestry_history'),
+    url(r'^ancestry_gedcom/(?P<ancestry_id>\d+)/', views.ancestry_gedcom, name='data.views.ancestry_gedcom'),
     url(r'^location/(?P<location_id>\d+)/', views.location, name='data.views.location'),
     url(r'^distributions/', views.distributions, name='data.views.distributions'),
 
