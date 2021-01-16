@@ -907,7 +907,7 @@ class Person(models.Model):
                 name_str = mark_safe(
                     '<a href="/admin/data/person/%s/">%s</a>' % (partner_info.partner.id, str(partner_info.partner)))
             else:
-                name_str + partner_info.partner_name
+                name_str = partner_info.partner_name
 
             if partner_info.location:
                 location_str = ' - ' + str(partner_info.location)
