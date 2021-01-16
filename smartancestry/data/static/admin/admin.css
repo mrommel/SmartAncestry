@@ -1,0 +1,55 @@
+select[multiple] {
+    resize: vertical;
+}
+
+#header {
+    background: #0C4b33;
+    color: #F5DD5D;
+}
+
+div.breadcrumbs {
+    background: #44B78B;
+    color: #FFFFFF;
+}
+
+.module h2, .module caption, .inline-group h2 {
+    background: #44B78B;
+    color: #FFFFFF;
+}
+
+.object-tools a:link, .object-tools a:visited {
+    background: #999;
+    color: #fff;
+}
+
+#header a:focus , #header a:hover {
+    color: #C9F0DD;
+}
+
+a:link, a:visited {
+    color: #0C3C26;
+}
+
+a:focus, a:hover {
+    color: #156641;
+}
+
+.button, input[type=submit], input[type=button], .submit-row input, a.button {
+    background: #156641;
+    color: #fff;
+}
+
+.button:active, input[type=submit]:active, input[type=button]:active,
+.button:focus, input[type=submit]:focus, input[type=button]:focus,
+.button:hover, input[type=submit]:hover, input[type=button]:hover {
+    background: #1f915d;
+    color: #fff;
+}
+
+.button.default, input[type=submit].default, .submit-row input.default {
+    background: #0C3C26;
+}
+
+#changelist-filter li.selected a {
+    color: #1f915d;
+}

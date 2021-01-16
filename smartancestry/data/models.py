@@ -521,10 +521,10 @@ class Person(models.Model):
                 else:
                     if self.male():
                         birth_child_summary = _('His son %s was born %s.') % (
-                        child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
+                            child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
                     else:
                         birth_child_summary = _('Her son %s was born %s.') % (
-                        child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
+                            child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
             else:
                 birth_child_title = _('Birth of daughter')
                 if child.birth_location:
@@ -539,10 +539,10 @@ class Person(models.Model):
                 else:
                     if self.male():
                         birth_child_summary = _('His daughter %s was born %s.') % (
-                        child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
+                            child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
                     else:
                         birth_child_summary = _('Her daughter %s was born %s.') % (
-                        child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
+                            child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
 
             event_list.append(
                 PersonEventInfo(child.birth_date, age, birth_child_title, mark_safe(birth_child_summary),
@@ -572,10 +572,10 @@ class Person(models.Model):
                     else:
                         if self.male():
                             death_child_summary = _('His son %s died at %s.') % (
-                            child.first_name_nice(), death_date_str)
+                                child.first_name_nice(), death_date_str)
                         else:
                             death_child_summary = _('Her son %s died at %s.') % (
-                            child.first_name_nice(), death_date_str)
+                                child.first_name_nice(), death_date_str)
                 else:
                     death_child_title = _('Death of daughter')
                     if child.death_location:
@@ -1377,15 +1377,15 @@ class Person(models.Model):
             if self.male():
                 question_list.append(_(
                     'The exact birth date of %s is missing day and month. It is only clear that he was born in %d.') % (
-                                     self.full_name(), self.birth_year()))
+                                         self.full_name(), self.birth_year()))
             else:
                 question_list.append(_(
                     'The exact birth date of %s is missing day and month. It is only clear that she was born in %d.') % (
-                                     self.full_name(), self.birth_year()))
+                                         self.full_name(), self.birth_year()))
 
         if self.birth_date_unclear:
             question_list.append(_('The birth date of %s is completely unclear. It is currently assumed ca. %d') % (
-            self.full_name(), self.birth_year()))
+                self.full_name(), self.birth_year()))
 
         if self.birth_location is None:
             question_list.append(_('The birth location of %s could not be determined.') % (self.full_name()))
@@ -1413,7 +1413,7 @@ class Person(models.Model):
                 if relation.date_year_only:
                     question_list.append(
                         _('The exact date of the marriage of %s and %s is unclear. It happened in %d.') % (
-                        self.full_name(), partner_name, relation.date.year))
+                            self.full_name(), partner_name, relation.date.year))
 
                 if relation.location is None:
                     question_list.append(

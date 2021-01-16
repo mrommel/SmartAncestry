@@ -185,6 +185,12 @@ class PersonAdmin(admin.ModelAdmin):
     ]
     actions = []
 
+    class Media:
+        js = ('admin/admin.js',)
+        css = {
+            'all': ('admin/admin.css',)
+        }
+
     def formfield_for_dbfield(self, db_field, **kwargs):
         formfield = super(PersonAdmin, self).formfield_for_dbfield(db_field, **kwargs)
         if db_field.name == 'notes':
@@ -200,6 +206,13 @@ def export_pdf(modeladmin, request, queryset):
 export_pdf.short_description = _("Create pdfs")
 
 
+class DocumentAncestryAncestryRelationInline(admin.TabularInline):
+    model = DocumentAncestryRelation
+    fk_name = "ancestry"
+
+    extra = 1
+
+
 class AncestryAdmin(admin.ModelAdmin):
     list_display = ['name', 'thumbnail', 'number_of_members', 'featured_str', 'export', 'export_questions',
                     'export_no_documents', 'export_raw']
@@ -209,8 +222,15 @@ class AncestryAdmin(admin.ModelAdmin):
     ordering = ['name']
     inlines = [
         AncestryRelationInline,
+        DocumentAncestryAncestryRelationInline,
     ]
     actions = [export_pdf]
+
+    class Media:
+        js = ('admin/admin.js',)
+        css = {
+            'all': ('admin/admin.css',)
+        }
 
 
 class FamilyStatusRelationAdmin(admin.ModelAdmin):
