@@ -309,12 +309,10 @@ class Person(models.Model):
             return "♀"
 
     def birth(self):
-        birth_date_str = '%s' % self.birth_date
         if self.birth_date_unclear:
             birth_date_str = '???'
-
-        if self.birth_date_only_year:
-            birth_date_str = '{0.year:4d}'.format(self.birth_date)
+        else:
+            birth_date_str = nice_date(self.birth_date, self.birth_date_only_year)
 
         birth_str = self.birth_location
         if birth_str is None:
@@ -399,9 +397,12 @@ class Person(models.Model):
         return mark_safe(first_sentence)
 
     def death(self):
-        date_str = self.death_date
-        if date_str is None:
+
+        if self.death_date is None:
             date_str = '-'
+        else:
+            date_str = nice_date(self.death_date, self.death_date_only_year)
+
         death_str = self.death_location
         if death_str is None:
             death_str = '-'

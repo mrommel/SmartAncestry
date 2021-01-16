@@ -27,11 +27,11 @@ div.breadcrumbs {
 }
 
 a:link, a:visited {
-    color: #0C3C26;
+    color: #156641;
 }
 
 a:focus, a:hover {
-    color: #156641;
+    color: #20a166;
 }
 
 .button, input[type=submit], input[type=button], .submit-row input, a.button {
