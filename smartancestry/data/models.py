@@ -1404,21 +1404,22 @@ class Person(models.Model):
             if self.death_location is None:
                 question_list.append(_('The death location of %s could not be determined.') % (self.full_name()))
 
-        for relation in self.partner_relations():
-            if relation.state == 'M':
-                if relation.partner:
-                    partner_name = relation.partner.full_name()
-                else:
-                    partner_name = relation.partner_name
+        if self.partner_relations(): # can be empty => None
+            for relation in self.partner_relations():
+                if relation.state == 'M':
+                    if relation.partner:
+                        partner_name = relation.partner.full_name()
+                    else:
+                        partner_name = relation.partner_name
 
-                if relation.date_year_only:
-                    question_list.append(
-                        _('The exact date of the marriage of %s and %s is unclear. It happened in %d.') % (
-                            self.full_name(), partner_name, relation.date.year))
+                    if relation.date_year_only:
+                        question_list.append(
+                            _('The exact date of the marriage of %s and %s is unclear. It happened in %d.') % (
+                                self.full_name(), partner_name, relation.date.year))
 
-                if relation.location is None:
-                    question_list.append(
-                        _('The location of the marriage of %s and %s is unclear.') % (self.full_name(), partner_name))
+                    if relation.location is None:
+                        question_list.append(
+                            _('The location of the marriage of %s and %s is unclear.') % (self.full_name(), partner_name))
 
         return question_list
 
