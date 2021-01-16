@@ -1376,15 +1376,15 @@ class Person(models.Model):
         if self.birth_date_only_year:
             if self.male():
                 question_list.append(_(
-                    'The exact birth date of %s is missing day and month. It is only clear that he was born in %d.') % (
+                    'The exact birth date of %s is missing day and month. It is only clear that he was born in %s.') % (
                                          self.full_name(), self.birth_year()))
             else:
                 question_list.append(_(
-                    'The exact birth date of %s is missing day and month. It is only clear that she was born in %d.') % (
+                    'The exact birth date of %s is missing day and month. It is only clear that she was born in %s.') % (
                                          self.full_name(), self.birth_year()))
 
         if self.birth_date_unclear:
-            question_list.append(_('The birth date of %s is completely unclear. It is currently assumed ca. %d') % (
+            question_list.append(_('The birth date of %s is completely unclear. It is currently assumed ca. %s') % (
                 self.full_name(), self.birth_year()))
 
         if self.birth_location is None:
