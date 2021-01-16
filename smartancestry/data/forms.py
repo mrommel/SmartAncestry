@@ -165,12 +165,14 @@ class PersonAdmin(admin.ModelAdmin):
                 'children_text', 'siblings_extern', 'siblings_text', 'relation_str')
         }),
         ('Notes', {
-            'fields': ('profession', 'notes', 'external_identifier', 'thumbnail', 'image', 'tree_link', 'automatic_questions_str')
+            'fields': (
+            'profession', 'notes', 'external_identifier', 'thumbnail', 'image', 'tree_link', 'automatic_questions_str')
         }),
     )
     search_fields = ['first_name', 'last_name', ]
     readonly_fields = (
-        'children_text', 'father_link', 'mother_link', 'thumbnail', 'tree_link', 'siblings_text', 'relation_str', 'automatic_questions_str')
+        'children_text', 'father_link', 'mother_link', 'thumbnail', 'tree_link', 'siblings_text', 'relation_str',
+        'automatic_questions_str')
     # raw_id_fields = ('father', 'mother',)
     # list_filter = ('birth_date', 'ancestries', ) #PersonAncestryListFilter,
     list_filter = PersonAncestryListFilter,
@@ -187,9 +189,7 @@ class PersonAdmin(admin.ModelAdmin):
 
     class Media:
         js = ('admin/admin.js',)
-        css = {
-            'all': ('admin/admin.css',)
-        }
+        pass
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         formfield = super(PersonAdmin, self).formfield_for_dbfield(db_field, **kwargs)
@@ -228,13 +228,14 @@ class AncestryAdmin(admin.ModelAdmin):
 
     class Media:
         js = ('admin/admin.js',)
-        css = {
-            'all': ('admin/admin.css',)
-        }
+        pass
 
 
 class FamilyStatusRelationAdmin(admin.ModelAdmin):
     list_display = ['status_name', 'husband_link', 'wife_link', 'date', 'location']
+
+    class Media:
+        pass
 
 
 class LocationBirthRelationInline(admin.TabularInline):
@@ -323,8 +324,8 @@ class LocationEventRelationInline(admin.TabularInline):
 
 class LocationAdmin(admin.ModelAdmin):
     list_display = ('city', 'state', 'country', 'thumbnail', 'lon', 'lat')
-    fields = ('thumbnail', 'city', 'state', 'country', 'image', 'lon', 'lat', 'map', )
-    readonly_fields = ('thumbnail', 'map', )
+    fields = ('thumbnail', 'city', 'state', 'country', 'image', 'lon', 'lat', 'map',)
+    readonly_fields = ('thumbnail', 'map',)
 
     ordering = ('city',)
     inlines = [
@@ -334,6 +335,9 @@ class LocationAdmin(admin.ModelAdmin):
         LocationEventRelationInline,
     ]
     actions = None
+
+    class Media:
+        pass
 
 
 class DocumentPersonRelationInline(admin.TabularInline):
@@ -362,6 +366,9 @@ class DocumentAdmin(admin.ModelAdmin):
         return '<a href="/admin/data/document/%s/" target="_blank">Admin</a>' % obj.id
 
     admin_url.allow_tags = True
+
+    class Media:
+        pass
 
 
 class QuestionAncestryListFilter(admin.SimpleListFilter):
@@ -410,6 +417,14 @@ class QuestionAdmin(admin.ModelAdmin):
 
     admin_url.allow_tags = True
 
+    class Media:
+        pass
+
+
+class DocumentAncestryRelationAdmin(admin.ModelAdmin):
+    class Media:
+        pass
+
 
 class PersonEventAdmin(admin.ModelAdmin):
     list_display = ('person', 'type', 'date', 'location', 'admin_url')
@@ -418,3 +433,6 @@ class PersonEventAdmin(admin.ModelAdmin):
         return '<a href="/admin/data/personevent/%s/">Admin</a>' % obj.id
 
     admin_url.allow_tags = True
+
+    class Media:
+        pass

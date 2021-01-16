@@ -32,6 +32,7 @@ PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
 # Application definition
 
 INSTALLED_APPS = (
+    'data.apps.DataConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,7 +40,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
-    'data.apps.DataConfig',
 )
 
 MIDDLEWARE = [
@@ -56,7 +56,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(PROJECT_PATH, 'template')
+            os.path.join(PROJECT_PATH, 'template'),
+            os.path.join(BASE_DIR, 'templates')
         ],
         'APP_DIRS': True,
         'OPTIONS': {

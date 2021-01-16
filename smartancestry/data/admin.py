@@ -1,9 +1,12 @@
 from django.contrib import admin
 
-from .forms import PersonAdmin, LocationAdmin, AncestryAdmin, DocumentAdmin, QuestionAdmin, PersonEventAdmin, FamilyStatusRelationAdmin
+from .forms import PersonAdmin, LocationAdmin, AncestryAdmin, DocumentAdmin, QuestionAdmin, PersonEventAdmin, \
+    FamilyStatusRelationAdmin, DocumentAncestryRelationAdmin
 
 from .models import Person, Ancestry, FamilyStatusRelation, Location, Distribution, DistributionRelation, Document, \
     DocumentRelation, Question, DocumentAncestryRelation, PersonEvent
+
+from django.contrib.admin.sites import AdminSite
 
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Question, QuestionAdmin)
@@ -15,5 +18,5 @@ admin.site.register(DistributionRelation)
 
 admin.site.register(Document, DocumentAdmin)
 admin.site.register(DocumentRelation)
-admin.site.register(DocumentAncestryRelation)
+admin.site.register(DocumentAncestryRelation, DocumentAncestryRelationAdmin)
 admin.site.register(PersonEvent, PersonEventAdmin)
