@@ -1,0 +1,18 @@
+{% load i18n %}{% load staticfiles %}{% load app_filters %}0 HEAD
+1 CHAR UTF-8
+1 SOUR Ancestry.com Family Trees
+2 VERS (2010.3)
+2 NAME Smart Ancestry Family Trees
+2 CORP Smart Ancestry
+1 GEDC
+2 VERS 5.5
+2 FORM LINEAGE-LINKED
+{% for member in sorted_members %}
+{% for data in member.ged_data %}{{ data }}
+{% endfor %}
+{% endfor %}
+{% for relation in relations %}
+{% for data in relation.ged_data %}{{ data }}
+{% endfor %}
+{% endfor %}
+0 TRLR
