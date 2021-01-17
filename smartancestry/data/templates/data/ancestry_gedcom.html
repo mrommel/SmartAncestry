@@ -7,11 +7,10 @@
 1 GEDC
 2 VERS 5.5
 2 FORM LINEAGE-LINKED
-{% for member in sorted_members %}
-{% for data in member.ged_data %}{{ data }}
+
+{% for member in sorted_members %}{% for data in member.ged_data %}{{ data }}
 {% endfor %}
-{% endfor %}
-{% for relation in relations %}
+{% endfor %}{% for relation in relations %}
 {% for data in relation.ged_data %}{{ data }}
 {% endfor %}
 {% endfor %}

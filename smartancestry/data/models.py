@@ -10,7 +10,7 @@ from django.db import models
 from django.db.models import Q, CharField
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _, gettext
 from typing import Tuple
 
 from .tools import calculate_age, ancestry_relation, trim_and_unescape, underline_indices, ellipses, is_empty, nice_date
@@ -1376,35 +1376,45 @@ class Person(models.Model):
 
         if self.birth_date_only_year:
             if self.male():
-                question_list.append(_(
-                    'The exact birth date of %s is missing day and month. It is only clear that he was born in %s.') % (
+                question_list.append(gettext(
+                    "The exact birth date of %s is missing day and month. It is only clear that he was born in %s.") % (
                                          self.full_name(), self.birth_year()))
             else:
-                question_list.append(_(
-                    'The exact birth date of %s is missing day and month. It is only clear that she was born in %s.') % (
+                question_list.append(gettext(
+                    "The exact birth date of %s is missing day and month. It is only clear that she was born in %s.") % (
                                          self.full_name(), self.birth_year()))
 
         if self.birth_date_unclear:
-            question_list.append(_('The birth date of %s is completely unclear. It is currently assumed ca. %s') % (
+            question_list.append(gettext("The birth date of %s is completely unclear. It is currently assumed ca. %s") % (
                 self.full_name(), self.birth_year()))
 
         if self.birth_location is None:
-            question_list.append(_('The birth location of %s could not be determined.') % (self.full_name()))
+            question_list.append(gettext("The birth location of %s could not be determined.") % (self.full_name()))
 
         if self.father is None and self.father_extern == '':
-            question_list.append(_('The father of %s could not be determined.') % (self.full_name()))
+            question_list.append(gettext("The father of %s could not be determined.") % (self.full_name()))
 
         if self.mother is None and self.mother_extern == '':
-            question_list.append(_('The father of %s could not be determined.') % (self.full_name()))
+            question_list.append(gettext("The father of %s could not be determined.") % (self.full_name()))
 
-        if self.death_date is None and self.already_died == True:
-            question_list.append(_('The death date of %s is completely unclear.') % (self.full_name()))
+        # check if parents are in a relation
+        if self.father is not None and self.mother is not None:
+            found_link = False
+            for _ in FamilyStatusRelation.objects.filter(Q(woman=self.mother) & Q(man=self.father)):
+                found_link = True
 
-        if self.death_date is not None or self.already_died == True:
+            if not found_link:
+                question_list.append(gettext("The parents of %s (%s and %s) are not linked.") % (
+                    self.full_name(), self.father.full_name(), self.mother.full_name()))
+
+        if self.death_date is None and self.already_died:
+            question_list.append(gettext("The death date of %s is completely unclear.") % (self.full_name()))
+
+        if self.death_date is not None or self.already_died:
             if self.death_location is None:
-                question_list.append(_('The death location of %s could not be determined.') % (self.full_name()))
+                question_list.append(gettext("The death location of %s could not be determined.") % (self.full_name()))
 
-        if self.partner_relations(): # can be empty => None
+        if self.partner_relations():  # can be empty => None
             for relation in self.partner_relations():
                 if relation.state == 'M':
                     if relation.partner:
@@ -1414,16 +1424,17 @@ class Person(models.Model):
 
                     if relation.date_year_only:
                         question_list.append(
-                            _('The exact date of the marriage of %s and %s is unclear. It happened in %d.') % (
+                            gettext("The exact date of the marriage of %s and %s is unclear. It happened in %d.") % (
                                 self.full_name(), partner_name, relation.date.year))
 
                     if relation.location is None:
                         question_list.append(
-                            _('The location of the marriage of %s and %s is unclear.') % (self.full_name(), partner_name))
+                            gettext("The location of the marriage of %s and %s is unclear.") % (
+                                self.full_name(), partner_name))
 
         return question_list
 
-    def automatic_questions_str(self):
+    def automatic_questions_list(self):
         value = '<ul>'
 
         for automatic_question in self.automatic_questions():
@@ -1432,6 +1443,8 @@ class Person(models.Model):
         value = value + '</ul>'
 
         return mark_safe(value)
+
+    automatic_questions_list.allow_tags = True
 
     def is_alive(self):
         if self.already_died:
@@ -1623,7 +1636,8 @@ class Ancestry(models.Model):
         return '%d persons' % len(AncestryRelation.objects.filter(ancestry=self))
 
     def exports(self):
-        return mark_safe(self.export() + '&nbsp;|&nbsp;' + self.export_no_documents() + '&nbsp;|&nbsp;' + self.export_questions() + '&nbsp;|&nbsp;' + self.export_raw() + '&nbsp;|&nbsp;' + self.export_gedcom())
+        return mark_safe(
+            self.export() + '&nbsp;|&nbsp;' + self.export_no_documents() + '&nbsp;|&nbsp;' + self.export_questions() + '&nbsp;|&nbsp;' + self.export_raw() + '&nbsp;|&nbsp;' + self.export_gedcom())
 
     exports.allow_tags = True
 
@@ -2148,6 +2162,7 @@ EVENT_TYPES = (
     ('T', _('Baptism')),
     ('B', _('Funeral')),
     ('C', _('Confirmation')),
+    ('S', _('Settlement')),
 )
 
 
@@ -2167,6 +2182,7 @@ class PersonEvent(models.Model):
             'T': _('Baptism'),
             'B': _('Funeral'),
             'C': _('Confirmation'),
+            'S': _('Settlement'),
         }
 
         return switcher.get(self.type, '')

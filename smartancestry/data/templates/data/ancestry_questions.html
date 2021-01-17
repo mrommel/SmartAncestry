@@ -22,7 +22,9 @@
 
 {% if sorted_members %}
 	{% for member in sorted_members %}
-		{% if member.person.questions|length > 0 and member.person.automatic_questions|length > 0 %}
+		{% if member.person.questions|length > 0 or member.person.automatic_questions|length > 0 %}
+			<!-- {{ member.person.last_name|underline }}, {{ member.person.first_name|underline }} -->
+
 			<para>
 				<div class="not_breaking">
 					<table class="question_table">

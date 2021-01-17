@@ -217,13 +217,31 @@ def ancestry_export_no_documents(request, ancestry_id):
 
 
 class GedcomFamily(object):
-    def __init__(self, id, husband, wife, children, date, location):
+    def __init__(self, id, type, husband, wife, children, date, location):
         self.id = id
+        self.type = type
         self.husband = husband
         self.wife = wife
         self.children = children
         self.date = date
         self.location = location
+
+
+class GedcomExternMember(object):
+    def __init__(self, person):
+        self.person = person
+
+
+class GedcomExternPerson(object):
+    def __init__(self, id, sex, first_name, last_name):
+        self.id = id
+        self.sex = sex
+        self.first_name = first_name
+        self.last_name = last_name
+        self.father_extern = None
+        self.mother_extern = None
+        self.birth_date_unclear = True
+        self.death_date = None
 
 
 def ancestry_gedcom(request, ancestry_id):
@@ -236,24 +254,62 @@ def ancestry_gedcom(request, ancestry_id):
     sorted_members = sorted(sorted_members, key=attrgetter('person.first_name'))
     sorted_members = sorted(sorted_members, key=attrgetter('person.last_name'))
 
+    # add extern parents as fake persons
+    for member in sorted_members:
+        if member.person.father_extern and not member.person.father_extern == '':
+            name_parts = member.person.father_extern.split(' ')
+            if len(name_parts) == 1:
+                first_name = member.person.father_extern
+                last_name = member.person.last_name
+            elif len(name_parts) == 2:
+                first_name = name_parts[0]
+                last_name = name_parts[1]
+            else:
+                first_name = " ".join(name_parts[0:(len(name_parts) - 2)])
+                last_name = name_parts[len(name_parts) - 1]
+
+            fake_person = GedcomExternPerson(str(int(member.person.id) * 1000), 'M', first_name, last_name)
+            fake_member = GedcomExternMember(fake_person)
+
+            sorted_members.append(fake_member)
+
+        if member.person.mother_extern and not member.person.mother_extern == '':
+            name_parts = member.person.mother_extern.split(' ')
+            if len(name_parts) == 1:
+                first_name = member.person.mother_extern
+                last_name = member.person.last_name
+            elif len(name_parts) == 2:
+                first_name = name_parts[0]
+                last_name = name_parts[1]
+            else:
+                first_name = " ".join(name_parts[0:(len(name_parts) - 2)])
+                last_name = name_parts[len(name_parts) - 1]
+
+            fake_person = GedcomExternPerson(str(int(member.person.id) * 1000 + 1), 'F', first_name, last_name)
+            fake_member = GedcomExternMember(fake_person)
+
+            sorted_members.append(fake_member)
+
     relations = []
+    fake_relations_counter = 3000
     for member in sorted_members:
         member_relations = []
         if member.person.sex == 'M':
-            for relation in FamilyStatusRelation.objects.filter(man=member.person):
-                children_list = Person.objects.filter(Q(father=member.person) & Q(mother=relation.woman))
-                children_list = sorted(children_list, key=attrgetter('birth_date'), reverse=False)
+            if not isinstance(member, GedcomExternMember):
+                for relation in FamilyStatusRelation.objects.filter(man=member.person):
+                    children_list = Person.objects.filter(Q(father=member.person) & Q(mother=relation.woman))
+                    children_list = sorted(children_list, key=attrgetter('birth_date'), reverse=False)
 
-                member_relations.append(relation.id)
+                    member_relations.append(relation.id)
 
-                if relation.date:
-                    if relation.date_only_year:
-                        date_str = relation.date.strftime("%Y")
+                    if relation.date:
+                        if relation.date_only_year:
+                            date_str = relation.date.strftime("%Y")
+                        else:
+                            date_str = relation.date.strftime("%d %b %Y")
                     else:
-                        date_str = relation.date.strftime("%d %b %Y")
-                else:
-                    date_str = None
-                relations.append(GedcomFamily(relation.id, member.person, relation.woman, children_list, date_str, relation.location))
+                        date_str = None
+                    relations.append(GedcomFamily(relation.id, 'M', member.person, relation.woman, children_list, date_str, relation.location))
 
         member.ged_data = []
 
@@ -281,8 +337,41 @@ def ancestry_gedcom(request, ancestry_id):
         member.ged_data.append('1 SEX %s' % member.person.sex)
         member.ged_data.append('1 NAME %s /%s/' % (member.person.first_name.replace("_", ""), member.person.last_name))
 
+    # make sure also extern parents get families
+    for member in sorted_members:
+        if member.person.father_extern and not member.person.father_extern == '' and member.person.mother_extern and not member.person.mother_extern == '':
+            name_parts = member.person.father_extern.split(' ')
+            if len(name_parts) == 1:
+                first_name = member.person.father_extern
+                last_name = member.person.last_name
+            elif len(name_parts) == 2:
+                first_name = name_parts[0]
+                last_name = name_parts[1]
+            else:
+                first_name = " ".join(name_parts[0:(len(name_parts) - 2)])
+                last_name = name_parts[len(name_parts) - 1]
+
+            fake_father = GedcomExternPerson(str(int(member.person.id) * 1000), 'M', first_name, last_name)
+
+            name_parts = member.person.mother_extern.split(' ')
+            if len(name_parts) == 1:
+                first_name = member.person.mother_extern
+                last_name = member.person.last_name
+            elif len(name_parts) == 2:
+                first_name = name_parts[0]
+                last_name = name_parts[1]
+            else:
+                first_name = " ".join(name_parts[0:(len(name_parts) - 2)])
+                last_name = name_parts[len(name_parts) - 1]
+
+            fake_mother = GedcomExternPerson(str(int(member.person.id) * 1000 + 1), 'F', first_name, last_name)
+
+            relations.append(GedcomFamily(fake_relations_counter, 'K', fake_father, fake_mother, [member.person], None,
+                                          None))
+            fake_relations_counter = fake_relations_counter + 1
+
     # add relation ref to each child
-    # todo: optimize
+    # todo: consider extern parents
     for relation in relations:
         for child in relation.children:
             for member in sorted_members:
@@ -310,8 +399,10 @@ def ancestry_gedcom(request, ancestry_id):
             for child in relation.children:
                 relation.ged_data.append('1 CHIL @P%s@' % child.id)
 
-            if relation.date:
+            if relation.type == 'M':
                 relation.ged_data.append('1 MARR')
+
+            if relation.date:
                 relation.ged_data.append('2 DATE %s' % relation.date)
 
                 if relation.location:
