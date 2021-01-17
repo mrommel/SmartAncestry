@@ -290,28 +290,32 @@ def ancestry_gedcom(request, ancestry_id):
                     member.ged_data.append('1 FAMC @F%s@' % relation.id)
 
         for member in sorted_members:
-            if relation.husband.id == member.person.id:
-                member.ged_data.append('1 FAMS @F%s@' % relation.id)
+            if relation.husband:
+                if relation.husband.id == member.person.id:
+                    member.ged_data.append('1 FAMS @F%s@' % relation.id)
 
-            if relation.wife.id == member.person.id:
-                member.ged_data.append('1 FAMS @F%s@' % relation.id)
+            if relation.wife:
+                if relation.wife.id == member.person.id:
+                    member.ged_data.append('1 FAMS @F%s@' % relation.id)
 
     for relation in relations:
         relation.ged_data = []
 
-        relation.ged_data.append('0 @F%s@ FAM' % relation.id)
-        relation.ged_data.append('1 HUSB @P%s@' % relation.husband.id)
-        relation.ged_data.append('1 WIFE @P%s@' % relation.wife.id)
+        if relation.husband and relation.wife:
 
-        for child in relation.children:
-            relation.ged_data.append('1 CHIL @P%s@' % child.id)
+            relation.ged_data.append('0 @F%s@ FAM' % relation.id)
+            relation.ged_data.append('1 HUSB @P%s@' % relation.husband.id)
+            relation.ged_data.append('1 WIFE @P%s@' % relation.wife.id)
 
-        if relation.date:
-            relation.ged_data.append('1 MARR')
-            relation.ged_data.append('2 DATE %s' % relation.date)
+            for child in relation.children:
+                relation.ged_data.append('1 CHIL @P%s@' % child.id)
 
-            if relation.location:
-                relation.ged_data.append('2 PLAC %s' % relation.location)
+            if relation.date:
+                relation.ged_data.append('1 MARR')
+                relation.ged_data.append('2 DATE %s' % relation.date)
+
+                if relation.location:
+                    relation.ged_data.append('2 PLAC %s' % relation.location)
 
     return HttpResponse(render_to_string('data/ancestry_gedcom.html', {
         'ancestry': ancestry,

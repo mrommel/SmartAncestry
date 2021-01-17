@@ -93,4 +93,8 @@ prince --no-author-style -s http://127.0.0.1:8000/static/data/style_print.css ht
 - https://www.familysearch.org/tree/find
 - http://ofb.genealogy.net/famreport.php?ofb=rusdorf&ID=I419&nachname=KR%C4HE&modus=&lang=se
 
+- http://ged-inline.elasticbeanstalk.com/validate
+- https://en.wikipedia.org/wiki/GEDCOM
+- www.familysearch.org/developers/docs/guides/gedcom
+
 Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
