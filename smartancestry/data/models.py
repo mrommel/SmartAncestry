@@ -1385,7 +1385,7 @@ class Person(models.Model):
                                          self.full_name(), self.birth_year()))
 
         if self.birth_date_unclear:
-            question_list.append(gettext("The birth date of %s is completely unclear. It is currently assumed ca. %s") % (
+            question_list.append(gettext("The birth date of %s is completely unclear. It is currently assumed ca. %s.") % (
                 self.full_name(), self.birth_year()))
 
         if self.birth_location is None:
@@ -1395,7 +1395,7 @@ class Person(models.Model):
             question_list.append(gettext("The father of %s could not be determined.") % (self.full_name()))
 
         if self.mother is None and self.mother_extern == '':
-            question_list.append(gettext("The father of %s could not be determined.") % (self.full_name()))
+            question_list.append(gettext("The mother of %s could not be determined.") % (self.full_name()))
 
         # check if parents are in a relation
         if self.father is not None and self.mother is not None:

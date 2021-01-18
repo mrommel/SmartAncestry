@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-17 20:43+0100\n"
-"PO-Revision-Date: 2021-01-17 20:44+0100\n"
+"POT-Creation-Date: 2021-01-18 20:20+0100\n"
+"PO-Revision-Date: 2021-01-18 20:20+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -460,7 +460,7 @@ msgstr ""
 #: models.py:1388
 #, python-format
 msgid ""
-"The birth date of %s is completely unclear. It is currently assumed ca. %s"
+"The birth date of %s is completely unclear. It is currently assumed ca. %s."
 msgstr ""
 "Das Geburtsdatum von %s ist komplett unklar. Es wird aktuell mit ca. %s "
 "angenommen."
@@ -470,10 +470,15 @@ msgstr ""
 msgid "The birth location of %s could not be determined."
 msgstr "Der Geburtsort von %s ist unbekannt."
 
-#: models.py:1395 models.py:1398
+#: models.py:1395
 #, python-format
 msgid "The father of %s could not be determined."
 msgstr "Der Vater von %s ist unbekannt."
+
+#: models.py:1398
+#, python-format
+msgid "The mother of %s could not be determined."
+msgstr "Die Mutter von %s ist unbekannt."
 
 #: models.py:1407
 #, python-format
@@ -623,7 +628,7 @@ msgstr "Partnerschaft"
 msgid "Adoption"
 msgstr "Adoption"
 
-#: models.py:2085 models.py:2174
+#: models.py:2085 models.py:2175
 msgid "date of marriage or divorce"
 msgstr "Datum der Heirat oder der Scheidung"
 
@@ -662,17 +667,21 @@ msgstr "Partnerschaft zwischen %s und %s"
 msgid "Adoption of %s and %s"
 msgstr "Adoption von %s und %s"
 
-#: models.py:2162 models.py:2181
+#: models.py:2162 models.py:2182
 msgid "Baptism"
 msgstr "Taufe"
 
-#: models.py:2163 models.py:2182
+#: models.py:2163 models.py:2183
 msgid "Funeral"
 msgstr "Beerdigung"
 
-#: models.py:2164 models.py:2183
+#: models.py:2164 models.py:2184
 msgid "Confirmation"
 msgstr "Konfirmation"
+
+#: models.py:2165 models.py:2185
+msgid "Settlement"
+msgstr ""
 
 #: templates/base.html:20 templates/data/index.html:6
 msgid "Home"
@@ -903,7 +912,7 @@ msgstr "Geburtsdatum"
 #: templates/data/ancestry_export_no_documents.html:166
 #: templates/data/ancestry_export_no_documents.html:186
 #: templates/data/ancestry_export_no_documents.html:257
-#: templates/data/ancestry_questions.html:47
+#: templates/data/ancestry_questions.html:48
 msgid "in"
 msgstr "in"
 
