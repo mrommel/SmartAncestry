@@ -1,0 +1,162 @@
+.form-row.field-first_name {
+    width: 48%;
+    display: inline-block;
+}
+.form-row.field-last_name {
+    width: 48%;
+    display: inline-block;
+}
+.form-row.field-birth_name {
+    width: 48%;
+    display: inline-block;
+}
+.form-row.field-sex {
+    width: 48%;
+    display: inline-block;
+}
+/* birth_date row */
+.form-row.field-birth_date {
+    width: 30%;
+    display: inline-block;
+}
+.form-row.field-birth_date_only_year {
+    width: 30%;
+    display: inline-block;
+}
+.form-row.field-birth_date_unclear {
+    width: 35%;
+    display: inline-block;
+}
+/* death_date row */
+.form-row.field-death_date {
+    width: 30%;
+    display: inline-block;
+}
+.form-row.field-death_date_only_year {
+    width: 30%;
+    display: inline-block;
+}
+.form-row.field-already_died {
+    width: 35%;
+    display: inline-block;
+}
+/* father */
+.form-row.field-father {
+    width: 48%;
+    display: inline-block;
+}
+.form-row.field-father_link {
+    width: 20%;
+    display: inline-block;
+}
+.field-father_link label {
+    display: none;
+}
+.aligned .field-father_link label + div.readonly {
+    margin-left: 0px;
+}
+.form-row.field-father_extern {
+    width: 27%;
+    display: inline-block;
+}
+.field-father_extern label {
+    display: none;
+}
+#id_father_extern {
+    width: 280px;
+}
+div.field-father_extern input {
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='50px' width='120px'><text x='6' y='18' fill='gray' font-size='12' font-family='Roboto'>Father extern</text></svg>");
+    background-repeat: no-repeat;
+}
+div.field-father_extern input:focus {
+  background-image: none;
+}
+/* mother */
+.form-row.field-mother {
+    width: 48%;
+    display: inline-block;
+}
+.form-row.field-mother_link {
+    width: 20%;
+    display: inline-block;
+}
+.field-mother_link label {
+    display: none;
+}
+.aligned .field-mother_link label + div.readonly {
+    margin-left: 0px;
+}
+.form-row.field-mother_extern {
+    width: 27%;
+    display: inline-block;
+}
+.field-mother_extern label {
+    display: none;
+}
+#id_mother_extern {
+    width: 280px;
+}
+div.field-mother_extern input {
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='50px' width='120px'><text x='6' y='18' fill='gray' font-size='12' font-family='Roboto'>Mother extern</text></svg>");
+    background-repeat: no-repeat;
+}
+div.field-mother_extern input:focus {
+  background-image: none;
+}
+/* children_extern */
+.form-row.field-children_extern {
+    width: 48%;
+    display: inline-block;
+}
+.form-row.field-children_text {
+    width: 48%;
+    display: inline-block;
+}
+/* siblings_extern */
+.form-row.field-siblings_extern {
+    width: 48%;
+    display: inline-block;
+}
+.form-row.field-siblings_text {
+    width: 48%;
+    display: inline-block;
+}
+/* profession / identifier */
+.form-row.field-profession {
+    width: 48%;
+    display: inline-block;
+}
+.form-row.field-external_identifier {
+    width: 48%;
+    display: inline-block;
+}
+/* image / thumbnail */
+.form-row.field-thumbnail {
+    width: 48%;
+    display: inline-block;
+}
+.form-row.field-image {
+    width: 48%;
+    display: inline-block;
+}
+/* abc */
+.form-row.field-tree_link {
+    width: 48%;
+    display: inline-block;
+}
+.form-row.field-automatic_questions_list {
+    width: 48%;
+    display: inline-block;
+}
+/* questions */
+form .field-automatic_questions_list ul {
+    margin-left: 10px;
+    margin-bottom: 0px;
+    margin-right: 0px;
+    padding-top: 0px;
+    margin-top: -4px;
+}
+form .aligned .field-automatic_questions_list ul li {
+    list-style-type: disc;
+}

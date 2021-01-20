@@ -1,8 +1,11 @@
 import logging
+from datetime import datetime
 
 from django import forms
 from django.contrib import admin
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
+from django.forms import BaseInlineFormSet
 from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
 
@@ -10,6 +13,8 @@ from .models import Ancestry, FamilyStatusRelation, Person, DocumentRelation, Qu
     DocumentAncestryRelation, PersonEvent, AncestryRelation
 
 # Get an instance of a logger
+from .tools import calculate_age
+
 logger = logging.getLogger(__name__)
 
 
@@ -73,15 +78,44 @@ class DocumentRelationInline(admin.TabularInline):
         return self.extra
 
 
+class HusbandFamilyStatusRelationInlineFormSet(BaseInlineFormSet):
+    def clean(self):
+        super(HusbandFamilyStatusRelationInlineFormSet, self).clean()
+
+        for form in self.forms:
+            if not form.is_valid():
+                return  # other errors exist, so don't bother
+
+            if self.can_delete and self._should_delete_form(form):
+                continue
+
+            if form.cleaned_data.get('DELETE'):
+                continue
+
+            if form.cleaned_data:
+                woman = form.cleaned_data['woman']
+                wife_extern = form.cleaned_data['wife_extern']
+
+                if woman is not None and wife_extern is not None:
+                    raise ValidationError(_('You cant have both woman and wife_extern filled.'))
+
+
 class HusbandFamilyStatusRelationInline(admin.TabularInline):
     model = FamilyStatusRelation
     fk_name = "man"
-    extra = 4
+    extra = 1
     exclude = ['husband_extern']
     verbose_name = u'Wife'
     verbose_name_plural = u'Wives'
     fields = ('status', 'date', 'date_only_year', 'woman', 'wife_link', 'wife_extern', 'location', 'ended')
     readonly_fields = ('wife_link',)
+
+    formset = HusbandFamilyStatusRelationInlineFormSet
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "man":
+            kwargs["queryset"] = Person.objects.filter(sex='F').order_by('-birth_date')
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_extra(self, request, obj=None, **kwargs):
         """ hide all extra if the current user is having the wrong gender """
@@ -102,15 +136,44 @@ class HusbandFamilyStatusRelationInline(admin.TabularInline):
         return self.extra
 
 
+class WifeFamilyStatusRelationInlineFormSet(BaseInlineFormSet):
+    def clean(self):
+        super(WifeFamilyStatusRelationInlineFormSet, self).clean()
+
+        for form in self.forms:
+            if not form.is_valid():
+                return  # other errors exist, so don't bother
+
+            if self.can_delete and self._should_delete_form(form):
+                continue
+
+            if form.cleaned_data.get('DELETE'):
+                continue
+
+            if form.cleaned_data:
+                man = form.cleaned_data['man']
+                husband_extern = form.cleaned_data['husband_extern']
+
+                if man is not None and husband_extern is not None:
+                    raise ValidationError(_('You cant have both man and husband_extern filled.'))
+
+
 class WifeFamilyStatusRelationInline(admin.TabularInline):
     model = FamilyStatusRelation
     fk_name = "woman"
-    extra = 4
+    extra = 1
     exclude = ['wife_extern']
     verbose_name = u'Husband'
     verbose_name_plural = u'Husbands'
     fields = ('status', 'date', 'date_only_year', 'man', 'husband_link', 'husband_extern', 'location', 'ended')
     readonly_fields = ('husband_link',)
+
+    formset = WifeFamilyStatusRelationInlineFormSet
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "man":
+            kwargs["queryset"] = Person.objects.filter(sex='M').order_by('-birth_date')
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_extra(self, request, obj=None, **kwargs):
         """ hide all extra if the current user is having the wrong gender """
@@ -156,8 +219,8 @@ class PersonAdmin(admin.ModelAdmin):
             'fields': ('first_name', 'last_name', 'birth_name', 'sex')
         }),
         ('Dates/Locations', {
-            'fields': ('birth_date', 'birth_date_unclear', 'birth_date_only_year', 'birth_location', 'death_date',
-                       'death_date_only_year', 'death_location', 'cause_of_death', 'already_died')
+            'fields': ('birth_date', 'birth_date_only_year', 'birth_date_unclear', 'birth_location', 'death_date',
+                       'death_date_only_year', 'already_died', 'death_location', 'cause_of_death')
         }),
         ('Relations', {
             'fields': (
@@ -166,7 +229,7 @@ class PersonAdmin(admin.ModelAdmin):
         }),
         ('Notes', {
             'fields': (
-            'profession', 'notes', 'external_identifier', 'thumbnail', 'image', 'tree_link', 'automatic_questions_list')
+                'profession', 'external_identifier', 'notes', 'image', 'thumbnail', 'automatic_questions_list', 'tree_link')
         }),
     )
     search_fields = ['first_name', 'last_name', ]
@@ -189,12 +252,14 @@ class PersonAdmin(admin.ModelAdmin):
 
     class Media:
         js = ('admin/admin.js',)
-        pass
+        css = {
+            'all': ('admin/person.css',)
+        }
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         formfield = super(PersonAdmin, self).formfield_for_dbfield(db_field, **kwargs)
         if db_field.name == 'notes':
-            formfield.widget = forms.Textarea(attrs=formfield.widget.attrs)
+            formfield.widget = forms.Textarea(attrs={"rows": 5, "cols": 80})
         return formfield
 
 

@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from datetime import date
+from datetime import date, datetime
 from itertools import chain, groupby
 from operator import attrgetter
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q, CharField
 from django.urls import reverse
@@ -466,6 +467,30 @@ class Person(models.Model):
             return mark_safe('<img border="0" alt="" src="/static/data/images/Person-icon-grey.JPG" height="40" />')
 
     thumbnail.allow_tags = True
+
+    def clean(self):
+        super(Person, self).clean()
+
+        if self.death_date and self.death_date < self.birth_date:
+            raise ValidationError(_('The date of death must be after the date of birth.'))
+
+        if self.death_date is None and not self.death_date_only_year:
+            raise ValidationError(_('The date of death must be set, if only year is enabled.'))
+
+        if self.death_date is None and not self.already_died:
+            age = calculate_age(self.birth_date, datetime.now())
+
+            if age > 119:
+                raise ValidationError(_('The person has no date of death but seems to be too old to still live.'))
+
+        if self.death_date is not None:
+            age = calculate_age(self.birth_date, self.death_date)
+
+            if age > 119:
+                raise ValidationError(_('The person seems to be too old.'))
+
+        if len(self.ancestries()) == 0:
+            raise ValidationError(_('The person must be in one ancestry at least.'))
 
     def admin_url(self):
         return mark_safe('<a href="%s">%s</a>' % (self.id, self.full_name))
