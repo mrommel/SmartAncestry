@@ -10,7 +10,7 @@ from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
 
 from .models import Ancestry, FamilyStatusRelation, Person, DocumentRelation, Question, \
-    DocumentAncestryRelation, PersonEvent, AncestryRelation
+    DocumentAncestryRelation, PersonEvent, AncestryRelation, AncestryTreeRelation
 
 # Get an instance of a logger
 from .tools import calculate_age
@@ -50,9 +50,23 @@ class PersonAncestryListFilter(admin.SimpleListFilter):
             return queryset
 
 
+class AncestryTreeRelationInline(admin.TabularInline):
+    model = AncestryTreeRelation
+    extra = 1
+
+    def get_extra(self, request, obj=None, **kwargs):
+        """Dynamically sets the number of extra forms. 0 if the related object
+		already exists or the extra configuration otherwise."""
+        if obj:
+            # Don't add any extra forms if the related object already exists.
+            return 1
+
+        return self.extra
+
+
 class AncestryRelationInline(admin.TabularInline):
     model = AncestryRelation
-    extra = 4
+    extra = 1
 
     def get_extra(self, request, obj=None, **kwargs):
         """Dynamically sets the number of extra forms. 0 if the related object
@@ -280,11 +294,12 @@ class DocumentAncestryAncestryRelationInline(admin.TabularInline):
 
 class AncestryAdmin(admin.ModelAdmin):
     list_display = ['name', 'thumbnail', 'number_of_members', 'featured_str', 'exports']
-    fields = ('name', 'thumbnail', 'image', 'map', 'featured_str',)
+    fields = ('name', 'thumbnail', 'image', 'map', 'featured',)
     readonly_fields = ('thumbnail', 'featured_str',)
 
     ordering = ['name']
     inlines = [
+        AncestryTreeRelationInline,
         AncestryRelationInline,
         DocumentAncestryAncestryRelationInline,
     ]

@@ -86,20 +86,21 @@ def ancestry_export(request, ancestry_id):
     members = []
     for member in ancestry.members():
         template_value1 = ''
-        for featured_person in ancestry.featured():
-            relation = ancestry_relation(member.person, featured_person.person)
+        if ancestry.featured:
+            relation = ancestry_relation(member.person, ancestry.featured)
 
             if relation is not None:
                 if template_value1 == '':
-                    template_value1 = '%s %s %s' % (relation, _('of'), featured_person.person.full_name())
+                    template_value1 = '%s %s %s' % (relation, _('of'), ancestry.featured.full_name())
                 else:
-                    template_value1 = template_value1 + '<br />' + '%s %s %s' % (relation, _('of'), featured_person.person.full_name())
+                    template_value1 = template_value1 + '<br />' + '%s %s %s' % (relation, _('of'), ancestry.featured.full_name())
 
         member.person.template_value1 = mark_safe(template_value1)
 
         members.append(member)
 
-    featured = ancestry.featured()
+    featured = ancestry.featured
+    person_trees = ancestry.person_trees()
     ancestry_distributions = ancestry.distributions()
     ancestry_documents = ancestry.ancestry_documents()
     person_documents = ancestry.documents()
@@ -114,6 +115,7 @@ def ancestry_export(request, ancestry_id):
         'sorted_members': sorted_members,
         'member_list': members,
         'featured': featured,
+        'person_trees': person_trees,
         'distributions': ancestry_distributions,
         'locations': ancestry.locations,
         'statistics': ancestry.statistics,

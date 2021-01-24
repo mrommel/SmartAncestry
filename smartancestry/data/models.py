@@ -1155,7 +1155,8 @@ class Person(models.Model):
                 partnership = self.partnership(partner.partner)
 
                 if partnership.date is not None:
-                    relations_list.append(MarriageInfo(level, marriage_id, "∞ %s" % partnership.date.strftime("%d.%m.%Y")))
+                    relations_list.append(
+                        MarriageInfo(level, marriage_id, "∞ %s" % partnership.date.strftime("%d.%m.%Y")))
                 else:
                     relations_list.append(MarriageInfo(level, marriage_id, ""))
 
@@ -1206,7 +1207,8 @@ class Person(models.Model):
                 partnership = self.partnership(partner.partner)
 
                 if partnership.date is not None:
-                    relations_list.append(MarriageInfo(level, marriage_id, "∞ %s" % partnership.date.strftime("%d.%m.%Y")))
+                    relations_list.append(
+                        MarriageInfo(level, marriage_id, "∞ %s" % partnership.date.strftime("%d.%m.%Y")))
                 else:
                     relations_list.append(MarriageInfo(level, marriage_id, ""))
 
@@ -1410,8 +1412,9 @@ class Person(models.Model):
                                          self.full_name(), self.birth_year()))
 
         if self.birth_date_unclear:
-            question_list.append(gettext("The birth date of %s is completely unclear. It is currently assumed ca. %s.") % (
-                self.full_name(), self.birth_year()))
+            question_list.append(
+                gettext("The birth date of %s is completely unclear. It is currently assumed ca. %s.") % (
+                    self.full_name(), self.birth_year()))
 
         if self.birth_location is None:
             question_list.append(gettext("The birth location of %s could not be determined.") % (self.full_name()))
@@ -1481,8 +1484,10 @@ class Person(models.Model):
         return True
 
     def svg_box(self, x, y):
-        background_str = '<rect x="%d" y="%d" width="140" height="52" fill="#f2f1d2" stroke="black" stroke-width="1" />' % (int(x), int(y))
-        name_str = '<text x="%d" y="%d" fill="gray" font-size="12" font-family="Roboto">%s %s</text>' % (int(x) + 5, int(y) + 17, self.first_name_nice(), self.last_name)
+        background_str = '<rect x="%d" y="%d" width="140" height="52" fill="#f2f1d2" stroke="black" stroke-width="1" />' % (
+        int(x), int(y))
+        name_str = '<text x="%d" y="%d" fill="gray" font-size="12" font-family="Roboto">%s %s</text>' % (
+        int(x) + 5, int(y) + 17, self.first_name_nice(), self.last_name)
 
         birth_text = self.birth_year()
         if self.birth_location:
@@ -1670,6 +1675,7 @@ class Ancestry(models.Model):
     name = models.CharField(max_length=50)
     image = models.ImageField(upload_to='media/ancestries', blank=True, null=True)
     map = models.ImageField(upload_to='media/maps', blank=True, null=True)
+    featured = models.ForeignKey(Person, on_delete=models.DO_NOTHING, blank=True, null=True)
 
     def thumbnail(self):
         return mark_safe('<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % (
@@ -1743,21 +1749,19 @@ class Ancestry(models.Model):
 
         return result_list
 
-    def featured(self):
+    def person_trees(self):
         """
-			Returns the list of featured persons in this ancestry
-		"""
-        result_list = AncestryRelation.objects.filter(ancestry=self).filter(featured=True)
-        result_list = sorted(result_list, key=attrgetter('person.birth_date'), reverse=True)
-        return result_list
+        	Returns the list of persons that should have trees
+        """
+        return AncestryTreeRelation.objects.filter(ancestry=self)
 
     def featured_str(self):
         """
-			Returns the list of featured person
+			Returns featured person
 		"""
         str = '<ul>'
-        for item in self.featured():
-            str = '%s<li>%s</li>' % (str, item.person)
+        if self.featured:
+            str = '<li>%s</li>' % (self.featured)
         str = '%s</ul>' % str
 
         return mark_safe(str)
@@ -2109,17 +2113,23 @@ class Question(models.Model):
 class AncestryRelation(models.Model):
     person = models.ForeignKey(Person, on_delete=models.DO_NOTHING)
     ancestry = models.ForeignKey(Ancestry, on_delete=models.DO_NOTHING)
-    featured = models.NullBooleanField(default=False, blank=True, null=True)
-
-    def relation(self):
-        featured_person = self.ancestry.featured()[0]
-        return ancestry_relation(self.person, featured_person.person)
 
     def __unicode__(self):
         return u'%s' % self.ancestry.name
 
     def __str__(self):
         return u'%s' % self.ancestry.name
+
+
+class AncestryTreeRelation(models.Model):
+    person = models.ForeignKey(Person, on_delete=models.DO_NOTHING)
+    ancestry = models.ForeignKey(Ancestry, on_delete=models.DO_NOTHING)
+
+    def __unicode__(self):
+        return u'%s - %s' % (self.ancestry.name, self.person)
+
+    def __str__(self):
+        return '%s - %s' % (self.ancestry.name, self.person)
 
 
 class FamilyStatusRelation(models.Model):

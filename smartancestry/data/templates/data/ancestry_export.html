@@ -76,8 +76,8 @@
 	<a href="#chapter4" class="nolink">4. {% trans "Family trees" %}</a>
 </item>
 
-{% if featured %}
-	{% for member in featured %}
+{% if person_trees %}
+	{% for member in person_trees %}
 		<item href="#chapter4-{{ member.person.id }}" class="sub-chapter">
 			<a href="#chapter4-{{ member.person.id }}" class="nolink">
 				{{ member.person.last_name|underline }}, {{ member.person.first_name|underline }}
@@ -94,12 +94,26 @@
 
 {% if distributions %}
 	{% for distribution in distributions %}
-		<item href="#chapter5-{{ distribution.distribution.id }}" class="sub-chapter">
-			<a href="#chapter5-{{ distribution.distribution.id }}" class="nolink">
+		<item href="#chapter5-{{ distribution.distribution.id }}" class="sub-chapter">
+			<a href="#chapter5-{{ distribution.distribution.id }}" class="nolink">
 				{{ distribution.distribution }}
 			</a>
 		</item>
 	{% endfor %}
+{% endif %}
+
+<!-- index for chapter 6 -->
+
+<item href="#chapter6">
+	<a href="#chapter6" class="nolink">6. {% trans "Questions" %}</a>
+</item>
+
+{% if questions %}
+	<item href="#chapter6" class="sub-chapter">
+		<a href="#chapter6" class="nolink">
+			{{ questions|length }} {% trans "Questions" %}
+		</a>
+	</item>
 {% endif %}
 
 <!-- index for chapter 7 -->
@@ -378,8 +392,8 @@
 		
 		{# resetcycle #}
 
-		{% for featured_member in featured %}
-			{% if member == featured_member %}
+		{% if featured %}
+			{% if member == featured %}
 				<para>
 					<h4>{% trans "History of" %} {% autoescape off %}{{ member.person.first_name|underline }} {{ member.person.last_name }}{% endautoescape %}</h4>
 
@@ -459,7 +473,7 @@
 					</div>
 				</para>
 			{% endif %}
-		{% endfor %}
+		{% endif %}
 	{% endfor %}
 {% else %}
 	<para>{% trans "No members are available." %}</para>
@@ -655,11 +669,11 @@
 <a id="chapter4" class="small">&nbsp;</a>
 </chapheader>
 
-{% if featured %}
-	{% for member in featured %}
+{% if person_trees %}
+	{% for member in person_trees %}
 		<para>
 			<div class="not_breaking">
-			<h2>{{ member.person }}</h2>
+			<h2>{{ member.person }}<a id="chapter4-{{ member.person.id }}">&nbsp;</a></h2>
 			<a id="chapter4-{{ member.person.id }}">&nbsp;</a>
 			<img src="http://127.0.0.1:4446/ancestry.png?person={{ member.person.id }}&max_level=2" class="distribution landscape" />
 			</div>
