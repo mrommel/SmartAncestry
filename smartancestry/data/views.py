@@ -510,3 +510,14 @@ def missing_images(request, ancestry_id):
 
     persons_list = ancestry_obj.noImage()
     return HttpResponse(render_to_string('data/missing_images.html', {'persons_list': persons_list, }))
+
+
+def person_tree(request, person_id):
+    try:
+        person = Person.objects.get(pk=person_id)
+    except Person.DoesNotExist:
+        raise Http404("Person does not exist")
+
+    return HttpResponse(render_to_string('data/person_tree.html', {
+        'person': person,
+    }), content_type='image/svg+xml')

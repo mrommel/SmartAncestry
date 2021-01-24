@@ -1480,6 +1480,26 @@ class Person(models.Model):
 
         return True
 
+    def svg_box(self, x, y):
+        background_str = '<rect x="%d" y="%d" width="140" height="52" fill="#f2f1d2" stroke="black" stroke-width="1" />' % (int(x), int(y))
+        name_str = '<text x="%d" y="%d" fill="gray" font-size="12" font-family="Roboto">%s %s</text>' % (int(x) + 5, int(y) + 17, self.first_name_nice(), self.last_name)
+
+        birth_text = self.birth_year()
+        if self.birth_location:
+            birth_text = '%s %s' % (birth_text, self.birth_location.city)
+
+        birth_str = '<text x="%d" y="%d" fill="gray" font-size="9" font-family="Roboto">%s</text>' % (
+            int(x) + 5, int(y) + 31, birth_text)
+
+        death_text = self.death_year()
+        if self.death_location:
+            death_text = '%s %s' % (death_text, self.death_location.city)
+
+        death_str = '<text x="%d" y="%d" fill="gray" font-size="9" font-family="Roboto">%s</text>' % (
+            int(x) + 5, int(y) + 45, death_text)
+
+        return mark_safe('%s%s%s%s' % (background_str, name_str, birth_str, death_str))
+
     def __unicode__(self):
         first = self.first_name
         first = first.replace(u'\xfc', '&uuml;')

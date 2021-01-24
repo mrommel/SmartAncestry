@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
+from decimal import Decimal
 
 from django import template
 from django.utils.html import conditional_escape
@@ -14,8 +15,60 @@ logger = logging.getLogger('data.models')
 register = template.Library()
 
 
+@stringfilter
+@register.filter(name='svg_person')
+def svg_person(person, args):
+    if args is None:
+        return 'no args'
+    arg_list = [arg.strip() for arg in args.split(',')]
+    if len(arg_list) != 2:
+        return 'invalid args'
+    x = arg_list[0]
+    y = arg_list[1]
+    return person.svg_box(x, y)
+
+
+def handle_float_decimal_combinations(value, arg, operation):
+    if isinstance(value, float) and isinstance(arg, Decimal):
+        logger.warning(
+            'Unsafe operation: {0!r} {1} {2!r}.'.format(value, operation, arg)
+        )
+        value = Decimal(str(value))
+    if isinstance(value, Decimal) and isinstance(arg, float):
+        logger.warning(
+            'Unsafe operation: {0!r} {1} {2!r}.'.format(value, operation, arg)
+        )
+        arg = Decimal(str(arg))
+    return value, arg
+
+
+def valid_numeric(arg):
+    if isinstance(arg, (int, float, Decimal)):
+        return arg
+    try:
+        return int(arg)
+    except ValueError:
+        return float(arg)
+
+
+@stringfilter
+@register.filter(name='mul')
+def mul(value, arg):
+    """Multiply the arg with the value."""
+    try:
+        nvalue, narg = handle_float_decimal_combinations(
+            valid_numeric(value), valid_numeric(arg), '*'
+        )
+        return nvalue * narg
+    except (ValueError, TypeError):
+        try:
+            return value * arg
+        except Exception:
+            return ''
+
+
 @register.filter(name='location_without_country')
-def location_without_country(value):
+def location_without_country(value: object) -> object:
     if value is None:
         return ''
 
@@ -121,7 +174,7 @@ def underline_indices(value):
 
 
 @register.filter(needs_autoescape=True)
-def initial_letter_filter(text, autoescape=None):
+def initial_letter_filter(text: object, autoescape: object = None) -> object:
     first, other = text[0], text[1:]
     if autoescape:
         esc = conditional_escape

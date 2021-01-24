@@ -172,7 +172,11 @@
 		<div class="featured">
 		
 			<h2><a name="tree">{% trans "Family tree" %}</a></h2>
-			
+
+			<div>
+				<img src="/data/person_tree/{{ person.id }}/tree.svg" />
+			</div>
+
 			<div id="familyTreeContainer">
 				<canvas id="familyTreeCanvas" width="940" height="1160"></canvas>
 			</div>

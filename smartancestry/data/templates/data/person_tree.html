@@ -1,0 +1,19 @@
+{% load i18n %}{% load app_filters %}<svg xmlns='http://www.w3.org/2000/svg' version='1.1' width='1024px' height='800px'>
+    <rect x="0" y="0" width="1024" height="800" fill="white" />
+    {% if person.father %}
+        {{ person.father|svg_person:"362,120" }}
+    {% endif %}
+    {% if person.mother %}
+        {{ person.mother|svg_person:"522,120" }}
+    {% endif %}
+        {{ person|svg_person:"442,220" }}
+    {% for child in person.children %}
+        {% with forloop.counter0|stringformat:"s"|mul:"180"|add:"20" as x %}
+            {% with x|stringformat:"s,320" as position %}
+        <!-- {{ forloop.counter0 }} - {{ x }} - {{ position }} -->
+    {{ child|svg_person:position }}
+            {% endwith %}
+        {% endwith %}
+
+    {% endfor %}
+</svg>
