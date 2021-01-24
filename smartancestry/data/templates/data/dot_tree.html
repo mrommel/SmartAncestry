@@ -2,22 +2,30 @@
 	# {{ person_id }} / {{ max_level }}
 	ratio="fill";
  	size="11.7,8.3!"; # A4 in inches
- 	graph [ dpi = 300 ]; 
+ 	graph [ dpi = 300 ];
  	margin=0.5;
-	imagepath="/Users/michael.rommel/Prog/SmartAncestry/smartancestry/data/media/persons_tree/";
-	graph [label = "\n\n{% trans "Family tree" %} {% trans "of" %} {{ person.first_name_short | remove_underlines }} {{ person.last_name }}", fontname="Euphemia UCAS", fontsize = 32, style = "bold"];
+	imagepath="{{ image_path }}/media/persons/";
+	graph [label = "\n\n{% trans "Family tree" %} {% trans "of" %} {{ person.first_name_short | remove_underlines }} {{ person.last_name }}", fontname="Euphemia UCAS", fontsize = 32, style = "bold", bgcolor="#9baaba"];
 	# splines=ortho,
 	rankdir=LR;
 	node [width=4];
-	node [style=filled, shape=box];    
+	node [style="filled, rounded", shape=box];
 	node [fontname="Euphemia UCAS", fontsize = "18"];
 
 	{% for relative in relatives.relatives %}
 	"node-{{ relative.person.id }}" [
 		color={% if relative.person.sex == 'F'%}"#9c1662"{% else %}"#105a83"{% endif%},
-		fillcolor={% if relative.person.sex == 'F'%}"#f5b8db"{% else %}"#9fd5eb"{% endif%},
-		label="{{ relative.person.first_name_short | remove_underlines }} {{ relative.person.last_name | replace_umlauts }}\n* {% if relative.person.birth_date_unclear %}ca. {% endif %}{{ relative.person.birth_date | date:"Y" }} {% if relative.person.birth_location %}{{ relative.person.birth_location|location_without_country }}{% endif %}\n+ {{ relative.person.death_date | date:"Y" }} {% if relative.person.death_location %}{{ relative.person.death_location|location_without_country }}{% endif %}\n",
-		{# {% if relative.person.image %}image="{{ relative.person.image.url | remove_persons_folder }}",{% else %}{% if relative.person.sex == 'F'%}image="avatar_f.png",{% else %}image="avatar_m.png",{% endif%}{% endif%} #}
+		fillcolor={% if relative.person.sex == 'F'%}"#FFFFFF"{% else %}"#FFFFFF"{% endif%},
+		label=<
+			<table border='0' cellborder='0' cellspacing='0' cellpadding='2' fixedsize='TRUE' height='80' width='350'>
+       			<tr>
+					<td rowspan="3" fixedsize='TRUE' height='72' width='72' bgcolor={% if relative.person.sex == 'F'%}"#f5b8db"{% else %}"#9fd5eb"{% endif%}><img src="{% if relative.person.image %}{{ relative.person.image.url | remove_persons_folder }}{% else %}{% if relative.person.sex == 'F'%}avatar_f.png{% else %}avatar_m.png{% endif %}{% endif %}" scale='BOTH'/></td>
+					<td align='left'><B>&nbsp;{{ relative.person.first_name_short | remove_underlines }} {{ relative.person.last_name | replace_umlauts }}</B></td>
+				</tr>
+				<tr><td align='left'>&nbsp;* {% if relative.person.birth_date_unclear %}ca. {% endif %}{{ relative.person.birth_date | date:"Y" }} {% if relative.person.birth_location %}{{ relative.person.birth_location|location_without_country }}{% endif %}</td></tr>
+				<tr><td align='left'>&nbsp;{% if relative.person.death_date %}† {{ relative.person.death_date | date:"Y" }} {% if relative.person.death_location %}{{ relative.person.death_location|location_without_country }}{% endif %}{% else %}&nbsp;{% endif %}</td></tr>
+     		</table>
+		>,
 		labelloc=b];
 	{% endfor %}
 	
@@ -32,9 +40,9 @@
 	
 	{% for relation in relatives.relations %}
 		{% if relation.text %}
-  			"node-{{ relation.id }}" [label="{{ relation.text }}", shape=box, width=0.2, height=0.1, orientation=90, color=white];
+  			"node-{{ relation.id }}" [label="{{ relation.text }}", shape=box, width=0.2, height=0.1, orientation=90, color="#9baaba"];
 		{% else %}  
-			"node-{{ relation.id }}" [shape=point, width=0.2, height=0.1, orientation=90, color=black];
+			"node-{{ relation.id }}" [label="∞", shape=box, width=0.2, height=0.1, orientation=90, color="#9baaba"];
 		{% endif %}	
   	{% endfor %}
 	

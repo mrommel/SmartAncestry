@@ -424,11 +424,14 @@ def dot_tree(request, person_id, max_level):
     relatives = person.relatives_parents(0, [], [], [], int(max_level))
     relatives = person.relatives_children(0, relatives.relatives, relatives.relations, relatives.connections)
 
+    image_path = os.path.realpath(os.path.dirname(__file__))
+
     return HttpResponse(render_to_string('data/dot_tree.html', {
         'person_id': person_id,
         'max_level': max_level,
         'person': person,
         'relatives': relatives,
+        'image_path': image_path
     }))
 
 

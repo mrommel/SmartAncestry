@@ -68,7 +68,7 @@ node bar.js
 node colors.js 
 ==> prints colors (hsl / 12)
 
-node ancestryTree.js
+node ancestry.js
 ==> create ancestry trees
 
 ## distributions
@@ -96,5 +96,7 @@ prince --no-author-style -s http://127.0.0.1:8000/static/data/style_print.css ht
 - http://ged-inline.elasticbeanstalk.com/validate
 - https://en.wikipedia.org/wiki/GEDCOM
 - www.familysearch.org/developers/docs/guides/gedcom
+
+- https://graphviz.org/doc/info/shapes.html#html
 
 Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>

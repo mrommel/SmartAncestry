@@ -474,7 +474,7 @@ class Person(models.Model):
         if self.death_date and self.death_date < self.birth_date:
             raise ValidationError(_('The date of death must be after the date of birth.'))
 
-        if self.death_date is None and not self.death_date_only_year:
+        if self.death_date is None and self.death_date_only_year:
             raise ValidationError(_('The date of death must be set, if only year is enabled.'))
 
         if self.death_date is None and not self.already_died:
@@ -1155,7 +1155,7 @@ class Person(models.Model):
                 partnership = self.partnership(partner.partner)
 
                 if partnership.date is not None:
-                    relations_list.append(MarriageInfo(level, marriage_id, "∞ %s" % partnership.date))
+                    relations_list.append(MarriageInfo(level, marriage_id, "∞ %s" % partnership.date.strftime("%d.%m.%Y")))
                 else:
                     relations_list.append(MarriageInfo(level, marriage_id, ""))
 
@@ -1206,7 +1206,7 @@ class Person(models.Model):
                 partnership = self.partnership(partner.partner)
 
                 if partnership.date is not None:
-                    relations_list.append(MarriageInfo(level, marriage_id, "∞ %s" % partnership.date))
+                    relations_list.append(MarriageInfo(level, marriage_id, "∞ %s" % partnership.date.strftime("%d.%m.%Y")))
                 else:
                     relations_list.append(MarriageInfo(level, marriage_id, ""))
 
