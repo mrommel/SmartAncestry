@@ -110,6 +110,11 @@ def ancestry_export(request, ancestry_id):
     else:
         include_css = False
 
+    if request.GET.get('documents') is None:
+        include_documents = False
+    else:
+        include_documents = True
+
     return HttpResponse(render_to_string('data/ancestry_export.html', {
         'ancestry': ancestry,
         'sorted_members': sorted_members,
@@ -123,6 +128,7 @@ def ancestry_export(request, ancestry_id):
         'ancestry_documents': ancestry_documents,
         'person_documents': person_documents,
         'include_css': include_css,
+        'include_documents': include_documents,
         'MEDIA_URL': 'media/'
     }))
 
@@ -167,49 +173,6 @@ def ancestry_history(request, ancestry_id):
     return HttpResponse(render_to_string('data/ancestry_history.html', {
         'ancestry': ancestry,
         'sorted_members': sorted_members,
-        'featured': ancestry.featured(),
-        'distributions': ancestry.distributions(),
-        'locations': ancestry.locations,
-        'statistics': ancestry.statistics,
-        'include_css': include_css
-    }))
-
-
-def ancestry_export_no_documents(request, ancestry_id):
-    try:
-        ancestry = Ancestry.objects.get(pk=ancestry_id)
-    except Ancestry.DoesNotExist:
-        raise Http404("Ancestry does not exist")
-
-    sorted_members = ancestry.members()
-    sorted_members = sorted(sorted_members, key=attrgetter('person.first_name'))
-    sorted_members = sorted(sorted_members, key=attrgetter('person.last_name'))
-
-    members = []
-    for member in ancestry.members():
-        template_value1 = ''
-        for featured_person in ancestry.featured():
-            relation = ancestry_relation(member.person, featured_person.person)
-
-            if relation is not None:
-                if template_value1 == '':
-                    template_value1 = '%s %s %s' % (relation, _('of'), featured_person.person.full_name())
-                else:
-                    template_value1 = template_value1 + '<br />' + '%s %s %s' % (relation, _('of'), featured_person.person.full_name())
-
-        member.person.template_value1 = mark_safe(template_value1)
-
-        members.append(member)
-
-    if request.GET.get('with') is not None:
-        include_css = True
-    else:
-        include_css = False
-
-    return HttpResponse(render_to_string('data/ancestry_export_no_documents.html', {
-        'ancestry': ancestry,
-        'sorted_members': sorted_members,
-        'member_list': members,
         'featured': ancestry.featured(),
         'distributions': ancestry.distributions(),
         'locations': ancestry.locations,
@@ -455,9 +418,15 @@ def location(request, location_id):
 
 
 def export(request, ancestry_id):
-    os.system(
-        "prince --no-author-style --javascript -s http://127.0.0.1:7000/static/data/style_print.css "
-        "http://127.0.0.1:7000/data/ancestry_export/%s/Kliemank -o tmp.pdf" % ancestry_id)
+
+    if request.GET.get('documents') is None:
+        os.system(
+            "prince --no-author-style --javascript -s http://127.0.0.1:7000/static/data/style_print.css "
+            "http://127.0.0.1:7000/data/ancestry_export/%s/Kliemank?documents=0 -o tmp.pdf" % ancestry_id)
+    else:
+        os.system(
+            "prince --no-author-style --javascript -s http://127.0.0.1:7000/static/data/style_print.css "
+            "http://127.0.0.1:7000/data/ancestry_export/%s/Kliemank -o tmp.pdf" % ancestry_id)
 
     image_data = open('tmp.pdf', "rb").read()
     return HttpResponse(image_data, content_type='application/pdf')

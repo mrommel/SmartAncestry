@@ -118,36 +118,37 @@
 
 <!-- index for chapter 7 -->
 
-<item href="#chapter7">
-	<a href="#chapter7" class="nolink">7. {% trans "Appendix" %}</a>
-</item>
-
-{% if ancestry_documents %}
-	<item href="#chapter7-1">
-		<a href="#chapter7-1" class="nolink">{% trans "General documents" %}</a>
+{% if include_documents %}
+	<item href="#chapter7">
+		<a href="#chapter7" class="nolink">7. {% trans "Appendix" %}</a>
 	</item>
-	{% for document in ancestry_documents %}
-		<item href="#chapter7-1-{{ document.id }}" class="sub-chapter">
-			<a href="#chapter7-1-{{ document.id }}" class="nolink">
-				{{ document.name }} 
-			</a>
-		</item>
-	{% endfor %}
-{% endif %}
 
-{% if person_documents %}
-	<item href="#chapter7-2">
-		<a href="#chapter7-2" class="nolink">{% trans "Documents of persons" %}</a>
-	</item>
-	{% for document in person_documents %}
-		<item href="#chapter7-2-{{ document.id }}" class="sub-chapter">
-			<a href="#chapter7-2-{{ document.id }}" class="nolink">
-				{{ document.name }} - {% for person in document.persons %}{{ person.last_name|underline }}, {{ person.first_name|underline }}{% include "commalist.html" %}{% endfor %}
-			</a>
+	{% if ancestry_documents %}
+		<item href="#chapter7-1">
+			<a href="#chapter7-1" class="nolink">{% trans "General documents" %}</a>
 		</item>
-	{% endfor %}
-{% endif %}
+		{% for document in ancestry_documents %}
+			<item href="#chapter7-1-{{ document.id }}" class="sub-chapter">
+				<a href="#chapter7-1-{{ document.id }}" class="nolink">
+					{{ document.name }}
+				</a>
+			</item>
+		{% endfor %}
+	{% endif %}
 
+	{% if person_documents %}
+		<item href="#chapter7-2">
+			<a href="#chapter7-2" class="nolink">{% trans "Documents of persons" %}</a>
+		</item>
+		{% for document in person_documents %}
+			<item href="#chapter7-2-{{ document.id }}" class="sub-chapter">
+				<a href="#chapter7-2-{{ document.id }}" class="nolink">
+					{{ document.name }} - {% for person in document.persons %}{{ person.last_name|underline }}, {{ person.first_name|underline }}{% include "commalist.html" %}{% endfor %}
+				</a>
+			</item>
+		{% endfor %}
+	{% endif %}
+{% endif %}
 </list>
 </toc>
 
@@ -374,7 +375,7 @@
 					</td>
 				</tr>
 				{% endif %}
-				{% if member.person.appendices %}
+				{% if member.person.appendices and include_documents %}
 				<tr class="{% cycle row_style %}">
 					<td width="20%" class="label">{% trans "Appendices" %}:</td>
 					<td width="80%" colspan="3">
@@ -729,66 +730,67 @@
 </chapter>
 
 <!-- Chapter 7 -->
+{% if include_documents %}
+	<chapter id="chapter7">
 
-<chapter id="chapter7">
-
-<chapheader>
-<chapnum>7. </chapnum>
-<title>{% trans "Appendix" %}</title>
-<a id="chapter7" class="small">&nbsp;</a>
-</chapheader>
-	{% if ancestry_documents %}
-		{% for document in ancestry_documents %}
-			<para>
-				<div class="not_breaking">
-				{% if forloop.first %}
-                	<h2>{% trans "General documents" %}<a id="chapter7-1">&nbsp;</a></h2>
-                {% endif %}
-				
-				<h3>{{ document.name }}<a id="chapter7-1-{{ document.id }}">&nbsp;</a></h3>
-				{% if document.description %}
-					{{ document.description }}
-				{% endif %}
-				<img src="{{ document.image.url }}" class="document {{ document.css_class }}" />
-				</div>
-			</para>
-		{% endfor %}
-	{% endif %}
-
-	{% if person_documents %}
-		{% for document in person_documents %}
-			<para>
-				<div class="not_breaking">
-				{% if forloop.first %}
-					<h2>{% trans "Documents of persons" %}<a id="chapter7-2">&nbsp;</a></h2>
-				{% endif %}
-				<h3>{{ document.name }}<a id="chapter7-2-{{ document.id }}">&nbsp;</a></h3>
-				{% if document.description %}
-					{{ document.description }}
-				{% endif %}
-				
-				{% for person in document.persons %}
+	<chapheader>
+	<chapnum>7. </chapnum>
+	<title>{% trans "Appendix" %}</title>
+	<a id="chapter7" class="small">&nbsp;</a>
+	</chapheader>
+		{% if ancestry_documents %}
+			{% for document in ancestry_documents %}
+				<para>
+					<div class="not_breaking">
 					{% if forloop.first %}
-						<ul>
+						<h2>{% trans "General documents" %}<a id="chapter7-1">&nbsp;</a></h2>
 					{% endif %}
-					<li><a href="#chapter1-{{ person.id }}" class="nolink">{{ person }}</a></li>
-					{% if forloop.last %}
-						</ul>
-					{% endif %}
-				{% endfor %}
-					{% if document.image %}
-						<img src="{{ document.image.url }}" class="document {{ document.css_class }}" />
-					{% else %}
-						<p>no image</p>
-					{% endif %}
-				</div>
-			</para>
-		{% endfor %}
-	{% else %}
-		<para>{% trans "No appendices are available." %}</para>
-	{% endif %}
 
-</chapter>
+					<h3>{{ document.name }}<a id="chapter7-1-{{ document.id }}">&nbsp;</a></h3>
+					{% if document.description %}
+						{{ document.description }}
+					{% endif %}
+					<img src="{{ document.image.url }}" class="document {{ document.css_class }}" />
+					</div>
+				</para>
+			{% endfor %}
+		{% endif %}
+
+		{% if person_documents %}
+			{% for document in person_documents %}
+				<para>
+					<div class="not_breaking">
+					{% if forloop.first %}
+						<h2>{% trans "Documents of persons" %}<a id="chapter7-2">&nbsp;</a></h2>
+					{% endif %}
+					<h3>{{ document.name }}<a id="chapter7-2-{{ document.id }}">&nbsp;</a></h3>
+					{% if document.description %}
+						{{ document.description }}
+					{% endif %}
+
+					{% for person in document.persons %}
+						{% if forloop.first %}
+							<ul>
+						{% endif %}
+						<li><a href="#chapter1-{{ person.id }}" class="nolink">{{ person }}</a></li>
+						{% if forloop.last %}
+							</ul>
+						{% endif %}
+					{% endfor %}
+						{% if document.image %}
+							<img src="{{ document.image.url }}" class="document {{ document.css_class }}" />
+						{% else %}
+							<p>no image</p>
+						{% endif %}
+					</div>
+				</para>
+			{% endfor %}
+		{% else %}
+			<para>{% trans "No appendices are available." %}</para>
+		{% endif %}
+
+	</chapter>
+{% endif %}
 
 </part>
 </bookbody>

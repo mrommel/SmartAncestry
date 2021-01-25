@@ -1707,7 +1707,7 @@ class Ancestry(models.Model):
 
     def export_no_documents(self):
         return mark_safe(
-            '<a href="/data/export/ancestry_no_documents/%d/%s_no_doc.pdf" target="_blank">PDF (no doc)</a>' % (
+            '<a href="/data/export/ancestry/%d/%s_no_doc.pdf?documents=0" target="_blank">PDF (no doc)</a>' % (
                 self.id, self.name))
 
     export_no_documents.allow_tags = True
