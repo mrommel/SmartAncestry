@@ -83,6 +83,9 @@ def ancestry_export(request, ancestry_id):
         for question in member.person.questions():
             questions.append(question)
 
+        for question in member.person.automatic_questions():
+            questions.append(question)
+
     members = []
     for member in ancestry.members():
         template_value1 = ''
@@ -177,6 +180,23 @@ def ancestry_history(request, ancestry_id):
         'distributions': ancestry.distributions(),
         'locations': ancestry.locations,
         'statistics': ancestry.statistics,
+        'include_css': include_css
+    }))
+
+
+def person_export(request, person_id):
+    try:
+        person = Person.objects.get(pk=person_id)
+    except Person.DoesNotExist:
+        raise Http404("Person does not exist")
+
+    if request.GET.get('with') is not None:
+        include_css = True
+    else:
+        include_css = False
+
+    return HttpResponse(render_to_string('data/person_export.html', {
+        'person': person,
         'include_css': include_css
     }))
 
@@ -457,7 +477,21 @@ def export_questions(request, ancestry_id):
     return HttpResponse(pdf_data, content_type='application/pdf')
 
 
-# def export_history
+def export_person(request, person_id):
+    try:
+        person = Person.objects.get(pk=person_id)
+    except Person.DoesNotExist:
+        raise Http404("Person does not exist")
+
+    path = "http://127.0.0.1:7000/data/person_export/%s/ -o tmp.pdf" % (person_id)
+
+    # write html to tmp.pdf
+    os.system(
+        "prince --no-author-style --javascript -s http://127.0.0.1:7000/static/data/style_print.css %s" % path)
+
+    pdf_data = open('tmp.pdf', "rb").read()
+    return HttpResponse(pdf_data, content_type='application/pdf')
+
 
 def person_image(request, person_id, person2_id):
     person_id = person2_id

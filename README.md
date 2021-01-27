@@ -65,7 +65,7 @@ cd ~/Prog/SmartAncestry/smartancestry/data/static/data/js
 node bar.js 
 ==> Listening at http://localhost:4444
 
-node colors.js 
+// node colors.js 
 ==> prints colors (hsl / 12)
 
 node ancestry.js

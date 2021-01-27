@@ -513,6 +513,13 @@ class Person(models.Model):
 
     mother_link.allow_tags = True
 
+    def export_link(self):
+        person_export = '<a href="http://127.0.0.1:7000/data/export/person/%s/" target="_blank">Export</a>' % self.id
+        raw_export = '<a href="http://127.0.0.1:7000/data/person_export/%s/" target="_blank">Raw</a>' % self.id
+        return mark_safe('%s / %s' % (person_export, raw_export))
+
+    export_link.allow_tags = True
+
     def tree_link(self):
         short_tree_link = '<a href="http://127.0.0.1:4446/ancestry.png?person=%s&max_level=2" target="_blank">Short Tree</a>' % self.id
         full_tree_link = '<a href="http://127.0.0.1:4446/ancestry.png?person=%s&max_level=8" target="_blank">Full Tree</a>' % self.id
@@ -604,6 +611,7 @@ class Person(models.Model):
                                 child.first_name_nice(), death_date_str)
                 else:
                     death_child_title = _('Death of daughter')
+                    death_date_str = nice_date(child.death_date, child.death_date_only_year)
                     if child.death_location:
                         if self.male():
                             death_child_summary = _('His daughter %s died at %s in %s.') % (
@@ -1362,8 +1370,8 @@ class Person(models.Model):
         str_value = ''
 
         for ancestry in self.ancestries():
-            if len(ancestry.ancestry.featured()) > 0:
-                featured_person = ancestry.ancestry.featured()[0]
+            if ancestry.ancestry.featured:
+                featured_person = ancestry.ancestry.featured
                 str_value = '%s %s %s %s (%s %s)<br />' % (
                     str_value, ancestry_relation(self, featured_person.person), _('of'),
                     featured_person.person.get_admin_url(),
