@@ -492,6 +492,12 @@ class Person(models.Model):
         if len(self.ancestries()) == 0:
             raise ValidationError(_('The person must be in one ancestry at least.'))
 
+        if self.father and self.birth_date < self.father.birth_date:
+            raise ValidationError(_('The person must be born after the father is born.'))
+
+        if self.mother and self.birth_date < self.mother.birth_date:
+            raise ValidationError(_('The person must be born after the mother is born.'))
+
     def admin_url(self):
         return mark_safe('<a href="%s">%s</a>' % (self.id, self.full_name))
 
@@ -685,10 +691,9 @@ class Person(models.Model):
             if self.death_date and sibling.death_date:
                 if sibling.death_date > self.death_date:
                     show_death_of_sibling = False
-                else:
-                    age = calculate_age(self.birth_date, sibling.death_date)
 
             if show_death_of_sibling:
+                age = calculate_age(self.birth_date, sibling.death_date)
                 sibling_death_date_str = nice_date(sibling.death_date, sibling.death_date_only_year)
 
                 if sibling.male():
