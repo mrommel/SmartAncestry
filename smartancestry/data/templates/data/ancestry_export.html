@@ -767,27 +767,46 @@
 			{% for document in person_documents %}
 				<para>
 					<div class="not_breaking">
-					{% if forloop.first %}
-						<h2>{% trans "Documents of persons" %}<a id="chapter7-2">&nbsp;</a></h2>
-					{% endif %}
-					<h3>{{ document.name }}<a id="chapter7-2-{{ document.id }}">&nbsp;</a></h3>
-					{% if document.description %}
-						{{ document.description }}
-					{% endif %}
-
-					{% for person in document.persons %}
 						{% if forloop.first %}
-							<ul>
+							<h2>{% trans "Documents of persons" %}<a id="chapter7-2">&nbsp;</a></h2>
 						{% endif %}
-						<li><a href="#chapter1-{{ person.id }}" class="nolink">{{ person }}</a></li>
-						{% if forloop.last %}
-							</ul>
+						<h3>{{ document.name }}<a id="chapter7-2-{{ document.id }}">&nbsp;</a></h3>
+						{% if document.description %}
+							{{ document.description }}
 						{% endif %}
-					{% endfor %}
+
 						{% if document.image %}
 							<img src="{{ document.image.url }}" class="document {{ document.css_class }}" />
 						{% else %}
 							<p>no image</p>
+						{% endif %}
+
+						{% if document.table %}
+							<!-- {% cycle 'row' 'alternating' as document_row_style %} -->
+							<table>
+								<thead>
+									<th class="document_index">#</th>
+									<th class="document_person">Person</th>
+								</thead>
+								<tbody>
+									{% for person_relation in document.person_relations %}
+									    <tr class="{% cycle document_row_style %}">
+											<td class="document_index">{{ person_relation.index }}</td>
+											<td class="document_person"><a href="#chapter1-{{ person_relation.person.id }}" class="nolink">{{ person_relation.person.full_name|underline }}</a></td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						{% else %}
+							{% for person in document.persons %}
+								{% if forloop.first %}
+									<ul>
+								{% endif %}
+								<li><a href="#chapter1-{{ person.id }}" class="nolink">{{ person }}</a></li>
+								{% if forloop.last %}
+									</ul>
+								{% endif %}
+							{% endfor %}
 						{% endif %}
 					</div>
 				</para>

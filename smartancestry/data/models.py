@@ -12,22 +12,14 @@ from django.db.models import Q, CharField
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _, gettext
-from typing import Tuple
 
-from .tools import calculate_age, ancestry_relation, trim_and_unescape, underline_indices, ellipses, is_empty, nice_date
+from .classes import StatisticsListInfo, GroupedTimelineInfo, StatisticsInfo, LocationInfo, \
+    PersonEventInfo, PartnerInfo, MarriageInfo, RelationsInfo, TreeInfo, RelativesInfo, PersonInfo, TimelineInfo
+from .tools import calculate_age, ancestry_relation, is_empty, \
+    nice_date, name_of_ancestry
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
-
-
-class LocationInfo(object):
-
-    def __init__(self, lon, lat):
-        self.lon = lon
-        self.lat = lat
-
-    def lon_lat(self):
-        return "{:10.4f}".format(self.lon) + ", " + "{:10.4f}".format(self.lat)
 
 
 class Distribution(models.Model):
@@ -96,7 +88,10 @@ class Location(models.Model):
     thumbnail.allow_tags = True
 
     def map(self):
-        return '<img border="0" alt="" src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-m-star+A6BCC6(%s)/%s,6/750x262@2x?access_token=pk.eyJ1IjoibXJvbW1lbDgyIiwiYSI6ImNramVtNzFrcTJsb2YycXJ1MnJkZjNtanIifQ._XmEx_GVTa9BZS4IppCJfg" height="262" width="750" />' % (
+        return '<img border="0" alt="" src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-m-star' \
+               '+A6BCC6(%s)/%s,' \
+               '6/750x262@2x?access_token=pk.eyJ1IjoibXJvbW1lbDgyIiwiYSI6ImNramVtNzFrcTJsb2YycXJ1MnJkZjNtanIifQ' \
+               '._XmEx_GVTa9BZS4IppCJfg" height="262" width="750" />' % (
             (self.coordinate(), self.coordinate()))
 
     map.allow_tags = True
@@ -110,125 +105,6 @@ class Location(models.Model):
 
     def __str__(self):
         return '%s (%s)' % (self.city, self.country)
-
-
-class TreeInfo(object):
-    def __init__(self, level, person, selected):
-        self.level = level
-        self.person = person
-        self.selected = selected
-
-    def info(self):
-        id = self.person.id
-        selected = self.selected
-        sign = self.person.gender_sign()
-        tmp = self.person.full_name()
-        tmp = tmp.replace(u'\xe4', '&auml;')
-        name = trim_and_unescape(str(tmp))
-        indices = underline_indices(str(tmp))
-
-        # born str construction
-        if self.person.birth_date is not None:
-            born = str('%s: %02d.%02d.%04d' % (
-                _('Born'), self.person.birth_date.day, self.person.birth_date.month, self.person.birth_date.year))
-        else:
-            born = str('%s: ' % _('Born'))
-        if self.person.birth_location is not None:
-            born = born + ' ' + self.person.birth_location.city.encode('utf-8')
-        born = ellipses(born, 32)
-
-        # died str construction
-        died = str('%s: ' % _('Died'))
-        if self.person.death_date is not None:
-            died = died + (' %02d.%02d.%04d' % (
-                self.person.death_date.day, self.person.death_date.month, self.person.death_date.year))
-        if self.person.death_location is not None:
-            died = died + ' ' + self.person.death_location.city.encode('utf-8')
-        died = ellipses(died, 32)
-
-        return '{%d,%d,%d,\'%s %s\',%s,%s,%s}' % (id, self.level, selected, sign, name, indices, born, died)
-
-
-class PartnerInfo(object):
-    def __init__(self, status, partner, partner_name, location, date, date_year_only, state):
-        self.status = status
-        self.partner = partner
-        self.partner_name = partner_name
-        self.location = location
-        self.date = date
-        self.date_year_only = date_year_only
-        self.state = state
-
-    def date_str(self):
-        if self.date_year_only:
-            return self.date.year
-        else:
-            return '%02d.%02d.%04d' % (self.date.day, self.date.month, self.date.year)
-
-    def __unicode__(self):
-        return '[PartnerInfo: %s - dyo=%d,date:=%s' % (self.partner, self.date_year_only, self.date)
-
-    def __str__(self):
-        return '[PartnerInfo: %s - dyo=%d,date:=%s' % (self.partner, self.date_year_only, self.date)
-
-
-class RelativesInfo(object):
-    def __init__(self, relatives, relations, connections):
-        self.relatives = relatives
-        self.relations = relations
-        self.connections = connections
-
-
-class RelationsInfo(object):
-    def __init__(self, source, destination):
-        self.source = source
-        self.destination = destination
-
-
-class PersonInfo(object):
-    def __init__(self, id, name, gender):
-        self.id = id
-        self.name = name
-        self.sex = gender
-        self.birth_date = None
-        self.birth_location = None
-        self.death_date = None
-        self.death_location = None
-
-    def full_name(self):
-        return self.name.strip()
-
-    def last_name(self):
-        return self.name.strip()
-
-    def gender_sign(self):
-        if self.sex == 'M':
-            return "♂"
-        else:
-            return "♀"
-
-
-class MarriageInfo(object):
-    def __init__(self, level, id, text):
-        self.id = id
-        self.level = level
-        self.text = text
-
-
-def name_of_ancestry(x):
-    name = u'%s' % x.ancestry.name
-    name = name.replace(u'ä', '&auml;')
-    return mark_safe(name)
-
-
-class PersonEventInfo(object):
-
-    def __init__(self, date, age, title, summary, location):
-        self.date = date
-        self.age = age
-        self.title = title
-        self.summary = summary
-        self.location = location
 
 
 class Person(models.Model):
@@ -1344,7 +1220,6 @@ class Person(models.Model):
         creates a list of relatives for tree
         :return:
         """
-
         result_list = []
         for item in self.relatives().relatives:
             result_list.append(item.info())
@@ -1392,12 +1267,6 @@ class Person(models.Model):
     def get_admin_url(self):
         url = reverse('admin:%s_%s_change' % (self._meta.app_label, self._meta.model_name), args=[self.id])
         return u'<a href="%s">%s</a>' % (url, self.__unicode__())
-
-    def export_pdf(self):
-        """
-			todo: return a pdf of the persons cv
-		"""
-        pass
 
     def appendices(self):
         return DocumentRelation.objects.filter(person=self)
@@ -1544,145 +1413,6 @@ class Person(models.Model):
 
         return mark_safe('%s %s %s' % (
             (' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip(), self.last_name, date_str))
-
-
-class TimelineInfo(object):
-    def __init__(self, date, date_unclear, title, description, image):
-        self.date = date
-        self.date_unclear = date_unclear
-        self.title = mark_safe((' ' + title + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip())
-        self.description = description
-        self.image = image
-
-
-class GroupedTimelineInfo(object):
-    def __init__(self, year, list):
-        self.year = year
-        self.list = list
-
-
-class StatisticsItemInfo(object):
-    def __init__(self, name, value, color):
-        self.name = name
-        self.value = value
-        self.color = color
-
-    def name_prefix(self):
-        return mark_safe(self.name.split(',')[0])
-
-    def name_suffix(self):
-        return mark_safe(self.name.split(',')[1])
-
-
-COLORS = (
-    "#e28955", "#e2b855", "#dde255", "#aee255", "#7fe255", "#55e25a", "#55e289", "#55e2b8", "#55dde2", "#55aee2",
-    "#557fe2",
-    "#e25a55",
-    "#e28955", "#e2b855", "#dde255", "#aee255", "#7fe255", "#55e25a", "#55e289", "#55e2b8", "#55dde2", "#55aee2",
-    "#557fe2",
-    "#e25a55",
-    "#e28955", "#e2b855", "#dde255", "#aee255", "#7fe255", "#55e25a", "#55e289", "#55e2b8", "#55dde2", "#55aee2",
-    "#557fe2",
-    "#e25a55",
-    "#e28955", "#e2b855", "#dde255", "#aee255", "#7fe255", "#55e25a", "#55e289", "#55e2b8", "#55dde2", "#55aee2",
-    "#557fe2",
-    "#e25a55")  # type: Tuple[str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str]
-
-
-class StatisticsListInfo(object):
-    def __init__(self):
-        self.list = []
-
-    def increment(self, name):
-        has_item = False
-        for item in self.list:
-            if item.name == name:
-                item.value = item.value + 1
-                has_item = True
-
-        if not has_item:
-            self.list.append(StatisticsItemInfo(name, 1, COLORS[len(self.list)]))
-
-    def add(self, name, value):
-        self.list.append(StatisticsItemInfo(name, value, COLORS[len(self.list)]))
-
-    def limit(self, amount):
-        result_list = sorted(self.list, key=attrgetter('value'), reverse=True)
-        result_list = result_list[:10]
-        rest_value = 0
-
-        for item in self.list[10:]:
-            rest_value = rest_value + item.value
-        result_list.append(StatisticsItemInfo(_('Rest'), rest_value, COLORS[len(self.list)]))
-
-        # re-apply colors
-        index = 0
-        for item in result_list:
-            item.color = COLORS[index]
-            index = index + 1
-
-        self.list = result_list
-
-    def values(self):
-        result_list = []
-
-        for item in self.list:
-            result_list.append(item.value)
-
-        return result_list
-
-    def colors(self):
-        result_list = []
-
-        for item in self.list:
-            result_list.append(item.color)
-
-        return result_list
-
-    def names(self):
-        result_list = []
-
-        for item in self.list:
-            result_list.append(item.name)
-
-        return result_list
-
-    def __unicode__(self):
-        return 'StatisticsListInfo: %s' % len(self.list)
-
-    def __str__(self):
-        return 'StatisticsListInfo: %s' % len(self.list)
-
-
-class StatisticsInfo(object):
-    def __init__(self, birthPerMonth, deathPerMonth, gender, birthLocations, children, specials):
-        self.birthPerMonth = birthPerMonth
-        self.deathPerMonth = deathPerMonth
-        self.gender = gender
-        self.birthLocations = birthLocations
-        self.children = children
-        self.specials = specials
-
-    def birthPerMonthStr(self):
-        return str(self.birthPerMonth)
-
-    def deathPerMonthStr(self):
-        return str(self.deathPerMonth)
-
-    def genderValuesStr(self):
-        return str(self.gender.values())
-
-    def genderNamesStr(self):
-        return str(self.gender.names())
-
-    def birthLocationsValuesStr(self):
-        return str(self.birthLocations.values())
-
-    def birthLocationsColorsStr(self):
-        return str(self.birthLocations.colors())
-
-    def childrenValuesStr(self):
-        return str(self.children.values())
 
 
 class Ancestry(models.Model):
@@ -2012,6 +1742,7 @@ class Document(models.Model):
     date = models.DateField(_('date of creation'))
     image = models.ImageField(upload_to='media/documents', blank=True, null=True)
     type = models.CharField(max_length=1, choices=ORIENTATION_TYPES, default='L')
+    table = models.BooleanField(default=False)
 
     def persons(self):
         """
@@ -2029,6 +1760,17 @@ class Document(models.Model):
 			Returns a comma separated list of person related to this document
 		"""
         return mark_safe(', '.join(map(str, self.persons())))
+
+    def person_relations(self):
+        """
+            Returns a list of person relations linked to this document
+        """
+        person_arr = []
+
+        for documentRelation in DocumentRelation.objects.filter(document=self):
+            person_arr.append(documentRelation)
+
+        return person_arr
 
     def ancestries(self):
         """
@@ -2082,6 +1824,7 @@ class DocumentRelation(models.Model):
     """
 		class that links a Document to a person
 	"""
+    index = models.IntegerField(null=True, blank=True)
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
 
@@ -2089,9 +1832,15 @@ class DocumentRelation(models.Model):
         ordering = ('document__date',)
 
     def __unicode__(self):
+        if self.index:
+            return mark_safe(u'%s - %s - (%d) %s' % (self.document.date, self.document.name, self.index, self.person))
+
         return mark_safe(u'%s - %s - %s' % (self.document.date, self.document.name, self.person))
 
     def __str__(self):
+        if self.index:
+            return mark_safe(u'%s - %s - (%d) %s' % (self.document.date, self.document.name, self.index, self.person))
+
         return mark_safe(u'%s - %s - %s' % (self.document.date, self.document.name, self.person))
 
 

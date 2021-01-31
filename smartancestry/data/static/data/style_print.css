@@ -806,3 +806,19 @@ img.historic {
 .topSpacing {
     margin-top: 10px!important;
 }
+th.document_index {
+    width: 30px;
+    text-align: left;
+    padding: 3px 5px;
+}
+th.document_person {
+    width: 150px;
+    text-align: left;
+    padding: 3px 5px;
+}
+td.document_index {
+    width: 30px;
+}
+td.document_person {
+    width: 150px;
+}
