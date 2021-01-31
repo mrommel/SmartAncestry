@@ -1,0 +1,440 @@
+{% load i18n %}{% load staticfiles %}{% load app_filters %}
+{% if include_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'data/style_print.css' %}" />
+{% endif %}
+<book>
+    <frontmatter>
+        <titlepage>
+            {% if person.image %}
+                <img src="/{{ MEDIA_URL }}..{{ person.image.url }}" alt="Img" width="200">
+            {% else %}
+                <img src="" alt="Img" height="200" width="200">
+            {% endif %}
+
+            <date>{% now "j. F Y" %}</date>
+            <title>{% trans "Data sheet" %}</title>
+            <subtitle>{{ person }}</subtitle>
+
+        </titlepage>
+
+        <acknowledge>{% trans "Data sheet" %} {{ person.first_name }} {{ person.last_name }}</acknowledge>
+    </frontmatter>
+
+    <bookbody>
+        <part>
+
+            <!-- Chapter 0 -->
+
+            <chapter id="chapter0">
+                <chapheader>
+                    <title>{% trans "Ancestries" %}</title>
+                </chapheader>
+
+                <para>
+                    {% if person.ancestries %}
+                        <ul>
+                        {% for ancestry in person.ancestries %}
+                            <li>{{ ancestry.ancestry.name }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <strong>{% trans "No ancestries are available." %}</strong>
+                    {% endif %}
+                </para>
+            </chapter>
+
+            <!-- Chapter 1 -->
+
+            <chapter id="chapter1">
+                <chapheader>
+                    <title>{% trans "Data" %}</title>
+                </chapheader>
+
+                <para>
+                    <div class="not_breaking">
+                    <table>
+                        <tr class="{% cycle 'row' 'alternating' as row_style %}">
+                            <td width="20%" rowspan="5" class="portrait alternating">
+                                <div class="pngcontainer">
+                                    {% if person.image %}
+                                        <img src="/{{ MEDIA_URL }}..{{ person.image.url }}" alt="Img" class="portait_person">
+                                    {% else %}
+                                        <img src="/static/data/images/avatar_{{ person.sex }}.png" alt="Img{{ person.sex }}" class="portait_template">
+                                    {% endif %}
+                                    {% if person.show_dead %}
+                                        <img src="/static/data/images/avatar_died.png" alt="Died" class="portait_died">
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td width="20%" class="label">{% trans "Last name" %}:</td>
+                            <td width="20%">{% autoescape off %}{{ person.last_name }}{% endautoescape %}<a id="chapter1-{{ person.id }}" name="#chapter1-{{ person.id }}">&nbsp;</a></td>
+                            <td width="20%" class="label">{% trans "Age" %}:</td>
+                            <td width="20%">{% if person.age %}{{ person.age }} {% trans "Years" %}{% endif %}</td>
+                        </tr>
+                        <tr class="{% cycle row_style %}">
+                            <td width="20%" class="label">{% trans "First name" %}:</td>
+                            <td colspan="3">{{ person.first_name|underline }}</td>
+                        </tr>
+                        <tr class="{% cycle row_style %}">
+                            <td width="20%" class="label">{% trans "Birth name" %}:</td>
+                            <td colspan="3">{% if person.birth_name %}{{ person.birth_name }}{% endif %}</td>
+                        </tr>
+                        <tr class="{% cycle row_style %}">
+                            <td width="20%" class="label">{% trans "Birth date" %}:</td>
+                            <td width="60%" colspan="3">
+                                {% if person.birth_date_unclear %}
+                                    -
+                                {% else %}
+                                    {% if person.birth_date_only_year %}
+                                        {{ person.birth_date | date:"Y" }}
+                                    {% else %}
+                                        {{ person.birth_date | date:"d.m.Y" }}
+                                    {% endif %}
+                                    {% if person.birth_location %}
+                                        {% trans "in" %}
+                                        {% if person.birth_location.image %}
+                                            <img src="/{{ MEDIA_URL }}..{{ person.birth_location.image.url }}" class="location" />
+                                        {% endif %}
+                                        {{ person.birth_location|location_without_country }}
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr class="{% cycle row_style %}">
+                            <td width="20%" class="label">{% trans "Death date" %}:</td>
+                            <td width="60%" colspan="3">
+                                {% if person.death_date %}
+                                    {% if person.death_date_only_year %}
+                                        {{ person.death_date | date:"Y" }}
+                                    {% else %}
+                                        {{ person.death_date | date:"d.m.Y" }}
+                                    {% endif %}
+                                {% endif %}
+                                {% if person.death_location %}
+                                    {% trans "in" %}
+                                    {% if person.death_location.image %}
+                                        <img src="/{{ MEDIA_URL }}..{{ person.death_location.image.url }}" class="location" />
+                                    {% endif %}
+                                    {{ person.death_location|location_without_country }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                    <table>
+                        {% if person.template_value1 %}
+                            <tr class="{% cycle row_style %}">
+                                <td width="20%" class="label">{% trans "Relation" %}:</td>
+                                <td width="80%" colspan="3" class="first">{{ person.template_value1 }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if person.profession and person.profession != '-' %}
+                            <tr class="{% cycle row_style %}">
+                                <td width="20%" class="label first">{% trans "Profession" %}:</td>
+                                <td width="80%" colspan="3">{{ person.profession }}</td>
+                            </tr>
+                        {% endif %}
+                        <tr class="{% cycle row_style %}">
+                            <td width="20%" class="label">{% trans "Father" %}:</td>
+                            <td width="80%" colspan="3">
+                                {% if person.father %}
+                                    <a href="#chapter1-{{ person.father.id }}" class="nolink">{{ person.father }}</a>
+                                {% else %}
+                                    {% if person.father_extern %}
+                                        {{ person.father_extern|underline }}
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr class="{% cycle row_style %}">
+                            <td width="20%" class="label">{% trans "Mother" %}:</td>
+                            <td width="80%" colspan="3">
+                                {% if person.mother %}
+                                    <a href="#chapter1-{{ person.mother.id }}" class="nolink">{{ person.mother }}</a>
+                                {% else %}
+                                    {% if person.mother_extern %}
+                                        {{ person.mother_extern|underline }}
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% if person.partner_relations %}
+                            {% for partner_relation in person.partner_relations %}
+                                <tr class="{% cycle row_style %}">
+                                    <td width="20%" class="label">
+                                        {% if partner_relation.state == 'M' %}
+                                            {% trans "Marriage" %}:
+                                        {% endif %}
+                                        {% if partner_relation.state == 'D' %}
+                                            {% trans "Divorce" %}:
+                                        {% endif %}
+                                        {% if partner_relation.state == 'P' %}
+                                            {% trans "Partnership" %}:
+                                        {% endif %}
+                                    </td>
+                                    <td width="80%" colspan="3">
+                                        {% if partner_relation.partner %}
+                                            <a href="#chapter1-{{ partner_relation.partner.id }}" class="nolink">{{ partner_relation.partner }}</a>
+                                        {% else %}
+                                            {{ partner_relation.partner_name }}
+                                        {% endif %}
+                                        {% if partner_relation.date %}
+                                            {% trans "at" %}
+                                            {{ partner_relation.date_str }}
+                                        {% endif %}
+                                        {% if partner_relation.location %}
+                                            {% trans "in" %}
+                                            {% if partner_relation.location.image %}
+                                                <img src="/{{ MEDIA_URL }}..{{ partner_relation.location.image.url }}" class="location" />
+                                            {% endif %}
+                                            {{ partner_relation.location|location_without_country }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% if partner_relation.partner %}
+                                    {% if partner_relation.state == 'M' %}
+                                        {% if partner_relation.partner.children %}
+                                            <tr class="{% cycle row_style %}">
+                                                <td width="20%" class="label">
+                                                    <img src="/static/data/images/children_of.png" width="20" height="10" />&nbsp;{% trans "Children" %}:
+                                                </td>
+                                                <td width="80%" colspan="3">
+                                                    {% if partner_relation.partner.children %}
+                                                        <ul class="commalist">
+                                                            {% for child in partner_relation.partner.children %}
+                                                                {% if child.father == partner_relation.partner and child.mother == person or child.mother == partner_relation.partner and child.father == person %}
+                                                                    <li><a href="#chapter1-{{ child.id }}" class="nolink">{{ child.full_name|underline }}</a></li>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        {% if person.children_extern_list %}
+                            <tr class="{% cycle row_style %}">
+                                <td width="20%" class="label">{% trans "other Children" %}:</td>
+                                <td width="80%" colspan="3">
+                                    <ul class="commalist">
+                                        {% for child in person.children_extern_list %}
+                                            <li>{{ child }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        <tr class="{% cycle row_style %}">
+                            <td width="20%" class="label">{% trans "Siblings" %}:</td>
+                            <td width="80%" colspan="3">
+                                <ul class="commalist">
+                                {% if person.siblings %}
+                                    {% for child in person.siblings %}
+                                        <li><a href="#chapter1-{{ child.id }}" class="nolink">{{ child.full_name|underline }}</a></li>
+                                    {% endfor %}
+                                {% endif %}
+                                {% if person.siblings_extern_list %}
+                                    {% for child in person.siblings_extern_list %}
+                                        <li>{{ child }}</li>
+                                    {% endfor %}
+                                {% endif %}
+                                </ul>
+                            </td>
+                        </tr>
+                        {% if person.notes or person.external_identifier %}
+                        <tr class="{% cycle row_style %}">
+                            <td width="20%" class="label">{% trans "Notes" %}:</td>
+                            <td width="80%" colspan="3">
+                                {% if person.notes %}
+                                    {{ person.notes }}
+                                {% endif %}
+                                {% if person.external_identifier %}
+                                    {{ person.external_identifier }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% if person.appendices and include_documents %}
+                        <tr class="{% cycle row_style %}">
+                            <td width="20%" class="label">{% trans "Appendices" %}:</td>
+                            <td width="80%" colspan="3">
+                                <ul class="commalist">
+                                {% for appendix in person.appendices %}
+                                    <li><a href="#chapter7-2-{{ appendix.document.id }}" class="nolink">{{ appendix.document.name }}</a> ({% trans "Page" %} <appendix><item href="#chapter7-2-{{ appendix.document.id }}"></item></appendix>)</li>
+                                {% endfor %}
+                                </ul>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                    </div>
+                </para>
+
+                {# resetcycle #}
+
+            </chapter>
+
+            <!-- Chapter 4 -->
+
+            <chapter id="chapter4">
+                <chapheader>
+                    <title>{% trans "History of" %} {% autoescape off %}{{ person.first_name|underline }} {{ person.last_name }}{% endautoescape %}</title>
+                </chapheader>
+
+                <para>
+                    <div class="pageWrap">
+                        <div class="personView">
+                            <div class="personViewPages">
+                                <div class="personPage personPageStory">
+                                    <div class="lifeStory storyline">
+
+                                        <div class="not_breaking">
+                                            {% if person.birth_location %}
+                                                <section class="lifeStorySec lifeStoryMap storylineHasTrail">
+                                                    <div class="storylineBullet storylineBulletHasText">
+                                                        <div class="storylineBulletText">
+                                                            <h3 class="storylineBulletTitle">
+                                                                <img src="/static/data/images/map.png" width="32" height="32" />
+                                                            </h3>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="con conHasArrow conHasArrowLeftTop">
+                                                        <h2 class="conTitle hideVisually">{% trans "Places" %}</h2>
+                                                        <div class="conBody">
+                                                            <figure class="mapFigure">
+                                                                <div class="link showMapModal photo" id="showMapModal-FigureLifeEvents">
+                                                                    {% if person.death_location %}
+                                                                        <img alt="{% trans 'Places' %}" class="staticMap" src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-m-star+A6BCC6({{ person.birth_location.coordinate }}),pin-m-cemetery+000000({{ person.death_location.coordinate }})/{{ person.birth_location.coordinate }},6/750x262@2x?access_token=pk.eyJ1IjoibXJvbW1lbDgyIiwiYSI6ImNramVtNzFrcTJsb2YycXJ1MnJkZjNtanIifQ._XmEx_GVTa9BZS4IppCJfg" />
+                                                                    {% else %}
+                                                                        <img alt="{% trans 'Places' %}" class="staticMap" src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-m-star+A6BCC6({{ person.birth_location.coordinate }})/{{ person.birth_location.coordinate }},6/750x262@2x?access_token=pk.eyJ1IjoibXJvbW1lbDgyIiwiYSI6ImNramVtNzFrcTJsb2YycXJ1MnJkZjNtanIifQ._XmEx_GVTa9BZS4IppCJfg" />
+                                                                    {% endif %}
+                                                                </div>
+                                                            </figure>
+                                                        </div>
+                                                        <div class="conArrow"></div>
+                                                    </div>
+                                                </section>
+                                            {% endif %}
+                                        </div>
+
+                                        {% for item in person.events %}
+                                            <div class="not_breaking">
+                                                <section class="lifeStorySec lifeStoryEvent storylineHasTrail">
+                                                    <div class="storylineBullet storylineBulletHasText">
+                                                        <div class="storylineBulletText">
+                                                            <p class="storylineBulletSubtitle">{{ item.date | date:"d.m" }}</p>
+                                                            <h3 class="storylineBulletTitle">{{ item.date | date:"Y" }}</h3>
+                                                            {% if item.age != -1 %}
+                                                                <p class="storylineBulletSubtitle">Alter {{ item.age }}</p>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                    <div class="con conHasArrow conHasArrowLeftTop">
+                                                        <h2 class="conTitle">{{ item.title }}</h2>
+                                                        <div class="conBody">
+                                                            <p class="storyNarr topSpacing textEditable colornormal">
+                                                                {{ item.summary }}
+                                                            </p>
+                                                            {% if item.location %}
+                                                                <h4 class="cardTitle topSpacing storyDatePlace">
+                                                                    <span class="dateField notEditableDateField">{{ item.date | date:"d.m.Y" }}</span>&nbsp;•&nbsp;<span class="locationField notEditableLocationField">{{ item.location }}</span>
+                                                                </h4>
+                                                            {% else %}
+                                                                <h4 class="cardTitle topSpacing storyDatePlace">
+                                                                    <span class="dateField notEditableDateField">{{ item.date | date:"d.m.Y" }}</span>
+                                                                </h4>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="conArrow"></div>
+                                                    </div>
+                                                </section>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </para>
+
+            </chapter>
+
+            <!-- Chapter 5 -->
+
+            <chapter id="chapter4">
+                <chapheader>
+                    <title>{% trans "Tree" %}</title>
+                    <a id="chapter5-{{ person.id }}" class="small">&nbsp;</a>
+                </chapheader>
+
+                <para>
+                    <img src="http://127.0.0.1:4446/ancestry.png?person={{ person.id }}&max_level=2" class="distribution landscape" />
+                </para>
+            </chapter>
+
+            <!-- Chapter 6 -->
+
+            <chapter id="chapter6">
+
+                <chapheader>
+                    <title>{% trans "Questions" %}</title>
+                    <a id="chapter6-{{ person.id }}" class="small">&nbsp;</a>
+                </chapheader>
+
+                <para>
+                    {% if person.questions|length > 0 or person.automatic_questions|length > 0 %}
+                        <ul>
+                        {% for question in person.questions %}
+                            <li>{{ question }}</li>
+                        {% endfor %}
+                        {% for question in person.automatic_questions %}
+                            <li>{{ question }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <strong>{% trans "No questions available." %}</strong>
+                    {% endif %}
+                </para>
+
+            </chapter>
+
+            <!-- Chapter 7 -->
+
+            <chapter id="chapter7">
+
+                <chapheader>
+                    <title>{% trans "Appendix" %}</title>
+                    <a id="chapter7" class="small">&nbsp;</a>
+                </chapheader>
+
+                <para>
+                    {% if person.documents|length > 0 %}
+                        {% for document in person.document %}
+                            <para>
+                                <div class="not_breaking">
+                                    <h3>{{ document.name }}<a id="chapter7-2-{{ document.id }}">&nbsp;</a></h3>
+                                    {% if document.description %}
+                                        {{ document.description }}
+                                    {% endif %}
+
+                                    {% if document.image %}
+                                        <img src="{{ document.image.url }}" class="document {{ document.css_class }}" />
+                                    {% else %}
+                                        <p>no image</p>
+                                    {% endif %}
+                                </div>
+                            </para>
+                        {% endfor %}
+                    {% else %}
+                        <para>{% trans "No appendices are available." %}</para>
+                    {% endif %}
+                </para>
+
+            </chapter>
+
+        </part>
+    </bookbody>
+</book>

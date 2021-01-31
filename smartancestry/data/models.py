@@ -242,19 +242,19 @@ class Person(models.Model):
     birth_date = models.DateField(_('date of birth'))
     birth_date_only_year = models.BooleanField(default=False)
     birth_date_unclear = models.BooleanField(default=False)
-    birth_location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True,
+    birth_location = models.ForeignKey(Location, on_delete=models.DO_NOTHING, blank=True, null=True,
                                        related_name='birth_location')
     death_date = models.DateField(_('date of death'), null=True, blank=True)
     death_date_only_year = models.BooleanField(default=False)
-    death_location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True,
+    death_location = models.ForeignKey(Location, on_delete=models.DO_NOTHING, blank=True, null=True,
                                        related_name='death_location')
     cause_of_death = models.CharField(max_length=100, blank=True, null=True)
     already_died = models.NullBooleanField(default=False, blank=True, null=True)
     profession = models.CharField(max_length=50, blank=True, null=True)
-    father = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True,
+    father = models.ForeignKey('self', on_delete=models.DO_NOTHING, blank=True, null=True,
                                related_name='children_father')
     father_extern = models.CharField(max_length=200, blank=True, null=True)
-    mother = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True,
+    mother = models.ForeignKey('self', on_delete=models.DO_NOTHING, blank=True, null=True,
                                related_name='children_mother')
     mother_extern = models.CharField(max_length=200, blank=True, null=True)
     children_extern = models.CharField(max_length=600, blank=True, null=True)
@@ -2039,7 +2039,19 @@ class Document(models.Model):
         for ancestryRelation in DocumentAncestryRelation.objects.filter(document=self):
             ancestry_arr.append(ancestryRelation.ancestry)
 
+        for person in self.persons():
+            for ancestryRel in person.ancestries():
+                # add only if not already in
+                if len(list(filter(lambda x: x.id == ancestryRel.ancestry.id, ancestry_arr))) == 0:
+                    ancestry_arr.append(ancestryRel.ancestry)
+
         return ancestry_arr
+
+    def ancestry_names(self):
+        """
+            Returns a comma separated list of ancestries related to this document
+        """
+        return mark_safe(', '.join(map(str, self.ancestries())))
 
     def css_class(self):
         """
@@ -2049,12 +2061,6 @@ class Document(models.Model):
             return 'landscape'
         else:
             return 'portrait'
-
-    def ancestry_names(self):
-        """
-			Returns a comma separated list of ancestries related to this document
-		"""
-        return mark_safe(','.join(map(str, self.ancestries())))
 
     def thumbnail(self):
         """

@@ -1,20 +1,16 @@
 import logging
-from datetime import datetime
 
 from django import forms
 from django.contrib import admin
-from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.forms import BaseInlineFormSet
 from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
 
 from .models import Ancestry, FamilyStatusRelation, Person, DocumentRelation, Question, \
-    DocumentAncestryRelation, PersonEvent, AncestryRelation, AncestryTreeRelation
+    DocumentAncestryRelation, PersonEvent, AncestryRelation, AncestryTreeRelation, Document
 
 # Get an instance of a logger
-from .tools import calculate_age
-
 logger = logging.getLogger(__name__)
 
 
@@ -429,9 +425,53 @@ class DocumentAncestryRelationInline(admin.TabularInline):
     fk_name = "document"
 
 
+class DocumentAncestryFilter(admin.SimpleListFilter):
+    title = _('Ancestry')
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'ancestry'
+
+    def lookups(self, request, model_admin):
+        """
+		Returns a list of tuples. The first element in each
+		tuple is the coded value for the option that will
+		appear in the URL query. The second element is the
+		human-readable name for the option that will appear
+		in the right sidebar.
+		"""
+        prompts = []
+        for ancestry in Ancestry.objects.all():
+            prompts.append((ancestry.id, _(ancestry.name)))
+
+        return prompts
+
+    def queryset(self, request, queryset):
+        """
+		Returns the filtered queryset based on the value
+		provided in the query string and retrievable via
+		`self.value()`.
+		"""
+        if self.value():
+            documents = []
+            for document in Document.objects.all():
+                should_add = False
+                for ancestry in document.ancestries():
+                    if str(ancestry.id) == str(self.value()):
+                        should_add = True
+
+                if should_add:
+                    documents.append(document.id)
+
+            return queryset.filter(id__in=documents)
+        else:
+            return queryset
+
+
 class DocumentAdmin(admin.ModelAdmin):
-    list_display = ('thumbnail', 'date', 'name', 'type', 'person_names', 'admin_url',)
-    readonly_fields = ('thumbnail', 'admin_url',)
+    list_display = ('thumbnail', 'date', 'name', 'type', 'person_names', 'ancestry_names', 'admin_url',)
+    readonly_fields = ('thumbnail', 'ancestry_names', 'admin_url',)
+
+    list_filter = DocumentAncestryFilter,
 
     ordering = ('date',)
     inlines = [
