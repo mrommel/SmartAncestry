@@ -25,5 +25,8 @@
                 $("#Ehemann-group").hide();
             }
         });
+
+        $('#id_father_extern').attr('placeholder', 'Father extern');
+        $('#id_mother_extern').attr('placeholder', 'Mother extern');
     });
 })(django.jQuery);

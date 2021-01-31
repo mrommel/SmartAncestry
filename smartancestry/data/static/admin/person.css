@@ -65,13 +65,6 @@
 #id_father_extern {
     width: 280px;
 }
-div.field-father_extern input {
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='50px' width='120px'><text x='6' y='18' fill='gray' font-size='12' font-family='Roboto'>Father extern</text></svg>");
-    background-repeat: no-repeat;
-}
-div.field-father_extern input:focus {
-  background-image: none;
-}
 /* mother */
 .form-row.field-mother {
     width: 48%;
@@ -96,13 +89,6 @@ div.field-father_extern input:focus {
 }
 #id_mother_extern {
     width: 280px;
-}
-div.field-mother_extern input {
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='50px' width='120px'><text x='6' y='18' fill='gray' font-size='12' font-family='Roboto'>Mother extern</text></svg>");
-    background-repeat: no-repeat;
-}
-div.field-mother_extern input:focus {
-  background-image: none;
 }
 /* children_extern */
 .form-row.field-children_extern {

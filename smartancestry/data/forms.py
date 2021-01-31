@@ -234,7 +234,11 @@ class PersonAdmin(admin.ModelAdmin):
         }),
         ('Relations', {
             'fields': (
-                'father', 'father_link', 'father_extern', 'mother', 'mother_link', 'mother_extern', 'children_extern',
+                'father',
+                # 'father_link',
+                'father_extern', 'mother',
+                #'mother_link',
+                'mother_extern', 'children_extern',
                 'children_text', 'siblings_extern', 'siblings_text', 'relation_str')
         }),
         ('Notes', {
@@ -246,7 +250,7 @@ class PersonAdmin(admin.ModelAdmin):
     readonly_fields = (
         'children_text', 'father_link', 'mother_link', 'thumbnail', 'tree_link', 'siblings_text', 'relation_str',
         'automatic_questions_list', 'export_link')
-    # raw_id_fields = ('father', 'mother',)
+    raw_id_fields = ('father', 'mother',)
     # list_filter = ('birth_date', 'ancestries', ) #PersonAncestryListFilter,
     list_filter = PersonAncestryListFilter,
     ordering = ('-birth_date',)
