@@ -806,18 +806,33 @@ img.historic {
 .topSpacing {
     margin-top: 10px!important;
 }
+div.person_tables {
+    display: inline-table;
+    width: 532px;
+}
+table.person_table {
+    width: 260px;
+    float: left;
+    margin-right: 5px;
+}
 th.document_index {
     width: 30px;
     text-align: left;
     padding: 3px 5px;
+    border-left: 2px solid white;
+    border-right: 2px solid white;
+    text-align: center;
 }
 th.document_person {
-    width: 150px;
+    width: 200px;
     text-align: left;
     padding: 3px 5px;
+    border-left: 2px solid white;
+    border-right: 2px solid white;
 }
 td.document_index {
     width: 30px;
+    text-align: center;
 }
 td.document_person {
     width: 150px;

@@ -1,10 +1,11 @@
 from operator import attrgetter
-from django.utils.translation import gettext as _
-from typing import Tuple
-from django.utils.safestring import mark_safe
 
-# constants
-# type: Tuple[str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str]
+from django.utils.safestring import mark_safe
+from django.utils.translation import gettext as _
+
+# constants type: Tuple[str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str,
+# str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str, str,
+# str, str, str, str, str, str, str]
 from .tools import trim_and_unescape, ellipses, underline_indices
 
 COLORS = (
@@ -32,6 +33,7 @@ class StatisticsItemInfo(object):
 
     def name_suffix(self):
         return mark_safe(self.name.split(',')[1])
+
 
 class StatisticsListInfo(object):
     def __init__(self):
@@ -99,33 +101,34 @@ class StatisticsListInfo(object):
 
 
 class StatisticsInfo(object):
-    def __init__(self, birthPerMonth, deathPerMonth, gender, birthLocations, children, specials):
-        self.birthPerMonth = birthPerMonth
-        self.deathPerMonth = deathPerMonth
+
+    def __init__(self, birth_per_month, death_per_month, gender, birth_locations, children, specials):
+        self.birth_per_month = birth_per_month
+        self.death_per_month = death_per_month
         self.gender = gender
-        self.birthLocations = birthLocations
+        self.birth_locations = birth_locations
         self.children = children
         self.specials = specials
 
-    def birthPerMonthStr(self):
-        return str(self.birthPerMonth)
+    def birth_per_month_str(self):
+        return str(self.birth_per_month)
 
-    def deathPerMonthStr(self):
-        return str(self.deathPerMonth)
+    def death_per_month_str(self):
+        return str(self.death_per_month)
 
-    def genderValuesStr(self):
+    def gender_values_str(self):
         return str(self.gender.values())
 
-    def genderNamesStr(self):
+    def gender_names_str(self):
         return str(self.gender.names())
 
-    def birthLocationsValuesStr(self):
-        return str(self.birthLocations.values())
+    def birth_locations_values_str(self):
+        return str(self.birth_locations.values())
 
-    def birthLocationsColorsStr(self):
-        return str(self.birthLocations.colors())
+    def birth_locations_colors_str(self):
+        return str(self.birth_locations.colors())
 
-    def childrenValuesStr(self):
+    def children_values_str(self):
         return str(self.children.values())
 
 
@@ -138,7 +141,9 @@ class LocationInfo(object):
     def lon_lat(self):
         return "{:10.4f}".format(self.lon) + ", " + "{:10.4f}".format(self.lat)
 
+
 class TreeInfo(object):
+
     def __init__(self, level, person, selected):
         self.level = level
         self.person = person
@@ -176,6 +181,7 @@ class TreeInfo(object):
 
 
 class PartnerInfo(object):
+
     def __init__(self, status, partner, partner_name, location, date, date_year_only, state):
         self.status = status
         self.partner = partner
@@ -229,9 +235,9 @@ class PersonInfo(object):
 
     def gender_sign(self):
         if self.sex == 'M':
-            return "♂"
+            return u'♂'
         else:
-            return "♀"
+            return u'♀'
 
 
 class MarriageInfo(object):

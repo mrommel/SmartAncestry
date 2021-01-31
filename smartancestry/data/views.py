@@ -516,7 +516,7 @@ def missing_images(request, ancestry_id):
     except Ancestry.DoesNotExist:
         raise Http404("Ancestry does not exist")
 
-    persons_list = ancestry_obj.noImage()
+    persons_list = ancestry_obj.no_image()
     return HttpResponse(render_to_string('data/missing_images.html', {'persons_list': persons_list, }))
 
 

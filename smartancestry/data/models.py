@@ -92,7 +92,7 @@ class Location(models.Model):
                '+A6BCC6(%s)/%s,' \
                '6/750x262@2x?access_token=pk.eyJ1IjoibXJvbW1lbDgyIiwiYSI6ImNramVtNzFrcTJsb2YycXJ1MnJkZjNtanIifQ' \
                '._XmEx_GVTa9BZS4IppCJfg" height="262" width="750" />' % (
-            (self.coordinate(), self.coordinate()))
+                   (self.coordinate(), self.coordinate()))
 
     map.allow_tags = True
 
@@ -145,13 +145,13 @@ class Person(models.Model):
     user_name.short_description = _('Name')
 
     def first_name_short(self):
-        if not ' ' in self.first_name:
+        if ' ' not in self.first_name:
             return self.first_name
 
         result_list = self.first_name.split(' ')
 
         for x in range(0, len(result_list)):
-            if not '_' in result_list[x] and len(result_list[x]) > 0:
+            if '_' not in result_list[x] and len(result_list[x]) > 0:
                 result_list[x] = result_list[x][0] + '.'
 
         return ' '.join(result_list)
@@ -563,7 +563,7 @@ class Person(models.Model):
             show_death_of_sibling = False
             if sibling.death_date:
                 show_death_of_sibling = True
-            age = -1
+
             if self.death_date and sibling.death_date:
                 if sibling.death_date > self.death_date:
                     show_death_of_sibling = False
@@ -810,7 +810,6 @@ class Person(models.Model):
         result = ''
 
         for partner_info in self.partner_relations():
-            name_str = ''
             date_str = ''
             location_str = ''
 
@@ -901,7 +900,7 @@ class Person(models.Model):
         if self.children_extern is not None:
             children_str = "%s, %s" % (children_str, self.children_extern)
 
-        children_str = "$%s$" % (children_str)
+        children_str = "$%s$" % children_str
         children_str = children_str.replace("$, ", "")
         children_str = children_str.replace(", $", "")
         children_str = children_str.replace("$", "")
@@ -1366,9 +1365,9 @@ class Person(models.Model):
 
     def svg_box(self, x, y):
         background_str = '<rect x="%d" y="%d" width="140" height="52" fill="#f2f1d2" stroke="black" stroke-width="1" />' % (
-        int(x), int(y))
+            int(x), int(y))
         name_str = '<text x="%d" y="%d" fill="gray" font-size="12" font-family="Roboto">%s %s</text>' % (
-        int(x) + 5, int(y) + 17, self.first_name_nice(), self.last_name)
+            int(x) + 5, int(y) + 17, self.first_name_nice(), self.last_name)
 
         birth_text = self.birth_year()
         if self.birth_location:
@@ -1431,8 +1430,13 @@ class Ancestry(models.Model):
         return '%d persons' % len(AncestryRelation.objects.filter(ancestry=self))
 
     def exports(self):
-        return mark_safe(
-            self.export() + '&nbsp;|&nbsp;' + self.export_no_documents() + '&nbsp;|&nbsp;' + self.export_questions() + '&nbsp;|&nbsp;' + self.export_raw() + '&nbsp;|&nbsp;' + self.export_gedcom())
+        export_link = self.export()
+        export_no_documents_link = self.export_no_documents()
+        export_questions_link = self.export_questions()
+        export_raw_link = self.export_raw()
+        export_gedcom_link = self.export_gedcom()
+        return mark_safe('%s&nbsp;|&nbsp;%s&nbsp;|&nbsp;%s&nbsp;|&nbsp;%s&nbsp;|&nbsp;%s' %
+            (export_link, export_no_documents_link, export_questions_link, export_raw_link, export_gedcom_link))
 
     exports.allow_tags = True
 
@@ -1457,7 +1461,7 @@ class Ancestry(models.Model):
     export_no_documents.allow_tags = True
 
     def export_raw(self):
-        return mark_safe('<a href="/data/ancestry_export/%d/%s.html?with=style" target="_blank">Raw</a>' % (
+        return mark_safe('<a href="/data/ancestry_export/%d/%s.html?with=style&documents=1" target="_blank">Raw</a>' % (
             self.id, self.name))
 
     export_raw.allow_tags = True
@@ -1476,7 +1480,7 @@ class Ancestry(models.Model):
         result_list = sorted(result_list, key=attrgetter('person.birth_date'), reverse=True)
         return result_list
 
-    def noImage(self):
+    def no_image(self):
         """
 			Returns a list of persons without an image assigned in order of birth desc
 		"""
@@ -1503,12 +1507,12 @@ class Ancestry(models.Model):
         """
 			Returns featured person
 		"""
-        str = '<ul>'
+        str_value = '<ul>'
         if self.featured:
-            str = '<li>%s</li>' % (self.featured)
-        str = '%s</ul>' % str
+            str_value = '<li>%s</li>' % self.featured
+        str_value = '%s</ul>' % str_value
 
-        return mark_safe(str)
+        return mark_safe(str_value)
 
     def locations(self):
         """
@@ -1537,7 +1541,7 @@ class Ancestry(models.Model):
         birth_locations = StatisticsListInfo()
         children = StatisticsListInfo()
         for i in range(0, 10):
-            children.add('%d' % (i), 0)
+            children.add('%d' % i, 0)
 
         specials = StatisticsListInfo()
         oldest_person = None
@@ -1611,7 +1615,8 @@ class Ancestry(models.Model):
         result_list = []
 
         for historyEvent in HistoryEvent.objects.all():
-            result_list.append(TimelineInfo(historyEvent.date, False, historyEvent.title, historyEvent.description, historyEvent.image.url))
+            result_list.append(TimelineInfo(historyEvent.date, False, historyEvent.title, historyEvent.description,
+                                            historyEvent.image.url))
 
         for ancestryPerson in AncestryRelation.objects.filter(ancestry=self):
             person = ancestryPerson.person
@@ -1629,7 +1634,8 @@ class Ancestry(models.Model):
                                                             person.birth_location), None, None))
                 else:
                     result_list.append(TimelineInfo(person.birth_date, person.birth_date_unclear,
-                                                    _('%s %s was born') % (person.first_name, person.last_name), None, None))
+                                                    _('%s %s was born') % (person.first_name, person.last_name), None,
+                                                    None))
 
             if ancestryPerson.person.death_date is not None:
                 if person.death_location is not None:
@@ -1637,7 +1643,8 @@ class Ancestry(models.Model):
                         person.first_name, person.last_name, person.death_location), None, None))
                 else:
                     result_list.append(TimelineInfo(person.death_date, False,
-                                                    _('%s %s has died') % (person.first_name, person.last_name), None, None))
+                                                    _('%s %s has died') % (person.first_name, person.last_name), None,
+                                                    None))
 
             for familyStatusRelation in FamilyStatusRelation.objects.filter(woman=person):
                 if familyStatusRelation.date is not None:

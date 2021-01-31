@@ -565,7 +565,7 @@
 	<h2>{% trans "Births and Deaths per month" %}<a id="chapter3-3">&nbsp;</a></h2>
 
 	<div class="chartContainer">
-		<img src="http://127.0.0.1:4444/bar.png?data1={{ statistics.birthPerMonthStr|encode_spaces }}&data2={{ statistics.deathPerMonthStr|encode_spaces }}&axis={% trans 'January' %},{% trans 'February' %},{% trans 'March' %},{% trans 'April' %},{% trans 'May' %},{% trans 'June' %},{% trans 'July' %},{% trans 'August' %},{% trans 'September' %},{% trans 'October' %},{% trans 'November' %},{% trans 'December' %}" id="birthsPerMonthChart" width="400" height="300" />
+		<img src="http://127.0.0.1:4444/bar.png?data1={{ statistics.birth_per_month_str|encode_spaces }}&data2={{ statistics.death_per_month_str|encode_spaces }}&axis={% trans 'January' %},{% trans 'February' %},{% trans 'March' %},{% trans 'April' %},{% trans 'May' %},{% trans 'June' %},{% trans 'July' %},{% trans 'August' %},{% trans 'September' %},{% trans 'October' %},{% trans 'November' %},{% trans 'December' %}" id="birthsPerMonthChart" width="400" height="300" />
 	
 		<div class="chartBorder">
 			<div id="childrenLegend">
@@ -595,7 +595,7 @@
 	<h2>{% trans "Gender distribution" %}<a id="chapter3-4">&nbsp;</a></h2>
 	
 	<div class="chartContainer">
-		<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.genderValuesStr|encode_spaces }}" id="genderChart" width="400" height="300" />
+		<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.gender_values_str|encode_spaces }}" id="genderChart" width="400" height="300" />
 	
 		<div class="chartBorder">
 			<div id="childrenLegend">
@@ -624,7 +624,7 @@
 	<h2>{% trans "Birth locations" %}<a id="chapter3-5">&nbsp;</a></h2>
 			
 	<div class="chartContainer">
-		<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.birthLocationsValuesStr|encode_spaces }}&colors={{ statistics.birthLocationsColorsStr|trim_hash|encode_spaces }}" id="birthLocationsChart" width="400" height="300" />
+		<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.birth_locations_values_str|encode_spaces }}&colors={{ statistics.birth_locations_colors_str|trim_hash|encode_spaces }}" id="birthLocationsChart" width="400" height="300" />
 	
 		<div class="chartBorder">
 			<div id="childrenLegend">
@@ -651,7 +651,7 @@
 	<h2>{% trans "Children" %}<a id="chapter3-6">&nbsp;</a></h2>
 
 	<div class="chartContainer">
-		<img src="http://127.0.0.1:4444/bar.png?data={{ statistics.childrenValuesStr|encode_spaces }}&axis=0,1,2,3,4,5,6,7,8,9,10" id="childrenChart" width="400" height="300" />
+		<img src="http://127.0.0.1:4444/bar.png?data={{ statistics.children_values_str|encode_spaces }}&axis=0,1,2,3,4,5,6,7,8,9,10" id="childrenChart" width="400" height="300" />
 	
 		<div class="chartBorder">
 			<div id="childrenLegend">
@@ -782,21 +782,45 @@
 						{% endif %}
 
 						{% if document.table %}
-							<!-- {% cycle 'row' 'alternating' as document_row_style %} -->
-							<table>
-								<thead>
-									<th class="document_index">#</th>
-									<th class="document_person">Person</th>
-								</thead>
-								<tbody>
-									{% for person_relation in document.person_relations %}
-									    <tr class="{% cycle document_row_style %}">
-											<td class="document_index">{{ person_relation.index }}</td>
-											<td class="document_person"><a href="#chapter1-{{ person_relation.person.id }}" class="nolink">{{ person_relation.person.full_name|underline }}</a></td>
-										</tr>
-									{% endfor %}
-								</tbody>
-							</table>
+							<div class="person_tables">
+								{% widthratio document.person_relations|length 2 1 as person_relations_centre %}
+								{% with ":"|add:person_relations_centre as first_slice %}
+									<table class="person_table">
+										<thead>
+											<tr class="{% cycle 'row' 'alternating' as document_row_style %}">
+												<th class="document_index">#</th>
+												<th class="document_person">Person</th>
+											</tr>
+										</thead>
+										<tbody>
+											{% for person_relation in document.person_relations|slice:first_slice %}
+												<tr class="{% cycle document_row_style %}">
+													<td class="document_index">{{ person_relation.index }}</td>
+													<td class="document_person"><a href="#chapter1-{{ person_relation.person.id }}" class="nolink">{{ person_relation.person.full_name|underline }}</a></td>
+												</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								{% endwith %}
+								{% with person_relations_centre|add:":" as second_slice %}
+									<table class="person_table">
+										<thead>
+											<tr class="{% cycle 'row' 'alternating' as document_row_style %}">
+												<th class="document_index">#</th>
+												<th class="document_person">Person</th>
+											</tr>
+										</thead>
+										<tbody>
+											{% for person_relation in document.person_relations|slice:second_slice %}
+												<tr class="{% cycle document_row_style %}">
+													<td class="document_index">{{ person_relation.index }}</td>
+													<td class="document_person"><a href="#chapter1-{{ person_relation.person.id }}" class="nolink">{{ person_relation.person.full_name|underline }}</a></td>
+												</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								{% endwith %}
+							</div>
 						{% else %}
 							{% for person in document.persons %}
 								{% if forloop.first %}
