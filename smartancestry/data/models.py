@@ -1820,6 +1820,15 @@ class Document(models.Model):
 
     thumbnail.allow_tags = True
 
+    def thumbnail_large(self):
+        """
+			Returns a clickable large thumbnail of the document for the admin area
+		"""
+        return mark_safe('<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="120" /></a>' % (
+            (self.image.name, self.image.name)))
+
+    thumbnail_large.allow_tags = True
+
     def __unicode__(self):
         return '%s - %s - %s' % (self.date, self.name, self.person_names())
 

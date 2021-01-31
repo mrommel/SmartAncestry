@@ -423,10 +423,15 @@ class DocumentPersonRelationInline(admin.TabularInline):
     model = DocumentRelation
     fk_name = "document"
 
+    raw_id_fields = ('person',)
+    extra = 1
+
 
 class DocumentAncestryRelationInline(admin.TabularInline):
     model = DocumentAncestryRelation
     fk_name = "document"
+
+    extra = 1
 
 
 class DocumentAncestryFilter(admin.SimpleListFilter):
@@ -473,7 +478,7 @@ class DocumentAncestryFilter(admin.SimpleListFilter):
 
 class DocumentAdmin(admin.ModelAdmin):
     list_display = ('thumbnail', 'date', 'name', 'type', 'person_names', 'ancestry_names', 'admin_url',)
-    readonly_fields = ('thumbnail', 'ancestry_names', 'admin_url',)
+    readonly_fields = ('thumbnail_large', 'ancestry_names', 'admin_url',)
 
     list_filter = DocumentAncestryFilter,
 
