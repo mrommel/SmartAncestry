@@ -100,3 +100,9 @@ prince --no-author-style -s http://127.0.0.1:8000/static/data/style_print.css ht
 - https://graphviz.org/doc/info/shapes.html#html
 
 Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+
+## historic events
+
+begin first world war
+begin second world war
+german reunification

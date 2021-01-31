@@ -430,10 +430,10 @@ class DocumentAncestryRelationInline(admin.TabularInline):
 
 
 class DocumentAdmin(admin.ModelAdmin):
-    list_display = ('thumbnail', 'type', 'name', 'person_names', 'ancestry_names', 'admin_url',)
+    list_display = ('thumbnail', 'date', 'name', 'type', 'person_names', 'admin_url',)
     readonly_fields = ('thumbnail', 'admin_url',)
 
-    ordering = ('name',)
+    ordering = ('date',)
     inlines = [
         DocumentPersonRelationInline,
         DocumentAncestryRelationInline,
@@ -510,6 +510,19 @@ class PersonEventAdmin(admin.ModelAdmin):
 
     def admin_url(self, obj):
         return '<a href="/admin/data/personevent/%s/">Admin</a>' % obj.id
+
+    admin_url.allow_tags = True
+
+    class Media:
+        pass
+
+
+class HistoryEventAdmin(admin.ModelAdmin):
+    list_display = ('thumbnail', 'title', 'date', 'admin_url')
+    readonly_fields = ('thumbnail', 'admin_url',)
+
+    def admin_url(self, obj):
+        return '<a href="/admin/data/historyevent/%s/">Admin</a>' % obj.id
 
     admin_url.allow_tags = True
 

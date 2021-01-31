@@ -265,6 +265,11 @@ td {
     border: 1px;
 }
 
+img.historic {
+    height: 60px;
+    margin-top: 5px;
+}
+
 .question_table tr td:first-child {
     width: 30%;
     vertical-align: top;

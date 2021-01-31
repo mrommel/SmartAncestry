@@ -81,10 +81,10 @@ def ancestry_export(request, ancestry_id):
     questions = []
     for member in sorted_members:
         for question in member.person.questions():
-            questions.append(question)
+            questions.append(mark_safe(question))
 
         for question in member.person.automatic_questions():
-            questions.append(question)
+            questions.append(mark_safe(question))
 
     members = []
     for member in ancestry.members():

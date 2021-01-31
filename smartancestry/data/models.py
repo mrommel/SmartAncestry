@@ -777,9 +777,8 @@ class Person(models.Model):
                     marriage_summary = _('%s married %s on %s when she was %d years old.') % (
                         self.full_name(), familyStatusRelation.man.full_name(), marriage_date_str, age)
 
-            event_list.append(
-                PersonEventInfo(familyStatusRelation.date, age, marriage_title, mark_safe(marriage_summary),
-                                familyStatusRelation.location))
+                event_list.append(PersonEventInfo(familyStatusRelation.date, age, marriage_title,
+                                                  mark_safe(marriage_summary), familyStatusRelation.location))
 
         # death of parents
         if self.father:
@@ -1548,10 +1547,12 @@ class Person(models.Model):
 
 
 class TimelineInfo(object):
-    def __init__(self, date, date_unclear, title):
+    def __init__(self, date, date_unclear, title, description, image):
         self.date = date
         self.date_unclear = date_unclear
         self.title = mark_safe((' ' + title + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip())
+        self.description = description
+        self.image = image
 
 
 class GroupedTimelineInfo(object):
@@ -1879,6 +1880,9 @@ class Ancestry(models.Model):
 		"""
         result_list = []
 
+        for historyEvent in HistoryEvent.objects.all():
+            result_list.append(TimelineInfo(historyEvent.date, False, historyEvent.title, historyEvent.description, historyEvent.image.url))
+
         for ancestryPerson in AncestryRelation.objects.filter(ancestry=self):
             person = ancestryPerson.person
             if person.birth_date is not None:
@@ -1887,23 +1891,23 @@ class Ancestry(models.Model):
                         result_list.append(TimelineInfo(person.birth_date, person.birth_date_unclear,
                                                         _('%s %s (born %s) was born in %s') % (
                                                             person.first_name, person.last_name, person.birth_name,
-                                                            person.birth_location)))
+                                                            person.birth_location), None, None))
                     else:
                         result_list.append(TimelineInfo(person.birth_date, person.birth_date_unclear,
                                                         _('%s %s was born in %s') % (
                                                             person.first_name, person.last_name,
-                                                            person.birth_location)))
+                                                            person.birth_location), None, None))
                 else:
                     result_list.append(TimelineInfo(person.birth_date, person.birth_date_unclear,
-                                                    _('%s %s was born') % (person.first_name, person.last_name)))
+                                                    _('%s %s was born') % (person.first_name, person.last_name), None, None))
 
             if ancestryPerson.person.death_date is not None:
                 if person.death_location is not None:
                     result_list.append(TimelineInfo(person.death_date, False, _('%s %s has died in %s') % (
-                        person.first_name, person.last_name, person.death_location)))
+                        person.first_name, person.last_name, person.death_location), None, None))
                 else:
                     result_list.append(TimelineInfo(person.death_date, False,
-                                                    _('%s %s has died') % (person.first_name, person.last_name)))
+                                                    _('%s %s has died') % (person.first_name, person.last_name), None, None))
 
             for familyStatusRelation in FamilyStatusRelation.objects.filter(woman=person):
                 if familyStatusRelation.date is not None:
@@ -1913,15 +1917,15 @@ class Ancestry(models.Model):
                                                             _('marriage of %s and %s in %s') % (
                                                                 familyStatusRelation.husband_name(),
                                                                 familyStatusRelation.wife_name(),
-                                                                familyStatusRelation.location)))
+                                                                familyStatusRelation.location), None, None))
                         else:
                             result_list.append(TimelineInfo(familyStatusRelation.date, False,
                                                             _('marriage of %s and %s') % (
                                                                 familyStatusRelation.husband_name(),
-                                                                familyStatusRelation.wife_name())))
+                                                                familyStatusRelation.wife_name()), None, None))
                     else:
                         result_list.append(TimelineInfo(familyStatusRelation.date, False, _('divorce of %s and %s') % (
-                            familyStatusRelation.husband_name(), familyStatusRelation.wife_name())))
+                            familyStatusRelation.husband_name(), familyStatusRelation.wife_name()), None, None))
 
         result_list = sorted(result_list, key=attrgetter('date'), reverse=True)
         grouped_list = [list(g) for k, g in groupby(result_list, key=lambda x: x.date.year)]
@@ -2266,3 +2270,26 @@ class PersonEvent(models.Model):
 
     def __str__(self):
         return u'%s - %s - %s' % (self.date, self.type, self.person)
+
+
+class HistoryEvent(models.Model):
+    """
+		additional history events for the timeline
+	"""
+    date = models.DateField(_('date of the event'), null=True, blank=True)
+    title = models.CharField(max_length=50, null=True, blank=True)
+    description = models.CharField(max_length=200, null=True, blank=True)
+    image = models.ImageField(upload_to='media/history', blank=True, null=True)
+
+    def thumbnail(self):
+        """
+            Returns a clickable thumbnail of the event for the admin area
+        """
+        return mark_safe('<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % (
+            (self.image.name, self.image.name)))
+
+    def __unicode__(self):
+        return u'%s - %s' % (self.date, self.title)
+
+    def __str__(self):
+        return u'%s - %s' % (self.date, self.title)

@@ -394,7 +394,7 @@
 		{# resetcycle #}
 
 		{% if featured %}
-			{% if member == featured %}
+			{% if member.person == featured %}
 				<para>
 					<h4>{% trans "History of" %} {% autoescape off %}{{ member.person.first_name|underline }} {{ member.person.last_name }}{% endautoescape %}</h4>
 
@@ -502,12 +502,16 @@
 		<ul class="timeline">
 			{% for timeline_entry_inner in timeline_entry.list %}
 				<li>
-					{% if timeline_entry_inner.date_unclear %}
-						ca. {{ timeline_entry_inner.date | date:"Y" }}
+					{% if timeline_entry_inner.image %}
+						<img src="{{ timeline_entry_inner.image }}" class="historic" />
 					{% else %}
-						{{ timeline_entry_inner.date | date:"d.m.Y" }}
+						{% if timeline_entry_inner.date_unclear %}
+							ca. {{ timeline_entry_inner.date | date:"Y" }}
+						{% else %}
+							{{ timeline_entry_inner.date | date:"d.m.Y" }}
+						{% endif %}
+						{{ timeline_entry_inner.title }}
 					{% endif %}
-					{{ timeline_entry_inner.title }}
 				</li>
 			{% endfor %}
 		</ul>
@@ -721,9 +725,13 @@
 </chapheader>
 
 	<para>
-	{% for question in questions %}
-		{{ question }}
-	{% endfor %}
+		<ul>
+			{% for question in questions %}
+				<li>
+					{% autoescape off %}{{ question }}{% endautoescape %}
+				</li>
+			{% endfor %}
+		</ul>
 	</para>
 
 </chapter>
