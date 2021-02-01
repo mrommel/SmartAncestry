@@ -46,8 +46,8 @@ class Location(models.Model):
     state = models.CharField(max_length=50)
     country = models.CharField(max_length=50)
     image = models.ImageField(upload_to='media/locations', blank=True, null=True)
-    lon = models.FloatField(default=0)
-    lat = models.FloatField(default=0)
+    lon = models.FloatField(default=0)  # type: float
+    lat = models.FloatField(default=0)  # type: float
 
     def members(self):
         """
@@ -88,11 +88,10 @@ class Location(models.Model):
     thumbnail.allow_tags = True
 
     def map(self):
+        token = 'pk.eyJ1IjoibXJvbW1lbDgyIiwiYSI6ImNramVtNzFrcTJsb2YycXJ1MnJkZjNtanIifQ._XmEx_GVTa9BZS4IppCJfg'
         return '<img border="0" alt="" src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-m-star' \
                '+A6BCC6(%s)/%s,' \
-               '6/750x262@2x?access_token=pk.eyJ1IjoibXJvbW1lbDgyIiwiYSI6ImNramVtNzFrcTJsb2YycXJ1MnJkZjNtanIifQ' \
-               '._XmEx_GVTa9BZS4IppCJfg" height="262" width="750" />' % (
-                   (self.coordinate(), self.coordinate()))
+               '6/750x262@2x?access_token=%s" height="262" width="750" />' % (self.coordinate(), self.coordinate(), token)
 
     map.allow_tags = True
 
@@ -119,21 +118,21 @@ class Person(models.Model):
     birth_date_only_year = models.BooleanField(default=False)
     birth_date_unclear = models.BooleanField(default=False)
     birth_location = models.ForeignKey(Location, on_delete=models.DO_NOTHING, blank=True, null=True,
-                                       related_name='birth_location')
+                                       related_name='birth_location')  # type: Location
     death_date = models.DateField(_('date of death'), null=True, blank=True)
     death_date_only_year = models.BooleanField(default=False)
     death_location = models.ForeignKey(Location, on_delete=models.DO_NOTHING, blank=True, null=True,
-                                       related_name='death_location')
+                                       related_name='death_location')  # type: Location
     cause_of_death = models.CharField(max_length=100, blank=True, null=True)
     already_died = models.NullBooleanField(default=False, blank=True, null=True)
     profession = models.CharField(max_length=50, blank=True, null=True)
     father = models.ForeignKey('self', on_delete=models.DO_NOTHING, blank=True, null=True,
-                               related_name='children_father')
+                               related_name='children_father')  # type: Person
     father_extern = models.CharField(max_length=200, blank=True, null=True)
     mother = models.ForeignKey('self', on_delete=models.DO_NOTHING, blank=True, null=True,
-                               related_name='children_mother')
-    mother_extern = models.CharField(max_length=200, blank=True, null=True)
-    children_extern = models.CharField(max_length=600, blank=True, null=True)
+                               related_name='children_mother')  # type: Person
+    mother_extern = models.CharField(max_length=200, blank=True, null=True)  # type: CharField
+    children_extern = models.CharField(max_length=600, blank=True, null=True)  # type: CharField
     siblings_extern = models.CharField(max_length=600, blank=True, null=True)  # type: CharField
     notes = models.CharField(max_length=500, blank=True, null=True)
     external_identifier = models.CharField(max_length=50, blank=True, null=True)
@@ -1436,7 +1435,8 @@ class Ancestry(models.Model):
         export_raw_link = self.export_raw()
         export_gedcom_link = self.export_gedcom()
         return mark_safe('%s&nbsp;|&nbsp;%s&nbsp;|&nbsp;%s&nbsp;|&nbsp;%s&nbsp;|&nbsp;%s' %
-            (export_link, export_no_documents_link, export_questions_link, export_raw_link, export_gedcom_link))
+                         (export_link, export_no_documents_link, export_questions_link, export_raw_link,
+                          export_gedcom_link))
 
     exports.allow_tags = True
 
@@ -1824,7 +1824,7 @@ class Document(models.Model):
         """
 			Returns a clickable large thumbnail of the document for the admin area
 		"""
-        return mark_safe('<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="120" /></a>' % (
+        return mark_safe('<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="250" /></a>' % (
             (self.image.name, self.image.name)))
 
     thumbnail_large.allow_tags = True
@@ -1839,10 +1839,12 @@ class Document(models.Model):
 class DocumentRelation(models.Model):
     """
 		class that links a Document to a person
+		can be used to identify a person in a family image (when the image contains numbers)
 	"""
-    index = models.IntegerField(null=True, blank=True)
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    document = models.ForeignKey(Document, on_delete=models.CASCADE)
+    index = models.IntegerField(null=True, blank=True,
+                                help_text='number of person in image, when document is a table')  # type: int
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)  # type: Person
+    document = models.ForeignKey(Document, on_delete=models.CASCADE)  # type: Document
 
     class Meta:
         ordering = ('document__date',)
@@ -1877,7 +1879,7 @@ class DocumentAncestryRelation(models.Model):
 class Question(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     question = models.CharField(max_length=100)
-    answer = models.CharField(max_length=100, null=True, blank=True)  # type: CharField
+    answer = models.CharField(max_length=100, null=True, blank=True)  # type: str
     date = models.DateField(_('date of answer'), null=True, blank=True)
     source = models.CharField(max_length=30, null=True, blank=True)
 
@@ -1924,7 +1926,7 @@ class FamilyStatusRelation(models.Model):
     status = models.CharField(max_length=1,
                               choices=(
                                   ('M', _('Marriage')), ('P', _('Partnership')),
-                                  ('A', _('Adoption'))))  # type: CharField
+                                  ('A', _('Adoption'))))  # type: str
     date = models.DateField(_('date of marriage or divorce'), null=True, blank=True)
     date_only_year = models.BooleanField(default=False)
     man = models.ForeignKey(Person, on_delete=models.CASCADE, related_name=_('husband'), blank=True, null=True)
@@ -2013,7 +2015,7 @@ class PersonEvent(models.Model):
     """
 		additional events for persons
 	"""
-    type = models.CharField(max_length=1, choices=EVENT_TYPES)
+    type = models.CharField(max_length=1, choices=EVENT_TYPES)  # type: str
     person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
     date = models.DateField(_('date of marriage or divorce'), null=True, blank=True)
     date_only_year = models.BooleanField(default=False)
