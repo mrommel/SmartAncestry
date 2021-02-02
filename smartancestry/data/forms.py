@@ -215,8 +215,8 @@ class PersonEventInline(admin.TabularInline):
     fk_name = "person"
     extra = 1
 
-    list_display = ['type', 'date']
-    fields = ('type', 'date', 'person', 'location')
+    list_display = ['event_type', 'date', 'location']
+    fields = ('type', 'date', 'person', 'location', 'description')
 
 
 class PersonAdmin(admin.ModelAdmin):

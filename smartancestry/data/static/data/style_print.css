@@ -309,6 +309,16 @@ img.historic {
     content: "";
 }
 
+.person_event div.date {
+    display: inline;
+}
+.person_event div.type {
+    display: inline;
+}
+.person_event div.description {
+    display: inline;
+}
+
 /* chartjs */
 .chartContainer {
 	display: inline-block;

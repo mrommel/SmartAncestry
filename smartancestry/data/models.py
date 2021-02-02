@@ -409,6 +409,10 @@ class Person(models.Model):
 
     tree_link.allow_tags = True
 
+    def person_events(self):
+
+        return PersonEvent.objects.filter(person=self)
+
     def events(self):
 
         event_list = []
@@ -2008,6 +2012,8 @@ EVENT_TYPES = (
     ('B', _('Funeral')),
     ('C', _('Confirmation')),
     ('S', _('Settlement')),
+    ('E', _('Enrollment')),
+    ('R', _('Relocation')),
 )
 
 
@@ -2028,6 +2034,8 @@ class PersonEvent(models.Model):
             'B': _('Funeral'),
             'C': _('Confirmation'),
             'S': _('Settlement'),
+            'E': _('Enrollment'),
+            'R': _('Relocation'),
         }
 
         return switcher.get(self.type, '')

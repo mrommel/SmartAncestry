@@ -375,6 +375,25 @@
 					</td>
 				</tr>
 				{% endif %}
+				{% if member.person.events|length > 0 %}
+					<tr class="{% cycle row_style %}">
+						<td width="20%" class="label">{% trans "Events" %}:</td>
+						<td width="80%" colspan="3">
+							{% for person_event in member.person.person_events %}
+								<div class="person_event">
+									<div class="date">
+										{% if person_event.date_only_year %}
+											{{ person_event.date | date:"Y" }}
+										{% else %}
+											{{ person_event.date | date:"d.m.Y" }}
+										{% endif %}
+									</div>
+									<div class="type">{{ person_event.event_type }}</div>{% if person_event.description %}<div class="description">: {{ person_event.description }}</div>{% endif %}
+								</div>
+							{% endfor %}
+						</td>
+					</tr>
+				{% endif %}
 				{% if member.person.appendices and include_documents %}
 				<tr class="{% cycle row_style %}">
 					<td width="20%" class="label">{% trans "Appendices" %}:</td>
