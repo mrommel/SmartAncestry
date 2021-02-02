@@ -141,6 +141,9 @@ class LocationInfo(object):
     def lon_lat(self):
         return "{:10.4f}".format(self.lon) + ", " + "{:10.4f}".format(self.lat)
 
+    def lat_lon(self):
+        return "{:10.4f}".format(self.lat) + ", " + "{:10.4f}".format(self.lon)
+
 
 class TreeInfo(object):
 

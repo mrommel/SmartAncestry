@@ -97,72 +97,16 @@
     	margin-right: 0.5em;
 	}
 </style>
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=visualization&key=AIzaSyDh_KT7l-EpkeIF9JixsPmTwa9x-ek4vik"></script>
-<script>
-	var map, pointarray, heatmap;
 
-		var locationData = [
-			{% for location in locations %}
-				new google.maps.LatLng({{ location.lon_lat }}),
-			{% endfor %}
-		];
-
-		function initialize() {
-		  	var mapOptions = {
-				zoom: 5,
-				center: new google.maps.LatLng(52.518611, 13.408333),
-				mapTypeId: google.maps.MapTypeId.SATELLITE
-		  	};
-
-		  	map = new google.maps.Map(document.getElementById('map-canvas'),
-			  	mapOptions);
-
-		  	var pointArray = new google.maps.MVCArray(locationData);
-
-		  	heatmap = new google.maps.visualization.HeatmapLayer({
-				data: pointArray
-		  	});
-
-		  	heatmap.setMap(map);
-		  	//changeGradient();
-		  	changeRadius();
-		  	//changeOpacity();
-		}
-
-		function toggleHeatmap() {
-		  	heatmap.setMap(heatmap.getMap() ? null : map);
-		}
-
-		function changeGradient() {
-		  	var gradient = [
-				'rgba(0, 255, 255, 0)',
-				'rgba(0, 255, 255, 1)',
-				'rgba(0, 191, 255, 1)',
-				'rgba(0, 127, 255, 1)',
-				'rgba(0, 63, 255, 1)',
-				'rgba(0, 0, 255, 1)',
-				'rgba(0, 0, 223, 1)',
-				'rgba(0, 0, 191, 1)',
-				'rgba(0, 0, 159, 1)',
-				'rgba(0, 0, 127, 1)',
-				'rgba(63, 0, 91, 1)',
-				'rgba(127, 0, 63, 1)',
-				'rgba(191, 0, 31, 1)',
-				'rgba(255, 0, 0, 1)'
-		  	]
-		  	heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
-		}
-
-		function changeRadius() {
-		  	heatmap.set('radius', heatmap.get('radius') ? null : 50);
-		}
-
-		function changeOpacity() {
-		  	heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
-		}
-
-		google.maps.event.addDomListener(window, 'load', initialize);
-    </script>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+      #map {
+        width: 1000px;
+        height: 600px;
+      }
+    </style>s
     
     <script src="/static/data/Chart.js"></script>
 {% endblock %}
@@ -241,8 +185,164 @@
 			<br /><br />
 		
 			<h2>{% trans "Locations" %}</h2>
-		
-    		<div id="map-canvas"></div>
+
+            <div id='map'></div>
+
+            <script>
+                mapboxgl.accessToken = 'pk.eyJ1IjoibXJvbW1lbDgyIiwiYSI6ImNramVtNzFrcTJsb2YycXJ1MnJkZjNtanIifQ._XmEx_GVTa9BZS4IppCJfg';
+                var map = new mapboxgl.Map({
+                  	container: 'map',
+                  	// style: 'mapbox://styles/mapbox/dark-v10',
+                  	style: 'mapbox://styles/mapbox/light-v10',
+                  	/*style: {
+						'version': 8,
+						'sources': {
+							'raster-tiles': {
+								'type': 'raster',
+								'tiles': [
+									'https://stamen-tiles.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg'
+								],
+								'tileSize': 256,
+								'attribution':
+								'Map tiles by <a target="_top" rel="noopener" href="http://stamen.com">Stamen Design</a>, under <a target="_top" rel="noopener" href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a target="_top" rel="noopener" href="http://openstreetmap.org">OpenStreetMap</a>, under <a target="_top" rel="noopener" href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>'
+							}
+						}, 'layers': [
+							{
+								'id': 'simple-tiles',
+								'type': 'raster',
+								'source': 'raster-tiles',
+								'minzoom': 0,
+								'maxzoom': 22
+							}
+						]
+					},*/
+                  	center: [13.408333, 52.518611], // Berlin: 52.518611°, 13.408333°
+                  	zoom: 4.5
+                });
+
+               	// we will add more code here in the next steps
+               	map.on('load', function () {
+
+					// Add a geojson point source.
+					// Heatmap layers also work with a vector tile source.
+					map.addSource('persons', {
+						'type': 'geojson',
+						'data': {
+							'type': 'Feature',
+							'properties': {},
+							'geometry': {
+								'type': 'LineString',
+								'coordinates': [
+									{% for location in locations %}
+										[{{ location.lat_lon }}],
+									{% endfor %}
+								]
+							}
+						}
+					});
+
+					map.addLayer({
+						'id': 'earthquakes-heat',
+						'type': 'heatmap',
+						'source': 'persons',
+						'maxzoom': 9,
+						'paint': {
+							// Increase the heatmap weight based on frequency and property magnitude
+							'heatmap-weight': [
+								'interpolate',
+								['linear'],
+								['get', 'mag'],
+								0, 0, 6, 1
+							],
+							// Increase the heatmap color weight weight by zoom level
+							// heatmap-intensity is a multiplier on top of heatmap-weight
+							'heatmap-intensity': [
+								'interpolate',
+								['linear'],
+								['zoom'],
+								0, 1, 9, 3
+							],
+							// Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
+							// Begin color ramp at 0-stop with a 0-transparancy color
+							// to create a blur-like effect.
+							'heatmap-color': [
+								'interpolate',
+								['linear'],
+								['heatmap-density'],
+								0, 'rgba(33,102,172,0)',
+								0.1, '#ffffb2',
+								0.3, '#feb24c',
+								0.5, '#fd8d3c',
+								0.7, '#fc4e2a',
+								1, '#e31a1c'
+							],
+							// Adjust the heatmap radius by zoom level
+							'heatmap-radius': [
+								'interpolate',
+								['linear'],
+								['zoom'],
+								0, 5, 15, 30
+							],
+							// Transition from heatmap to circle layer by zoom level
+							'heatmap-opacity': [
+								'interpolate',
+								['linear'],
+								['zoom'],
+								7, 1, 9, 0
+							]
+						}
+					},
+					'waterway-label');
+
+					map.addLayer({
+						'id': 'earthquakes-point',
+						'type': 'circle',
+						'source': 'persons',
+						'minzoom': 7,
+						'paint': {
+							// Size circle radius by earthquake magnitude and zoom level
+							'circle-radius': [
+								'interpolate',
+								['linear'],
+								['zoom'],
+								7,
+								['interpolate', ['linear'], ['get', 'mag'], 1, 1, 6, 4],
+								16,
+								['interpolate', ['linear'], ['get', 'mag'], 1, 5, 6, 50]
+							],
+							// Color circle by earthquake magnitude
+							'circle-color': [
+								'interpolate',
+								['linear'],
+								['get', 'mag'],
+								1, 'rgba(33,102,172,0)',
+								2, 'rgb(103,169,207)',
+								3, 'rgb(209,229,240)',
+								4, 'rgb(253,219,199)',
+								5, 'rgb(239,138,98)',
+								6, 'rgb(178,24,43)'
+							],
+							'circle-stroke-color': 'white',
+							'circle-stroke-width': 1,
+							// Transition from heatmap to circle layer by zoom level
+							'circle-opacity': [
+								'interpolate',
+								['linear'],
+								['zoom'],
+								7, 0, 8, 1
+							]
+							}
+						},'waterway-label'
+					);
+
+					// https://stackoverflow.com/questions/58605220/how-to-change-language-in-mapbox
+					map.setLayoutProperty('country-label', 'text-field', ['get', 'name_de']);
+					map.setLayoutProperty('state-label', 'text-field', ['get', 'name_de']);
+					map.setLayoutProperty('settlement-label', 'text-field', ['get', 'name_de']);
+					map.setLayoutProperty('water-point-label', 'text-field', ['get', 'name_de']);
+					map.setLayoutProperty('waterway-label', 'text-field', ['get', 'name_de']);
+				});
+            </script>
     		
     		<br /><br />
     		<!-- http://www.chartjs.org/docs/ -->
