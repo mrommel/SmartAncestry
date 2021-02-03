@@ -34,9 +34,12 @@ http.createServer(function (req, res) {
   
 		request.get(person_url, function (error, response, body) {
 			if (!error && response.statusCode == 200) {
-	
+
+	            var input_name = 'tmp-' + parseInt(person) + '.dot';
+				var output_name = 'tmp-' + parseInt(person) + '.png';
+
 				// download file
-				fs.writeFile("tmp-" + person + ".dot", body, function(err) {
+				fs.writeFile(input_name, body, function(err) {
 					if(err) {
 						res.end();
 						return console.log("download error: " + err);
@@ -44,8 +47,7 @@ http.createServer(function (req, res) {
 					console.log("downloaded");
 				
 					// executes `dot`
-					var input_name = 'tmp-' + person + '.dot';
-					// child = exec("/usr/local/bin/dot -Tpng tmp.dot > tmp.png", ['-Tpng', input_name], function (error, stdout, stderr) {
+
 					child = exec("~/Prog/SmartAncestry/smartancestry/data/static/data/js/dot.sh " + person, function (error, stdout, stderr) {
 						if (error !== null) {
 							res.end();
@@ -53,7 +55,7 @@ http.createServer(function (req, res) {
 						}
 						console.log("executed");
 				
-						fs.readFile('tmp-' + person + '.png', function (err,data) {
+						fs.readFile(output_name, function (err,data) {
 							if (err) {
 								res.end();
 								return console.log(err);
