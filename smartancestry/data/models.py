@@ -1533,6 +1533,12 @@ class Ancestry(models.Model):
             if person.death_location is not None:
                 result_list.append(LocationInfo(person.death_location.lon, person.death_location.lat))
 
+            for family_relation in person.partner_relations():
+                result_list.append(LocationInfo(family_relation.location.lon, family_relation.location.lat))
+
+            for event in person.events():
+                result_list.append(LocationInfo(event.location.lon, event.location.lat))
+
         return result_list
 
     def statistics(self):
