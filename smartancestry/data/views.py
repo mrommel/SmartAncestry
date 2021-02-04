@@ -476,42 +476,124 @@ def location(request, location_id):
 
 def export(request, ancestry_id):
 
-    if request.GET.get('documents') is None:
-        os.system(
-            "prince --no-author-style --javascript -s http://127.0.0.1:7000/static/data/style_print.css "
-            "http://127.0.0.1:7000/data/ancestry_export/%s/Kliemank?documents=0 -o tmp.pdf" % ancestry_id)
-    else:
-        os.system(
-            "prince --no-author-style --javascript -s http://127.0.0.1:7000/static/data/style_print.css "
-            "http://127.0.0.1:7000/data/ancestry_export/%s/Kliemank -o tmp.pdf" % ancestry_id)
-
-    image_data = open('tmp.pdf', "rb").read()
-    return HttpResponse(image_data, content_type='application/pdf')
-
-
-def export_no_documents(request, ancestry_id):
-    os.system(
-        "prince --no-author-style --javascript -s http://127.0.0.1:7000/static/data/style_print.css "
-        "http://127.0.0.1:7000/data/ancestry_export_no_documents/%s/Kliemank -o tmp.pdf" % ancestry_id)
-
-    image_data = open('tmp.pdf', "rb").read()
-    return HttpResponse(image_data, content_type='application/pdf')
-
-
-def export_questions(request, ancestry_id):
     try:
         ancestry = Ancestry.objects.get(pk=ancestry_id)
     except Ancestry.DoesNotExist:
         raise Http404("Ancestry does not exist")
 
-    path = "http://127.0.0.1:7000/data/ancestry_questions/%s/questions/ -o tmp.pdf" % (ancestry_id)
+    sorted_members = ancestry.members()
+    sorted_members = sorted(sorted_members, key=attrgetter('person.first_name'))
+    sorted_members = sorted(sorted_members, key=attrgetter('person.last_name'))
 
-    # write html to tmp.pdf
-    os.system(
-        "prince --no-author-style --javascript -s http://127.0.0.1:7000/static/data/style_print.css %s" % path)
+    questions = []
+    for member in sorted_members:
+        for question in member.person.questions():
+            questions.append(mark_safe(question))
 
-    pdf_data = open('tmp.pdf', "rb").read()
-    return HttpResponse(pdf_data, content_type='application/pdf')
+        for question in member.person.automatic_questions():
+            questions.append(mark_safe(question))
+
+    members = []
+    for member in ancestry.members():
+        template_value1 = ''
+        if ancestry.featured:
+            relation = ancestry_relation(member.person, ancestry.featured)
+
+            if relation is not None:
+                if template_value1 == '':
+                    template_value1 = '%s %s %s' % (relation, _('of'), ancestry.featured.full_name())
+                else:
+                    template_value1 = template_value1 + '<br />' + '%s %s %s' % (relation, _('of'), ancestry.featured.full_name())
+
+        member.person.template_value1 = mark_safe(template_value1)
+
+        members.append(member)
+
+    featured = ancestry.featured
+    person_trees = ancestry.person_trees()
+    ancestry_distributions = ancestry.distributions()
+    ancestry_documents = ancestry.ancestry_documents()
+    person_documents = ancestry.documents()
+
+    # pdf export is always without css
+    include_css = False
+
+    if request.GET.get('documents') is None:
+        include_documents = False
+    else:
+        include_documents = True
+
+    ancestry_export_str = render_to_string('data/ancestry_export.html', {
+        'ancestry': ancestry,
+        'sorted_members': sorted_members,
+        'member_list': members,
+        'featured': featured,
+        'person_trees': person_trees,
+        'distributions': ancestry_distributions,
+        'locations': ancestry.locations,
+        'statistics': ancestry.statistics,
+        'questions': questions,
+        'ancestry_documents': ancestry_documents,
+        'person_documents': person_documents,
+        'include_css': include_css,
+        'include_documents': include_documents,
+        'MEDIA_URL': 'media/'
+    })
+
+    css_path = 'http://127.0.0.1:7000/static/data/style_print.css'
+
+    # The command-line must contain the name of the input file to process. An input filename consisting of a single
+    # hyphen "-" will cause Prince to read from the standard input stream.
+    # The output file name can be specified on the command-line using the -o command-line option.
+    # An output filename consisting of a single hyphen "-" will cause Prince to write to the standard output stream.
+    process = subprocess.Popen(
+        ['prince', '--no-author-style', '--javascript', '-s', css_path, '-', '-o', '-', '--baseurl=http://127.0.0.1:7000/', '--log=prince.log'],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE)
+
+    stdout, stderr = process.communicate(smart_bytes(str(ancestry_export_str)))
+
+    return HttpResponse(smart_bytes(stdout), content_type='application/pdf')
+
+
+def export_questions(request, ancestry_id):
+
+    try:
+        ancestry = Ancestry.objects.get(pk=ancestry_id)
+    except Ancestry.DoesNotExist:
+        raise Http404("Ancestry does not exist")
+
+    sorted_members = ancestry.members()
+    sorted_members = sorted(sorted_members, key=attrgetter('person.first_name'))
+    sorted_members = sorted(sorted_members, key=attrgetter('person.last_name'))
+
+    if request.GET.get('with') is not None:
+        include_css = True
+    else:
+        include_css = False
+
+    ancestry_questions_str = render_to_string('data/ancestry_questions.html', {
+        'ancestry': ancestry,
+        'sorted_members': sorted_members,
+        'include_css': include_css
+    })
+
+    css_path = 'http://127.0.0.1:7000/static/data/style_print.css'
+
+    # The command-line must contain the name of the input file to process. An input filename consisting of a single
+    # hyphen "-" will cause Prince to read from the standard input stream.
+    # The output file name can be specified on the command-line using the -o command-line option.
+    # An output filename consisting of a single hyphen "-" will cause Prince to write to the standard output stream.
+    process = subprocess.Popen(
+        ['prince', '--no-author-style', '--javascript', '-s', css_path, '-', '-o', '-'],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE)
+
+    stdout, stderr = process.communicate(smart_bytes(str(ancestry_questions_str)))
+
+    return HttpResponse(smart_bytes(stdout), content_type='application/pdf')
 
 
 def export_person(request, person_id):
@@ -520,14 +602,31 @@ def export_person(request, person_id):
     except Person.DoesNotExist:
         raise Http404("Person does not exist")
 
-    path = "http://127.0.0.1:7000/data/person_export/%s/ -o tmp.pdf" % (person_id)
+    if request.GET.get('with') is not None:
+        include_css = True
+    else:
+        include_css = False
 
-    # write html to tmp.pdf
-    os.system(
-        "prince --no-author-style --javascript -s http://127.0.0.1:7000/static/data/style_print.css %s" % path)
+    person_export_str = render_to_string('data/person_export.html', {
+        'person': person,
+        'include_css': include_css
+    })
 
-    pdf_data = open('tmp.pdf', "rb").read()
-    return HttpResponse(pdf_data, content_type='application/pdf')
+    css_path = 'http://127.0.0.1:7000/static/data/style_print.css'
+
+    # The command-line must contain the name of the input file to process. An input filename consisting of a single
+    # hyphen "-" will cause Prince to read from the standard input stream.
+    # The output file name can be specified on the command-line using the -o command-line option.
+    # An output filename consisting of a single hyphen "-" will cause Prince to write to the standard output stream.
+    process = subprocess.Popen(
+        ['prince', '--no-author-style', '--javascript', '-s', css_path, '-', '-o', '-'],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE)
+
+    stdout, stderr = process.communicate(smart_bytes(str(person_export_str)))
+
+    return HttpResponse(smart_bytes(stdout), content_type='application/pdf')
 
 
 def person_image(request, person_id, person2_id):

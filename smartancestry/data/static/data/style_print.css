@@ -384,7 +384,15 @@ img.historic {
 	margin: auto;
 	padding-bottom: 5px;
 }
-
+#birthLocationsLegendHeader {
+    margin-top: -10px;
+}
+#birthsPerMonthChartLegendHeader {
+    margin-top: -10px;
+}
+#genderLegendHeader {
+    margin-top: -10px;
+}
 #childrenLegend {
 	margin-top: -10px;
 }
