@@ -540,7 +540,6 @@ def person_image(request, person_id, person2_id):
 
     image_url = '/Users/michael.rommel/Prog/SmartAncestry/smartancestry/data%s' % person_obj.image.url
     image_url = image_url.replace('media/media', 'media')
-    logger.info('Load %s' % image_url)
     image_data = open(image_url, "rb").read()
     response = HttpResponse(image_data, content_type="image/png")
 
