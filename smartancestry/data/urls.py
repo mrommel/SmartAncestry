@@ -28,11 +28,15 @@ urlpatterns = [
     url(r'^person_export/(?P<person_id>\d+)/', views.person_export, name='data.views.person_export'),
 
     url(r'^export/ancestry/(?P<ancestry_id>\d+)/', views.export, name='data.views.export'),
-    url(r'^export/ancestry_no_documents/(?P<ancestry_id>\d+)/', views.export_no_documents, name='data.views.export_no_documents'),
-    url(r'^export/ancestry_questions/(?P<ancestry_id>\d+)/', views.export_questions, name='data.views.export_questions'),
+    url(r'^export/ancestry_no_documents/(?P<ancestry_id>\d+)/', views.export_no_documents,
+        name='data.views.export_no_documents'),
+    url(r'^export/ancestry_questions/(?P<ancestry_id>\d+)/', views.export_questions,
+        name='data.views.export_questions'),
     url(r'^export/person/(?P<person_id>\d+)/', views.export_person, name='data.views.export_person'),
 
     url(r'^person/dot_tree/(?P<person_id>\d+)/(?P<max_level>\d+)/ancestry\.dot', views.dot_tree,
         name='data.views.dot_tree'),
-    url(r'person_tree/(?P<person_id>\d+)/tree.svg', views.person_tree, name='data.views.person_tree'),
+    url(r'^person/tree_image/(?P<person_id>\d+)/(?P<max_level>\d+)/tree\.png', views.tree_image,
+        name='data.views.tree_image'),
+    url(r'^person_tree/(?P<person_id>\d+)/tree.svg', views.person_tree, name='data.views.person_tree'),
 ]

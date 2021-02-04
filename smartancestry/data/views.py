@@ -1,8 +1,11 @@
+import io
 import logging
 import os
+import subprocess
 import urllib
 
 from django.db.models import Q
+from django.utils.encoding import smart_bytes
 from django.utils.translation import ugettext as _
 from operator import attrgetter
 from random import randint
@@ -418,6 +421,40 @@ def dot_tree(request, person_id, max_level):
         'relatives': relatives,
         'image_path': image_path
     }))
+
+
+def tree_image(request, person_id, max_level):
+    try:
+        person = Person.objects.get(pk=person_id)
+    except Person.DoesNotExist:
+        raise Http404("Person does not exist")
+
+    relatives = person.relatives_parents(0, [], [], [], int(max_level))
+    relatives = person.relatives_children(0, relatives.relatives, relatives.relations, relatives.connections)
+
+    image_path = os.path.realpath(os.path.dirname(__file__))
+
+    # prepare the dot file - later used as input for dot shell script
+    dot_tree_str = render_to_string('data/dot_tree.html', {
+        'person_id': person_id,
+        'max_level': max_level,
+        'person': person,
+        'relatives': relatives,
+        'image_path': image_path
+    })
+
+    # runs graphviz dot in shell
+    # feed the dot file into stdin
+    # get png on stdou
+    # /usr/local/bin/dot -Tpng < stdin > stdout
+    process = subprocess.Popen(['/usr/local/bin/dot', '-Tpng'],
+                               stdin=subprocess.PIPE,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE)
+
+    stdout, stderr = process.communicate(smart_bytes(str(dot_tree_str)))
+
+    return HttpResponse(smart_bytes(stdout), content_type='image/png')
 
 
 def distributions(request):

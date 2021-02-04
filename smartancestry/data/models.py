@@ -402,9 +402,9 @@ class Person(models.Model):
     export_link.allow_tags = True
 
     def tree_link(self):
-        short_tree_link = '<a href="http://127.0.0.1:4446/ancestry.png?person=%s&max_level=2" target="_blank">Short Tree</a>' % self.id
-        full_tree_link = '<a href="http://127.0.0.1:4446/ancestry.png?person=%s&max_level=8" target="_blank">Full Tree</a>' % self.id
-        raw_tree_link = '<a href="view-source:http://127.0.0.1:8000/data/person/dot_tree/%s/2/ancestry.dot" target="_blank">Raw Tree</a>' % self.id
+        short_tree_link = '<a href="/data/person/tree_image/%s/2/tree.png" target="_blank">Short Tree</a>' % self.id
+        full_tree_link = '<a href="/data/person/tree_image/%s/8/tree.png" target="_blank">Full Tree</a>' % self.id
+        raw_tree_link = '<a href="view-source:/data/person/dot_tree/%s/2/ancestry.dot" target="_blank">Raw Tree</a>' % self.id
         return mark_safe('%s / %s / %s' % (short_tree_link, full_tree_link, raw_tree_link))
 
     tree_link.allow_tags = True

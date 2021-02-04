@@ -174,51 +174,8 @@
 			<h2><a name="tree">{% trans "Family tree" %}</a></h2>
 
 			<div>
-				<img src="/data/person_tree/{{ person.id }}/tree.svg" />
+				<img src="/data/person/tree_image/{{ person.id }}/8/tree.png" class="distribution landscape" />
 			</div>
-
-			<div id="familyTreeContainer">
-				<canvas id="familyTreeCanvas" width="940" height="1160"></canvas>
-			</div>
-			
-			<script>
-				var familyTreeCanvasCtx = document.getElementById("familyTreeCanvas").getContext("2d");
-				
-				var personData = [
-					{% for item in person.relatives.relatives %}
-						{% if item.person %}
-						{
-							id: {{ item.person.id }},
-							level: {{ item.level }},
-							selected: {{ item.selected }},
-							name: "{{ item.person.gender_sign }} {{ item.person.full_name|trim_and_unescape }}",
-							underline: {{ item.person.full_name|underline_indices }},
-							birth: '{% trans "Born" %}: {{ item.person.birth_date|date:"d.m.Y" }} {{ item.person.birth_location|location_without_country|ellipses:16 }}', 
-							death: '{% trans "Died" %}: {{ item.person.death_date|date:"d.m.Y" }} {{ item.person.death_location|location_without_country|ellipses:16 }}',
-						},
-						{% endif %}
-					{% endfor %}
-				];
-				
-				var relationsData = [
-					{% for item in person.relatives.relations %}
-					new Relation({{ item.source }}, {{ item.destination }}),
-					{% endfor %}
-				];
-				
-				var ancestryTree = new AncestryTree(familyTreeCanvasCtx, personData, relationsData);
-				ancestryTree.draw();
-				
-				familyTreeCanvasCtx.canvas.addEventListener("click", contextOnClick, false);
-				
-				function contextOnClick(e) {
-    				var cell = ancestryTree.getCursorPosition(e);
-    				if (cell != undefined) {
-    					var win = window.open('/data/person/' + cell.getPerson(ancestryTree.persons).id + '/#tree', '_self');
-  						win.focus();
-    				}
-    			}
-			</script>
 		</div>
 	</div>
 
