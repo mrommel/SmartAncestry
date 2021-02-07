@@ -323,7 +323,13 @@ def ancestry_gedcom(request, ancestry_id):
                 member.ged_data.append('2 PLAC %s' % member.person.death_location)
 
         member.ged_data.append('1 SEX %s' % member.person.sex)
-        member.ged_data.append('1 NAME %s /%s/' % (member.person.first_name.replace("_", ""), member.person.last_name))
+
+        if member.person.birth_name and len(member.person.birth_name) > 0:
+            member.ged_data.append(
+                '1 NAME %s /%s/' % (member.person.first_name.replace("_", ""), member.person.birth_name))
+        else:
+            member.ged_data.append(
+                '1 NAME %s /%s/' % (member.person.first_name.replace("_", ""), member.person.last_name))
 
     # make sure also extern parents get families
     for member in sorted_members:
