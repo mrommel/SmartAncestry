@@ -267,3 +267,41 @@ class TimelineInfo(object):
         self.title = mark_safe((' ' + title + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip())
         self.description = description
         self.image = image
+
+
+class GedcomFamily(object):
+    """
+        object that represents a GEDCOM Family object
+        http://homepages.rootsweb.com/~pmcbride/gedcom/55gcch2.htm#XREF:FAM
+    """
+    def __init__(self, id, type, husband, wife, children, date, location):
+        self.id = id
+        self.type = type
+        self.husband = husband
+        self.wife = wife
+        self.children = children
+        self.date = date
+        self.location = location
+
+
+class GedcomExternMember(object):
+    """
+        object that represents a GEDCOM person (with no parents)
+    """
+    def __init__(self, person):
+        self.person = person
+
+
+class GedcomExternPerson(object):
+    """
+        object that represents a GEDCOM individual (with extern parents)
+    """
+    def __init__(self, id, sex, first_name, last_name):
+        self.id = id
+        self.sex = sex
+        self.first_name = first_name
+        self.last_name = last_name
+        self.father_extern = None
+        self.mother_extern = None
+        self.birth_date_unclear = True
+        self.death_date = None

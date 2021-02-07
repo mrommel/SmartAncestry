@@ -294,8 +294,8 @@ class DocumentAncestryAncestryRelationInline(admin.TabularInline):
 
 class AncestryAdmin(admin.ModelAdmin):
     list_display = ['name', 'thumbnail', 'number_of_members', 'featured_str', 'exports']
-    fields = ('name', 'thumbnail', 'image', 'map', 'featured',)
-    readonly_fields = ('thumbnail', 'featured_str',)
+    fields = ('name', 'thumbnail', 'image', 'map', 'featured', 'statistic_links',)
+    readonly_fields = ('thumbnail', 'featured_str', 'statistic_links',)
 
     ordering = ['name']
     inlines = [

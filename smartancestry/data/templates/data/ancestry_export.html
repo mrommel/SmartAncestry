@@ -578,7 +578,7 @@
 						<h2>{% trans "Births and Deaths per month" %}<a id="chapter3-3">&nbsp;</a></h2>
 
 						<div class="chartContainer">
-							<img src="http://127.0.0.1:4444/bar.png?data1={{ statistics.birth_per_month_str|encode_spaces }}&data2={{ statistics.death_per_month_str|encode_spaces }}&axis={% trans 'January' %},{% trans 'February' %},{% trans 'March' %},{% trans 'April' %},{% trans 'May' %},{% trans 'June' %},{% trans 'July' %},{% trans 'August' %},{% trans 'September' %},{% trans 'October' %},{% trans 'November' %},{% trans 'December' %}" id="birthsPerMonthChart" width="400" height="300" />
+							<img src="/data/statistics/{{ ancestry.id }}/monthly_birth_death.png" id="birthsPerMonthChart" width="400" height="300" />
 
 							<div class="chartBorder">
 								<div id="birthsPerMonthChartLegendHeader">
@@ -608,7 +608,7 @@
 						<h2>{% trans "Gender distribution" %}<a id="chapter3-4">&nbsp;</a></h2>
 
 						<div class="chartContainer">
-							<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.gender_values_str|encode_spaces }}" id="genderChart" width="400" height="300" />
+							<img src="/data/statistics/{{ ancestry.id }}/gender.png" id="genderChart" width="400" height="300" />
 
 							<div class="chartBorder">
 								<div id="genderLegendHeader">
@@ -637,7 +637,8 @@
 						<h2>{% trans "Birth locations" %}<a id="chapter3-5">&nbsp;</a></h2>
 
 						<div class="chartContainer">
-							<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.birth_locations_values_str|encode_spaces }}&colors={{ statistics.birth_locations_colors_str|trim_hash|encode_spaces }}" id="birthLocationsChart" width="400" height="300" />
+							<img src="/data/statistics/{{ ancestry.id }}/birth_locations.png" id="birthLocationsChart" width="400" height="300" />
+							<!--<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.birth_locations_values_str|encode_spaces }}&colors={{ statistics.birth_locations_colors_str|trim_hash|encode_spaces }}" id="birthLocationsChart" width="400" height="300" />-->
 
 							<div class="chartBorder">
 								<div id="birthLocationsLegendHeader">

@@ -12,6 +12,7 @@ from random import randint
 
 from django.utils.safestring import mark_safe
 
+from .classes import GedcomExternPerson, GedcomExternMember, GedcomFamily
 from .models import Person, Ancestry, Location, FamilyStatusRelation
 from django.http import HttpResponse, Http404
 from django.template.loader import render_to_string
@@ -204,34 +205,6 @@ def person_export(request, person_id):
     }))
 
 
-class GedcomFamily(object):
-    def __init__(self, id, type, husband, wife, children, date, location):
-        self.id = id
-        self.type = type
-        self.husband = husband
-        self.wife = wife
-        self.children = children
-        self.date = date
-        self.location = location
-
-
-class GedcomExternMember(object):
-    def __init__(self, person):
-        self.person = person
-
-
-class GedcomExternPerson(object):
-    def __init__(self, id, sex, first_name, last_name):
-        self.id = id
-        self.sex = sex
-        self.first_name = first_name
-        self.last_name = last_name
-        self.father_extern = None
-        self.mother_extern = None
-        self.birth_date_unclear = True
-        self.death_date = None
-
-
 def ancestry_gedcom(request, ancestry_id):
     try:
         ancestry = Ancestry.objects.get(pk=ancestry_id)
@@ -365,7 +338,7 @@ def ancestry_gedcom(request, ancestry_id):
             fake_relations_counter = fake_relations_counter + 1
 
     # add relation ref to each child
-    # todo: consider extern parents
+    # todo: consider external parents
     for relation in relations:
         for child in relation.children:
             for member in sorted_members:
@@ -670,3 +643,74 @@ def person_tree(request, person_id):
     return HttpResponse(render_to_string('data/person_tree.html', {
         'person': person,
     }), content_type='image/svg+xml')
+
+
+def monthly_birth_death_statistics(request, ancestry_id):
+    try:
+        ancestry = Ancestry.objects.get(pk=ancestry_id)
+    except Ancestry.DoesNotExist:
+        raise Http404("Ancestry does not exist")
+
+    data1_str = ancestry.statistics().birth_per_month_str().replace(' ', '')
+    data2_str = ancestry.statistics().death_per_month_str().replace(' ', '')
+    axis_str = '[%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s]' % (_('January'), _('February'), _('March'), _('April'), _('May'),
+                                                        _('June'), _('July'), _('August'), _('September'), _('October'),
+                                                        _('November'), _('December'))
+    base_path = os.path.realpath(os.path.dirname(__file__))
+    script_path = '%s%s' % (base_path, '/static/data/ancestry_statistics/bar.js')
+
+    logger.warning('%s %s %s %s %s' % ('node', script_path, axis_str, data1_str, data2_str))
+
+    process = subprocess.Popen(
+        ['node', script_path, axis_str, data1_str, data2_str],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE)
+
+    stdout, stderr = process.communicate()
+
+    return HttpResponse(smart_bytes(stdout), content_type='image/png')
+
+
+def gender_statistics(request, ancestry_id):
+    try:
+        ancestry = Ancestry.objects.get(pk=ancestry_id)
+    except Ancestry.DoesNotExist:
+        raise Http404("Ancestry does not exist")
+
+    gender_str = ancestry.statistics().gender_values_str().replace(' ', '')
+    base_path = os.path.realpath(os.path.dirname(__file__))
+    script_path = '%s%s' % (base_path, '/static/data/ancestry_statistics/pie.js')
+
+    #logger.warning('%s %s %s' % ('node', script_path, gender_str))
+
+    process = subprocess.Popen(
+        ['node', script_path, gender_str],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE)
+
+    stdout, stderr = process.communicate()
+
+    return HttpResponse(smart_bytes(stdout), content_type='image/png')
+
+
+def birth_location_statistics(request, ancestry_id):
+    try:
+        ancestry = Ancestry.objects.get(pk=ancestry_id)
+    except Ancestry.DoesNotExist:
+        raise Http404("Ancestry does not exist")
+
+    # &colors={{ statistics.birth_locations_colors_str|trim_hash|encode_spaces }}
+    birth_locations_values_str = ancestry.statistics().birth_locations_values_str().replace(' ', '')
+    base_path = os.path.realpath(os.path.dirname(__file__))
+    script_path = '%s%s' % (base_path, '/static/data/ancestry_statistics/pie.js')
+
+    # logger.warning('%s %s %s' % ('node', script_path, gender_str))
+
+    process = subprocess.Popen(
+        ['node', script_path, birth_locations_values_str],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE)
+
+    stdout, stderr = process.communicate()
+
+    return HttpResponse(smart_bytes(stdout), content_type='image/png')

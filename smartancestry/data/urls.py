@@ -37,4 +37,8 @@ urlpatterns = [
     url(r'^person/tree_image/(?P<person_id>\d+)/(?P<max_level>\d+)/tree\.png', views.tree_image,
         name='data.views.tree_image'),
     url(r'^person_tree/(?P<person_id>\d+)/tree.svg', views.person_tree, name='data.views.person_tree'),
+
+    url(r'^statistics/(?P<ancestry_id>\d+)/gender.png', views.gender_statistics, name='data.views.gender_statistics'),
+    url(r'^statistics/(?P<ancestry_id>\d+)/monthly_birth_death.png', views.monthly_birth_death_statistics, name='data.views.monthly_birth_death_statistics'),
+    url(r'^statistics/(?P<ancestry_id>\d+)/birth_locations.png', views.birth_location_statistics, name='data.views.birth_location_statistics'),
 ]

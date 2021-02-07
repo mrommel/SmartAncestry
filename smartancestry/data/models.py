@@ -1476,6 +1476,32 @@ class Ancestry(models.Model):
 
     export_gedcom.allow_tags = True
 
+    def monthly_birth_death_statistic_link(self):
+        return mark_safe('<a href="/data/statistics/%s/monthly_birth_death.png" '
+                         'target="_blank">birth/death</a>' % self.id)
+
+    monthly_birth_death_statistic_link.allow_tags = True
+
+    def gender_statistic_link(self):
+        return mark_safe('<a href="/data/statistics/%s/gender.png" '
+                         'target="_blank">gender</a>' % self.id)
+
+    gender_statistic_link.allow_tags = True
+
+    def birth_locations_link(self):
+        return mark_safe('<a href="/data/statistics/%s/birth_locations.png" '
+                         'target="_blank">birth locations</a>' % self.id)
+
+    birth_locations_link.allow_tags = True
+
+    def statistic_links(self):
+        monthly_birth_death_link = self.monthly_birth_death_statistic_link()
+        gender_link = self.gender_statistic_link()
+        birth_locations_link = self.birth_locations_link()
+        return '%s / %s / %s' % (monthly_birth_death_link, gender_link, birth_locations_link)
+
+    statistic_links.allow_tags = True
+
     def members(self):
         """
 			Returns a list of persons in order of birth desc
