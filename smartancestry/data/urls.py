@@ -41,4 +41,5 @@ urlpatterns = [
     url(r'^statistics/(?P<ancestry_id>\d+)/gender.png', views.gender_statistics, name='data.views.gender_statistics'),
     url(r'^statistics/(?P<ancestry_id>\d+)/monthly_birth_death.png', views.monthly_birth_death_statistics, name='data.views.monthly_birth_death_statistics'),
     url(r'^statistics/(?P<ancestry_id>\d+)/birth_locations.png', views.birth_location_statistics, name='data.views.birth_location_statistics'),
+    url(r'^statistics/(?P<ancestry_id>\d+)/children.png', views.children_statistics, name='data.views.children_statistics'),
 ]

@@ -699,7 +699,6 @@ def birth_location_statistics(request, ancestry_id):
     except Ancestry.DoesNotExist:
         raise Http404("Ancestry does not exist")
 
-    # &colors={{ statistics.birth_locations_colors_str|trim_hash|encode_spaces }}
     birth_locations_values_str = ancestry.statistics().birth_locations_values_str().replace(' ', '')
     base_path = os.path.realpath(os.path.dirname(__file__))
     script_path = '%s%s' % (base_path, '/static/data/ancestry_statistics/pie.js')
@@ -708,6 +707,29 @@ def birth_location_statistics(request, ancestry_id):
 
     process = subprocess.Popen(
         ['node', script_path, birth_locations_values_str],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE)
+
+    stdout, stderr = process.communicate()
+
+    return HttpResponse(smart_bytes(stdout), content_type='image/png')
+
+
+def children_statistics(request, ancestry_id):
+    try:
+        ancestry = Ancestry.objects.get(pk=ancestry_id)
+    except Ancestry.DoesNotExist:
+        raise Http404("Ancestry does not exist")
+
+    children_values_str = ancestry.statistics().children_values_str().replace(' ', '')
+    children_number_str = '[0,1,2,3,4,5,6,7,8,9,10]'
+    base_path = os.path.realpath(os.path.dirname(__file__))
+    script_path = '%s%s' % (base_path, '/static/data/ancestry_statistics/bar.js')
+
+    # logger.warning('%s %s %s %s' % ('node', script_path, children_values_str, children_number_str))
+
+    process = subprocess.Popen(
+        ['node', script_path, children_number_str, children_values_str],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE)
 

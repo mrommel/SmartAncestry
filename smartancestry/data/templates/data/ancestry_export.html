@@ -638,7 +638,6 @@
 
 						<div class="chartContainer">
 							<img src="/data/statistics/{{ ancestry.id }}/birth_locations.png" id="birthLocationsChart" width="400" height="300" />
-							<!--<img src="http://127.0.0.1:4444/pie.png?data={{ statistics.birth_locations_values_str|encode_spaces }}&colors={{ statistics.birth_locations_colors_str|trim_hash|encode_spaces }}" id="birthLocationsChart" width="400" height="300" />-->
 
 							<div class="chartBorder">
 								<div id="birthLocationsLegendHeader">
@@ -647,11 +646,11 @@
 
 								<div id="birthLocationsLegend">
 									<ul class="pie-legend">
-										{% for birthLocations in statistics.birthLocations.list %}
-										<li>
-											<span class="color color-{{ birthLocations.color|trim_hash }}">&nbsp;</span>
-											<span class="title">{{ birthLocations.name }}</span>
-										</li>
+										{% for birth_location in statistics.birth_locations.list %}
+											<li>
+												<span class="color color-{{ birth_location.color|trim_hash }}">&nbsp;</span>
+												<span class="title">{{ birth_location.name }} ({{ birth_location.value }})</span>
+											</li>
 										{% endfor %}
 									</ul>
 								</div>
@@ -665,7 +664,7 @@
 						<h2>{% trans "Children" %}<a id="chapter3-6">&nbsp;</a></h2>
 
 						<div class="chartContainer">
-							<img src="http://127.0.0.1:4444/bar.png?data={{ statistics.children_values_str|encode_spaces }}&axis=0,1,2,3,4,5,6,7,8,9,10" id="childrenChart" width="400" height="300" />
+							<img src="/data/statistics/{{ ancestry.id }}/children.png" id="childrenChart" width="400" height="300" />
 
 							<div class="chartBorder">
 								<div id="childrenLegend">

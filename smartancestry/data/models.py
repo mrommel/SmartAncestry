@@ -1488,17 +1488,24 @@ class Ancestry(models.Model):
 
     gender_statistic_link.allow_tags = True
 
-    def birth_locations_link(self):
+    def birth_locations_statistic_link(self):
         return mark_safe('<a href="/data/statistics/%s/birth_locations.png" '
                          'target="_blank">birth locations</a>' % self.id)
 
-    birth_locations_link.allow_tags = True
+    birth_locations_statistic_link.allow_tags = True
+
+    def children_statistic_link(self):
+        return mark_safe('<a href="/data/statistics/%s/children.png" '
+                         'target="_blank">number of children</a>' % self.id)
+
+    children_statistic_link.allow_tags = True
 
     def statistic_links(self):
         monthly_birth_death_link = self.monthly_birth_death_statistic_link()
         gender_link = self.gender_statistic_link()
-        birth_locations_link = self.birth_locations_link()
-        return '%s / %s / %s' % (monthly_birth_death_link, gender_link, birth_locations_link)
+        birth_locations_link = self.birth_locations_statistic_link()
+        children_link = self.children_statistic_link()
+        return '%s / %s / %s / %s' % (monthly_birth_death_link, gender_link, birth_locations_link, children_link)
 
     statistic_links.allow_tags = True
 
