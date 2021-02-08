@@ -659,7 +659,7 @@ def monthly_birth_death_statistics(request, ancestry_id):
     base_path = os.path.realpath(os.path.dirname(__file__))
     script_path = '%s%s' % (base_path, '/static/data/ancestry_statistics/bar.js')
 
-    logger.warning('%s %s %s %s %s' % ('node', script_path, axis_str, data1_str, data2_str))
+    # logger.warning('%s %s %s %s %s' % ('node', script_path, axis_str, data1_str, data2_str))
 
     process = subprocess.Popen(
         ['node', script_path, axis_str, data1_str, data2_str],
@@ -681,7 +681,7 @@ def gender_statistics(request, ancestry_id):
     base_path = os.path.realpath(os.path.dirname(__file__))
     script_path = '%s%s' % (base_path, '/static/data/ancestry_statistics/pie.js')
 
-    #logger.warning('%s %s %s' % ('node', script_path, gender_str))
+    # logger.warning('%s %s %s' % ('node', script_path, gender_str))
 
     process = subprocess.Popen(
         ['node', script_path, gender_str],

@@ -58,26 +58,13 @@ python3 ../manage.py makemessages -l de -e html,txt,py -e xml
 translate with poedit
 python3 ../manage.py compilemessages
 
-## node js scripts
-
-cd ~/Prog/SmartAncestry/smartancestry/data/static/data/js
-
-node bar.js 
-==> Listening at http://localhost:4444
-
-// node colors.js 
-==> prints colors (hsl / 12)
-
-node ancestry.js
-==> create ancestry trees
-
 ## distributions
 
 https://www.namenskarte.com/nachname/Name?
 
 ## pdf generator
 
-prince --no-author-style -s http://127.0.0.1:8000/static/data/style_print.css http://127.0.0.1:8000/data/ancestry/1/Kliemank -o Kliemank.pdf
+prince --no-author-style -s http://127.0.0.1:7000/static/data/style_print.css http://127.0.0.1:7000/data/ancestry/1/Kliemank -o Kliemank.pdf
 
 # todo
 
