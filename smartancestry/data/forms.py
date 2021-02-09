@@ -119,6 +119,7 @@ class HusbandFamilyStatusRelationInline(admin.TabularInline):
     verbose_name_plural = u'Wives'
     fields = ('status', 'date', 'date_only_year', 'woman', 'wife_link', 'wife_extern', 'location', 'ended')
     readonly_fields = ('wife_link',)
+    raw_id_fields = ('woman',)
 
     formset = HusbandFamilyStatusRelationInlineFormSet
 
@@ -177,6 +178,7 @@ class WifeFamilyStatusRelationInline(admin.TabularInline):
     verbose_name_plural = u'Husbands'
     fields = ('status', 'date', 'date_only_year', 'man', 'husband_link', 'husband_extern', 'location', 'ended')
     readonly_fields = ('husband_link',)
+    raw_id_fields = ('man',)
 
     formset = WifeFamilyStatusRelationInlineFormSet
 

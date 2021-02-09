@@ -1966,11 +1966,14 @@ class AncestryTreeRelation(models.Model):
 
 
 class FamilyStatusRelation(models.Model):
+    """
+        class that models the family relation of two persons
+    """
     status = models.CharField(max_length=1,
                               choices=(
                                   ('M', _('Marriage')), ('P', _('Partnership')),
                                   ('A', _('Adoption'))))  # type: str
-    date = models.DateField(_('date of marriage or divorce'), null=True, blank=True)
+    date = models.DateField(_('date of marriage'), null=True, blank=True)
     date_only_year = models.BooleanField(default=False)
     man = models.ForeignKey(Person, on_delete=models.CASCADE, related_name=_('husband'), blank=True, null=True)
     woman = models.ForeignKey(Person, on_delete=models.CASCADE, related_name=_('wife'), blank=True, null=True)
