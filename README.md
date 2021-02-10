@@ -14,7 +14,8 @@ python3 get-pip.py
 python3 -m pip install --user virtualenv
 python3 -m venv vsmartancentry
 
-source vsmartancentry/bin/activate
+
+source bin/activate
 
 brew install node
 
