@@ -668,6 +668,8 @@ def monthly_birth_death_statistics(request, ancestry_id):
 
     stdout, stderr = process.communicate()
 
+    logger.warning('monthly_birth_death_statistics stderr=%s' % stderr)
+
     return HttpResponse(smart_bytes(stdout), content_type='image/png')
 
 
@@ -689,6 +691,8 @@ def gender_statistics(request, ancestry_id):
         stderr=subprocess.PIPE)
 
     stdout, stderr = process.communicate()
+
+    logger.warning('gender_statistics stderr=%s' % stderr)
 
     return HttpResponse(smart_bytes(stdout), content_type='image/png')
 
@@ -712,6 +716,8 @@ def birth_location_statistics(request, ancestry_id):
 
     stdout, stderr = process.communicate()
 
+    logger.warning('birth_location_statistics stderr=%s' % stderr)
+
     return HttpResponse(smart_bytes(stdout), content_type='image/png')
 
 
@@ -734,5 +740,7 @@ def children_statistics(request, ancestry_id):
         stderr=subprocess.PIPE)
 
     stdout, stderr = process.communicate()
+
+    logger.warning('children_statistics stderr=%s' % stderr)
 
     return HttpResponse(smart_bytes(stdout), content_type='image/png')
