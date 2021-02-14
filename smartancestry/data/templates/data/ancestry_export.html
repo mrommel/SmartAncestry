@@ -369,7 +369,7 @@
 								</td>
 							</tr>
 							{% endif %}
-							{% if member.person.events|length > 0 %}
+							{% if member.person.person_events|length > 0 %}
 								<tr class="{% cycle row_style %}">
 									<td width="20%" class="label">{% trans "Events" %}:</td>
 									<td width="80%" colspan="3">
@@ -454,7 +454,7 @@
 																	<div class="storylineBulletText">
 																		<p class="storylineBulletSubtitle">{{ item.date | date:"d.m" }}</p>
 																		<h3 class="storylineBulletTitle">{{ item.date | date:"Y" }}</h3>
-																		{% if item.age != -1 %}
+																		{% if item.age > 0 %}
 																			<p class="storylineBulletSubtitle">Alter {{ item.age }}</p>
 																		{% endif %}
 																	</div>

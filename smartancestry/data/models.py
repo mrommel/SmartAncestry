@@ -422,6 +422,20 @@ class Person(models.Model):
             event_list.append(
                 PersonEventInfo(self.birth_date, -1, _("Birth"), self.birth_summary(), self.birth_location))
 
+        if self.father and self.mother:
+            relation = self.father.partnership(self.mother)
+            if relation:
+                if relation.status == 'M' and relation.date is not None:
+                    age = calculate_age(self.birth_date, relation.date)
+                    parent_marriage_title = _("Marriage of parents")
+                    if self.male():
+                        parent_marriage_summary = _("His parents %s and %s married." % (self.father, self.mother))
+                    else:
+                        parent_marriage_summary = _("Her parents %s and %s married." % (self.father, self.mother))
+
+                    event_list.append(
+                        PersonEventInfo(relation.date, age, parent_marriage_title, parent_marriage_summary, relation.location))
+
         # birth/death of children
         for child in self.children():
             age = calculate_age(self.birth_date, child.birth_date)

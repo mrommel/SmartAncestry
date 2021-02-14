@@ -117,7 +117,7 @@ def ancestry_export(request, ancestry_id):
     else:
         include_css = False
 
-    if request.GET.get('documents') is None:
+    if request.GET.get('documents', '1') == '0':
         include_documents = False
     else:
         include_documents = True
