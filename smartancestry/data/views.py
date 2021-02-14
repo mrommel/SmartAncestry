@@ -433,6 +433,8 @@ def tree_image(request, person_id, max_level):
 
     stdout, stderr = process.communicate(smart_bytes(str(dot_tree_str)))
 
+    logger.warning('tree_image stderr=%s' % stderr)
+
     return HttpResponse(smart_bytes(stdout), content_type='image/png')
 
 
@@ -533,6 +535,8 @@ def export(request, ancestry_id):
 
     stdout, stderr = process.communicate(smart_bytes(str(ancestry_export_str)))
 
+    logger.warning('export_ancestry stderr=%s' % stderr)
+
     return HttpResponse(smart_bytes(stdout), content_type='application/pdf')
 
 
@@ -572,6 +576,8 @@ def export_questions(request, ancestry_id):
 
     stdout, stderr = process.communicate(smart_bytes(str(ancestry_questions_str)))
 
+    logger.warning('export_questions stderr=%s' % stderr)
+
     return HttpResponse(smart_bytes(stdout), content_type='application/pdf')
 
 
@@ -604,6 +610,8 @@ def export_person(request, person_id):
         stderr=subprocess.PIPE)
 
     stdout, stderr = process.communicate(smart_bytes(str(person_export_str)))
+
+    logger.warning('export_person stderr=%s' % stderr)
 
     return HttpResponse(smart_bytes(stdout), content_type='application/pdf')
 
