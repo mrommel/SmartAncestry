@@ -1309,9 +1309,14 @@ class Person(models.Model):
                                          self.full_name(), self.birth_year()))
 
         if self.birth_date_unclear:
+            if self.birth_date is None:
+                year = '---'
+            else:
+                year = '{0.year:4d}'.format(self.birth_date)
+
             question_list.append(
                 gettext("The birth date of %s is completely unclear. It is currently assumed ca. %s.") % (
-                    self.full_name(), self.birth_year()))
+                    self.full_name(), year))
 
         if self.birth_location is None:
             question_list.append(gettext("The birth location of %s could not be determined.") % (self.full_name()))
