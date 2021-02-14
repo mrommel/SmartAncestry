@@ -1,0 +1,18 @@
+{
+  "name": "ancestry_statistics",
+  "version": "1.0.0",
+  "description": "",
+  "main": "pie.js",
+  "dependencies": {
+    "canvas": "^2.6.1",
+    "chart.js": "^2.9.4",
+    "chartjs-node-canvas": "^3.1.0",
+    "chartjs-plugin-labels": "^1.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
