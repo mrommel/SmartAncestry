@@ -1,45 +1,73 @@
 #!/usr/bin/env python3
 
-from django.conf.urls import *
-from . import views
+from django.urls import path
 
-# from django.views.generic import RedirectView
+from . import views
 
 urlpatterns = [
     # url(r'^$', RedirectView.as_view(url='/index/')),
-    url(r'^index/', views.index, name='data.views.index'),
-    url(r'^persons/$', views.persons, name='data.views.persons'),
-    url(r'^person/(?P<person_id>\d+)/', views.person, name='data.views.person'),
-    url(r'^ancestries/', views.ancestries, name='data.views.ancestries'),
+    path('index/', views.index, name='data.views.index'),
+    path('persons/', views.persons, name='data.views.persons'),
+    path('person/<int:person_id>/', views.person, name='data.views.person'),
+    path('ancestries/', views.ancestries, name='data.views.ancestries'),
 
     # problems
-    url(r'^ancestry/(?P<ancestry_id>\d+)/missing/images', views.missing_images, name='data.views.missing_images'),
+    path('ancestry/<int:ancestry_id>/missing/images', views.missing_images, name='data.views.missing_images'),
 
     # stammbaum
-    url(r'^ancestry/(?P<ancestry_id>\d+)/(.*)$', views.ancestry, name='data.views.ancestry'),
+    path('ancestry/<int:ancestry_id>/(.*)', views.ancestry, name='data.views.ancestry'),
 
     # pdf export
-    url(r'^ancestry_export/(?P<ancestry_id>\d+)/', views.ancestry_export, name='data.views.ancestry_export'),
-    url(r'^ancestry_questions/(?P<ancestry_id>\d+)/', views.ancestry_questions, name='data.views.ancestry_questions'),
-    url(r'^ancestry_history/(?P<ancestry_id>\d+)/', views.ancestry_history, name='data.views.ancestry_history'),
-    url(r'^ancestry_gedcom/(?P<ancestry_id>\d+)/', views.ancestry_gedcom, name='data.views.ancestry_gedcom'),
-    url(r'^location/(?P<location_id>\d+)/', views.location, name='data.views.location'),
-    url(r'^distributions/', views.distributions, name='data.views.distributions'),
-    url(r'^person_export/(?P<person_id>\d+)/', views.person_export, name='data.views.person_export'),
+    path('ancestry_export/<int:ancestry_id>/', views.ancestry_export, name='data.views.ancestry_export'),
+    path('ancestry_questions/<int:ancestry_id>/', views.ancestry_questions, name='data.views.ancestry_questions'),
+    path('ancestry_history/<int:ancestry_id>/', views.ancestry_history, name='data.views.ancestry_history'),
+    path('ancestry_gedcom/<int:ancestry_id>/', views.ancestry_gedcom, name='data.views.ancestry_gedcom'),
+    path('location/<int:location_id>/', views.location, name='data.views.location'),
+    path('distributions/', views.distributions, name='data.views.distributions'),
+    path('person_export/<int:person_id>/', views.person_export, name='data.views.person_export'),
 
-    url(r'^export/ancestry/(?P<ancestry_id>\d+)/', views.export, name='data.views.export'),
-    url(r'^export/ancestry_questions/(?P<ancestry_id>\d+)/', views.export_questions,
-        name='data.views.export_questions'),
-    url(r'^export/person/(?P<person_id>\d+)/', views.export_person, name='data.views.export_person'),
+    path('export/ancestry/<int:ancestry_id>/', views.export, name='data.views.export'),
+    path(
+        'export/ancestry_questions/<int:ancestry_id>/',
+        views.export_questions,
+        name='data.views.export_questions'
+    ),
+    path('export/person/<int:person_id>/', views.export_person, name='data.views.export_person'),
 
-    url(r'^person/dot_tree/(?P<person_id>\d+)/(?P<max_level>\d+)/ancestry\.dot', views.dot_tree,
-        name='data.views.dot_tree'),
-    url(r'^person/tree_image/(?P<person_id>\d+)/(?P<max_level>\d+)/tree\.png', views.tree_image,
-        name='data.views.tree_image'),
-    url(r'^person_tree/(?P<person_id>\d+)/tree.svg', views.person_tree, name='data.views.person_tree'),
+    path(
+        'person/dot_tree/<int:person_id>/<int:max_level>/ancestry.dot',
+        views.dot_tree,
+        name='data.views.dot_tree'
+    ),
+    path(
+        'person/tree_image/<int:person_id>/<int:max_level>/tree.png',
+        views.tree_image,
+        name='data.views.tree_image'
+    ),
+    path(
+        'person_tree/<int:person_id>/tree.svg',
+        views.person_tree,
+        name='data.views.person_tree'
+    ),
 
-    url(r'^statistics/(?P<ancestry_id>\d+)/gender.png', views.gender_statistics, name='data.views.gender_statistics'),
-    url(r'^statistics/(?P<ancestry_id>\d+)/monthly_birth_death.png', views.monthly_birth_death_statistics, name='data.views.monthly_birth_death_statistics'),
-    url(r'^statistics/(?P<ancestry_id>\d+)/birth_locations.png', views.birth_location_statistics, name='data.views.birth_location_statistics'),
-    url(r'^statistics/(?P<ancestry_id>\d+)/children.png', views.children_statistics, name='data.views.children_statistics'),
+    path(
+        'statistics/<int:ancestry_id>/gender.png',
+        views.gender_statistics,
+        name='data.views.gender_statistics'
+    ),
+    path(
+        'statistics/<int:ancestry_id>/monthly_birth_death.png',
+        views.monthly_birth_death_statistics,
+        name='data.views.monthly_birth_death_statistics'
+    ),
+    path(
+        'statistics/<int:ancestry_id>/birth_locations.png',
+        views.birth_location_statistics,
+        name='data.views.birth_location_statistics'
+    ),
+    path(
+        'statistics/<int:ancestry_id>/children.png',
+        views.children_statistics,
+        name='data.views.children_statistics'
+    ),
 ]

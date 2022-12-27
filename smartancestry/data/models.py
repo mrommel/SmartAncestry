@@ -14,2124 +14,2126 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _, gettext
 
 from .classes import StatisticsListInfo, GroupedTimelineInfo, StatisticsInfo, LocationInfo, \
-    PersonEventInfo, PartnerInfo, MarriageInfo, RelationsInfo, TreeInfo, RelativesInfo, PersonInfo, TimelineInfo
+	PersonEventInfo, PartnerInfo, MarriageInfo, RelationsInfo, TreeInfo, RelativesInfo, PersonInfo, TimelineInfo
 from .tools import calculate_age, ancestry_relation, is_empty, \
-    nice_date, name_of_ancestry
+	nice_date, name_of_ancestry
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
 
 class Distribution(models.Model):
-    """
+	"""
 		class of a distribution
 	"""
-    family_name = models.CharField(max_length=50)
-    image = models.ImageField(upload_to='media/distributions', blank=True, null=True)
+	family_name = models.CharField(max_length=50)
+	image = models.ImageField(upload_to='media/distributions', blank=True, null=True)
 
-    def __unicode__(self):
-        return '%s' % self.family_name
+	def __unicode__(self):
+		return '%s' % self.family_name
 
-    def __str__(self):
-        return '%s' % self.family_name
+	def __str__(self):
+		return '%s' % self.family_name
 
 
 class Location(models.Model):
-    """
+	"""
 		class of a location with city, state and country
 
 		meta information: image, longitude, latitude
 	"""
-    city = models.CharField(max_length=50)
-    state = models.CharField(max_length=50)
-    country = models.CharField(max_length=50)
-    image = models.ImageField(upload_to='media/locations', blank=True, null=True)
-    lon = models.FloatField(default=0)  # type: float
-    lat = models.FloatField(default=0)  # type: float
+	city = models.CharField(max_length=50)
+	state = models.CharField(max_length=50)
+	country = models.CharField(max_length=50)
+	image = models.ImageField(upload_to='media/locations', blank=True, null=True)
+	lon = models.FloatField(default=0)  # type: float
+	lat = models.FloatField(default=0)  # type: float
 
-    def members(self):
-        """
+	def members(self):
+		"""
 			list of all persons that share the same location
 			- born here
 			- died here
 			- married etc here
 		"""
-        result_list = []
-        for person in Person.objects.filter(birth_location=self):
-            result_list.append(person)
+		result_list = []
+		for person in Person.objects.filter(birth_location=self):
+			result_list.append(person)
 
-        for person in Person.objects.filter(death_location=self):
-            if person not in result_list:
-                result_list.append(person)
+		for person in Person.objects.filter(death_location=self):
+			if person not in result_list:
+				result_list.append(person)
 
-        for familyStatusRelation in FamilyStatusRelation.objects.filter(location=self):
-            if familyStatusRelation.man not in result_list:
-                result_list.append(familyStatusRelation.man)
+		for familyStatusRelation in FamilyStatusRelation.objects.filter(location=self):
+			if familyStatusRelation.man not in result_list:
+				result_list.append(familyStatusRelation.man)
 
-            if familyStatusRelation.woman not in result_list:
-                result_list.append(familyStatusRelation.woman)
+			if familyStatusRelation.woman not in result_list:
+				result_list.append(familyStatusRelation.woman)
 
-        return result_list
+		return result_list
 
-    def coordinate(self):
-        return ('%f#%f' % (self.lat, self.lon)).replace(',', '.').replace('#', ',')
+	def coordinate(self):
+		return ('%f#%f' % (self.lat, self.lon)).replace(',', '.').replace('#', ',')
 
-    def has_image(self):
-        if self.image:
-            return True
-        return False
+	def has_image(self):
+		if self.image:
+			return True
+		return False
 
-    def thumbnail(self):
-        return '<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % (
-            (self.image.name, self.image.name))
+	def thumbnail(self):
+		return '<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % (
+			(self.image.name, self.image.name))
 
-    thumbnail.allow_tags = True
+	thumbnail.allow_tags = True
 
-    def map(self):
-        token = 'pk.eyJ1IjoibXJvbW1lbDgyIiwiYSI6ImNramVtNzFrcTJsb2YycXJ1MnJkZjNtanIifQ._XmEx_GVTa9BZS4IppCJfg'
-        return '<img border="0" alt="" src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-m-star' \
-               '+A6BCC6(%s)/%s,' \
-               '6/750x262@2x?access_token=%s" height="262" width="750" />' % (self.coordinate(), self.coordinate(), token)
+	def map(self):
+		token = 'pk.eyJ1IjoibXJvbW1lbDgyIiwiYSI6ImNramVtNzFrcTJsb2YycXJ1MnJkZjNtanIifQ._XmEx_GVTa9BZS4IppCJfg'
+		return '<img border="0" alt="" src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-m-star' \
+		       '+A6BCC6(%s)/%s,' \
+		       '6/750x262@2x?access_token=%s" height="262" width="750" />' % (
+		       self.coordinate(), self.coordinate(), token)
 
-    map.allow_tags = True
+	map.allow_tags = True
 
-    # @models.permalink
-    def get_absolute_url(self):
-        return 'data.views.location', [str(self.id)]
+	# @models.permalink
+	def get_absolute_url(self):
+		return 'data.views.location', [str(self.id)]
 
-    def __unicode__(self):
-        return '%s (%s)' % (self.city, self.country)
+	def __unicode__(self):
+		return '%s (%s)' % (self.city, self.country)
 
-    def __str__(self):
-        return '%s (%s)' % (self.city, self.country)
+	def __str__(self):
+		return '%s (%s)' % (self.city, self.country)
 
 
 class Person(models.Model):
-    """
+	"""
 		class of persons
 	"""
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    birth_name = models.CharField(max_length=50, blank=True, null=True)
-    sex = models.CharField(max_length=1, choices=(('M', _('Male')), ('F', _('Female'))), verbose_name=_('Gender'))
-    birth_date = models.DateField(_('date of birth'))
-    birth_date_only_year = models.BooleanField(default=False)
-    birth_date_unclear = models.BooleanField(default=False)
-    birth_location = models.ForeignKey(Location, on_delete=models.DO_NOTHING, blank=True, null=True,
-                                       related_name='birth_location')  # type: Location
-    death_date = models.DateField(_('date of death'), null=True, blank=True)
-    death_date_only_year = models.BooleanField(default=False)
-    death_location = models.ForeignKey(Location, on_delete=models.DO_NOTHING, blank=True, null=True,
-                                       related_name='death_location')  # type: Location
-    cause_of_death = models.CharField(max_length=100, blank=True, null=True)
-    already_died = models.NullBooleanField(default=False, blank=True, null=True)
-    profession = models.CharField(max_length=50, blank=True, null=True)
-    father = models.ForeignKey('self', on_delete=models.DO_NOTHING, blank=True, null=True,
-                               related_name='children_father')  # type: Person
-    father_extern = models.CharField(max_length=200, blank=True, null=True)
-    mother = models.ForeignKey('self', on_delete=models.DO_NOTHING, blank=True, null=True,
-                               related_name='children_mother')  # type: Person
-    mother_extern = models.CharField(max_length=200, blank=True, null=True)  # type: CharField
-    children_extern = models.CharField(max_length=600, blank=True, null=True)  # type: CharField
-    siblings_extern = models.CharField(max_length=600, blank=True, null=True)  # type: CharField
-    notes = models.CharField(max_length=500, blank=True, null=True)
-    external_identifier = models.CharField(max_length=50, blank=True, null=True)
-    image = models.ImageField(upload_to='media/persons', blank=True, null=True)
-
-    def user_name(self):
-        return str(self)
-
-    user_name.short_description = _('Name')
-
-    def first_name_short(self):
-        if ' ' not in self.first_name:
-            return self.first_name
-
-        result_list = self.first_name.split(' ')
-
-        for x in range(0, len(result_list)):
-            if '_' not in result_list[x] and len(result_list[x]) > 0:
-                result_list[x] = result_list[x][0] + '.'
-
-        return ' '.join(result_list)
-
-    def first_name_nice(self):
-        first = self.first_name_short()
-        first = first.replace(u'\xfc', '&uuml;')
-        first = first.replace(u'\xf6', '&ouml;')
-        first = first.replace(u'\xe4', '&auml;')
-        first = first.replace('0xc3', 'A')
-        return ('%s' % (' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> ")).strip()
-
-    def full_name(self):
-        first = self.first_name_short()
-        first = first.replace(u'\xfc', '&uuml;')
-        first = first.replace(u'\xf6', '&ouml;')
-        first = first.replace(u'\xe4', '&auml;')
-        first = first.replace('0xc3', 'A')
-        return ('%s %s' % (
-            (' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> "), self.last_name)).strip()
-
-    def female(self):
-        return self.sex == 'F'
-
-    def male(self):
-        return self.sex == 'M'
-
-    def gender_sign(self):
-        if self.sex == 'M':
-            return "♂"
-        else:
-            return "♀"
-
-    def birth(self):
-        if self.birth_date_unclear:
-            birth_date_str = '???'
-        else:
-            birth_date_str = nice_date(self.birth_date, self.birth_date_only_year)
-
-        birth_str = self.birth_location
-        if birth_str is None:
-            birth_str = '---'
-        return mark_safe('%s<br>%s' % (birth_date_str, birth_str))
-
-    def birth_no_year(self):
-        if self.birth_date_unclear:
-            return ''
-        if self.birth_date is None:
-            return ''
-        return "%s.%s." % ('{0.day:02d}'.format(self.birth_date), '{0.month:02d}'.format(self.birth_date))
-
-    def birth_year(self):
-        if self.birth_date_unclear:
-            return '???'
-        if self.birth_date is None:
-            return '---'
-        return '{0.year:4d}'.format(self.birth_date)
-
-    def birth_summary(self):
-
-        birth_date_str = nice_date(self.birth_date, self.birth_date_only_year)
-
-        if self.birth_date_unclear:
-            birth_date_str = '???'
-
-        if self.father and self.mother:
-            age_father = calculate_age(self.father.birth_date, self.birth_date)
-            age_mother = calculate_age(self.mother.birth_date, self.birth_date)
-
-            if self.male():
-                if self.birth_location:
-                    first_sentence = _(
-                        '%s was born on %s in %s as son of %s (%s years old) and his mother %s (%s years old).') % (
-                                         self.full_name(), birth_date_str, self.birth_location,
-                                         self.father.first_name_nice(),
-                                         age_father, self.mother.first_name_nice(), age_mother)
-                else:
-                    first_sentence = _(
-                        '%s was born on %s as son of %s (%s years old) and his mother %s (%s years old).') % (
-                                         self.full_name(), birth_date_str, self.father.first_name_nice(), age_father,
-                                         self.mother.first_name_nice(), age_mother)
-            else:
-                if self.birth_location:
-                    first_sentence = _(
-                        '%s was born on %s in %s as daughter of %s (%s years old) and her mother %s (%s years old).') % (
-                                         self.full_name(), birth_date_str, self.birth_location,
-                                         self.father.first_name_nice(),
-                                         age_father, self.mother.first_name_nice(), age_mother)
-                else:
-                    first_sentence = _(
-                        '%s was born on %s as daughter of %s (%s years old) and her mother %s (%s years old).') % (
-                                         self.full_name(), birth_date_str, self.father.first_name_nice(), age_father,
-                                         self.mother.first_name_nice(), age_mother)
-        else:
-            father_name_str = self.father_name()
-            mother_name_str = self.mother_name()
-
-            if father_name_str and mother_name_str:
-                if self.male():
-                    if self.birth_location:
-                        first_sentence = _('%s was born as son of %s and %s on %s in %s.') % (
-                            self.full_name(), father_name_str, mother_name_str, birth_date_str, self.birth_location)
-                    else:
-                        first_sentence = _('%s was born as son of %s and %s on %s.') % (
-                            self.full_name(), father_name_str, mother_name_str, birth_date_str)
-                else:
-                    if self.birth_location:
-                        first_sentence = _('%s was born as daughter of %s and %s on %s in %s.') % (
-                            self.full_name(), father_name_str, mother_name_str, birth_date_str, self.birth_location)
-                    else:
-                        first_sentence = _('%s was born as daughter of %s and %s on %s.') % (
-                            self.full_name(), father_name_str, mother_name_str, birth_date_str)
-            else:
-                if self.birth_location:
-                    first_sentence = _('%s was born on %s in %s.') % (
-                        self.full_name(), birth_date_str, self.birth_location)
-                else:
-                    first_sentence = _('%s was born on %s.') % (self.full_name(), birth_date_str)
-
-        return mark_safe(first_sentence)
-
-    def death(self):
-
-        if self.death_date is None:
-            date_str = '-'
-        else:
-            date_str = nice_date(self.death_date, self.death_date_only_year)
-
-        death_str = self.death_location
-        if death_str is None:
-            death_str = '-'
-        age_str = self.age()
-        if age_str is None:
-            age_str = '-'
-        return mark_safe('%s<br />%s<br />%s %s' % (date_str, death_str, age_str, _('years')))
-
-    def death_no_year(self):
-        if self.death_date is None:
-            return ''
-        return "%s.%s." % ('{0.day:02d}'.format(self.death_date), '{0.month:02d}'.format(self.death_date))
-
-    def death_year(self):
-        if self.death_date is None and self.already_died:
-            return '???'
-
-        if self.death_date is None:
-            return ''
-
-        return '{0.year:4d}'.format(self.death_date)
-
-    def show_dead(self):
-        if self.already_died:
-            return True
-
-        if self.death_date is not None:
-            return True
-
-        return False
-
-    def father_name(self):
-        if self.father is not None:
-            return str(self.father)
-        else:
-            return self.father_extern
-
-    def father_name_linked(self):
-        if self.father is not None:
-            return self.father_link()
-        else:
-            return self.father_extern
-
-    def mother_name(self):
-        if self.mother is not None:
-            return str(self.mother)
-        else:
-            return self.mother_extern
-
-    def mother_name_linked(self):
-        if self.mother is not None:
-            return self.mother_link()
-        else:
-            return self.mother_extern
-
-    def thumbnail(self):
-        if self.image.name is not None and self.image.name != '':
-            return mark_safe('<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % (
-                (self.image.name, self.image.name)))
-        else:
-            return mark_safe('<img border="0" alt="" src="/static/data/images/Person-icon-grey.JPG" height="40" />')
-
-    thumbnail.allow_tags = True
-
-    def clean(self):
-        super(Person, self).clean()
-
-        if self.death_date and self.death_date < self.birth_date:
-            raise ValidationError(_('The date of death must be after the date of birth.'))
-
-        if self.death_date is None and self.death_date_only_year:
-            raise ValidationError(_('The date of death must be set, if only year is enabled.'))
-
-        if self.death_date is None and not self.already_died:
-            age = calculate_age(self.birth_date, datetime.now())
-
-            if age > 119:
-                raise ValidationError(_('The person has no date of death but seems to be too old to still live.'))
-
-        if self.death_date is not None:
-            age = calculate_age(self.birth_date, self.death_date)
-
-            if age > 119:
-                raise ValidationError(_('The person seems to be too old.'))
-
-        if len(self.ancestries()) == 0:
-            raise ValidationError(_('The person must be in one ancestry at least.'))
-
-        if self.father and self.birth_date < self.father.birth_date:
-            raise ValidationError(_('The person must be born after the father is born.'))
-
-        if self.mother and self.birth_date < self.mother.birth_date:
-            raise ValidationError(_('The person must be born after the mother is born.'))
-
-    def admin_url(self):
-        return mark_safe('<a href="%s">%s</a>' % (self.id, self.full_name))
-
-    admin_url.allow_tags = True
-
-    def father_link(self):
-        if self.father is not None:
-            return mark_safe('<a href="/admin/data/person/%s/">%s</a>' % (self.father.id, str(self.father)))
-        else:
-            return ''
-
-    father_link.allow_tags = True
-
-    def mother_link(self):
-        if self.mother is not None:
-            return mark_safe('<a href="/admin/data/person/%s/">%s</a>' % (self.mother.id, str(self.mother)))
-        else:
-            return ''
-
-    mother_link.allow_tags = True
-
-    def export_link(self):
-        person_export = '<a href="http://127.0.0.1:7000/data/export/person/%s/" target="_blank">Export</a>' % self.id
-        raw_export = '<a href="http://127.0.0.1:7000/data/person_export/%s/" target="_blank">Raw</a>' % self.id
-        return mark_safe('%s / %s' % (person_export, raw_export))
-
-    export_link.allow_tags = True
-
-    def tree_link(self):
-        short_tree_link = '<a href="/data/person/tree_image/%s/2/tree.png" target="_blank">Short Tree</a>' % self.id
-        full_tree_link = '<a href="/data/person/tree_image/%s/8/tree.png" target="_blank">Full Tree</a>' % self.id
-        raw_tree_link = '<a href="view-source:/data/person/dot_tree/%s/2/ancestry.dot" target="_blank">Raw Tree</a>' % self.id
-        return mark_safe('%s / %s / %s' % (short_tree_link, full_tree_link, raw_tree_link))
-
-    tree_link.allow_tags = True
-
-    def person_events(self):
-
-        return PersonEvent.objects.filter(person=self)
-
-    def events(self):
-
-        event_list = []
-
-        # birth
-        if not self.birth_date_unclear:
-            event_list.append(
-                PersonEventInfo(self.birth_date, -1, _("Birth"), self.birth_summary(), self.birth_location))
-
-        if self.father and self.mother:
-            relation = self.father.partnership(self.mother)
-            if relation:
-                if relation.status == 'M' and relation.date is not None:
-                    age = calculate_age(self.birth_date, relation.date)
-                    parent_marriage_title = _("Marriage of parents")
-                    if self.male():
-                        parent_marriage_summary = _("His parents %s and %s married." % (self.father, self.mother))
-                    else:
-                        parent_marriage_summary = _("Her parents %s and %s married." % (self.father, self.mother))
-
-                    event_list.append(
-                        PersonEventInfo(relation.date, age, parent_marriage_title, parent_marriage_summary, relation.location))
-
-        # birth/death of children
-        for child in self.children():
-            age = calculate_age(self.birth_date, child.birth_date)
-            if child.male():
-                birth_child_title = _('Birth of son')
-                if child.birth_location:
-                    if self.male():
-                        birth_child_summary = _('His son %s was born %s in %s.') % (
-                            child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year),
-                            child.birth_location)
-                    else:
-                        birth_child_summary = _('Her son %s was born %s in %s.') % (
-                            child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year),
-                            child.birth_location)
-                else:
-                    if self.male():
-                        birth_child_summary = _('His son %s was born %s.') % (
-                            child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
-                    else:
-                        birth_child_summary = _('Her son %s was born %s.') % (
-                            child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
-            else:
-                birth_child_title = _('Birth of daughter')
-                if child.birth_location:
-                    if self.male():
-                        birth_child_summary = _('His daughter %s was born %s in %s.') % (
-                            child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year),
-                            child.birth_location)
-                    else:
-                        birth_child_summary = _('Her daughter %s was born %s in %s.') % (
-                            child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year),
-                            child.birth_location)
-                else:
-                    if self.male():
-                        birth_child_summary = _('His daughter %s was born %s.') % (
-                            child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
-                    else:
-                        birth_child_summary = _('Her daughter %s was born %s.') % (
-                            child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
-
-            event_list.append(
-                PersonEventInfo(child.birth_date, age, birth_child_title, mark_safe(birth_child_summary),
-                                child.birth_location))
-
-            show_death_of_child = False
-            if child.death_date:
-                show_death_of_child = True
-            age = -1
-            if self.death_date and child.death_date:
-                if child.death_date > self.death_date:
-                    show_death_of_child = False
-                else:
-                    age = calculate_age(self.birth_date, child.death_date)
-
-            if show_death_of_child:
-                if child.male():
-                    death_child_title = _('Death of son')
-                    death_date_str = nice_date(child.death_date, child.death_date_only_year)
-                    if child.death_location:
-                        if self.male():
-                            death_child_summary = _('His son %s died at %s in %s.') % (
-                                child.first_name_nice(), death_date_str, child.death_location)
-                        else:
-                            death_child_summary = _('Her son %s died at %s in %s.') % (
-                                child.first_name_nice(), death_date_str, child.death_location)
-                    else:
-                        if self.male():
-                            death_child_summary = _('His son %s died at %s.') % (
-                                child.first_name_nice(), death_date_str)
-                        else:
-                            death_child_summary = _('Her son %s died at %s.') % (
-                                child.first_name_nice(), death_date_str)
-                else:
-                    death_child_title = _('Death of daughter')
-                    death_date_str = nice_date(child.death_date, child.death_date_only_year)
-                    if child.death_location:
-                        if self.male():
-                            death_child_summary = _('His daughter %s died at %s in %s.') % (
-                                child.first_name_nice(), death_date_str, child.death_location)
-                        else:
-                            death_child_summary = _('Her daughter %s died at %s in %s.') % (
-                                child.first_name_nice(), death_date_str, child.death_location)
-                    else:
-                        if self.male():
-                            death_child_summary = _('His daughter %s died at %s.') % (
-                                child.first_name_nice(), death_date_str)
-                        else:
-                            death_child_summary = _('Her daughter %s died at %s.') % (
-                                child.first_name_nice(), death_date_str)
-
-                event_list.append(
-                    PersonEventInfo(child.death_date, age, death_child_title, mark_safe(death_child_summary),
-                                    child.death_location))
-
-        # birth/death of siblings
-        for sibling in self.siblings():
-            age = calculate_age(self.birth_date, sibling.birth_date)
-            sibling_birth_date_str = nice_date(sibling.birth_date, sibling.birth_date_only_year)
-
-            if sibling.male():
-                sibling_title = _('Birth of brother')
-
-                if self.birth_location:
-                    if self.male():
-                        sibling_summary = _("His brother %s was born at %s in %s, when %s was %d years old.") % (
-                            sibling.first_name_nice(), sibling_birth_date_str, sibling.birth_location,
-                            self.first_name_nice(), age)
-                    else:
-                        sibling_summary = _("Her brother %s was born at %s in %s, when %s was %d years old.") % (
-                            sibling.first_name_nice(), sibling_birth_date_str, sibling.birth_location,
-                            self.first_name_nice(), age)
-                else:
-                    if self.male():
-                        sibling_summary = _("His brother %s was born at %s, when %s was %d years old.") % (
-                            sibling.first_name_nice(), sibling_birth_date_str, self.first_name_nice(), age)
-                    else:
-                        sibling_summary = _("Her brother %s was born at %s, when %s was %d years old.") % (
-                            sibling.first_name_nice(), sibling_birth_date_str, self.first_name_nice(), age)
-            else:
-                sibling_title = _('Birth of sister')
-
-                if self.birth_location:
-                    if self.male():
-                        sibling_summary = _("His sister %s was born at %s in %s, when %s was %d years old.") % (
-                            sibling.first_name_nice(), sibling_birth_date_str, sibling.birth_location,
-                            self.first_name_nice(), age)
-                    else:
-                        sibling_summary = _("Her sister %s was born at %s in %s, when %s was %d years old.") % (
-                            sibling.first_name_nice(), sibling_birth_date_str, sibling.birth_location,
-                            self.first_name_nice(), age)
-                else:
-                    if self.male():
-                        sibling_summary = _("His sister %s was born at %s, when %s was %d years old.") % (
-                            sibling.first_name_nice(), sibling_birth_date_str, sibling.first_name_nice(), age)
-                    else:
-                        sibling_summary = _("Her sister %s was born at %s, when %s was %d years old.") % (
-                            sibling.first_name_nice(), sibling_birth_date_str, sibling.first_name_nice(), age)
-
-            event_list.append(PersonEventInfo(sibling.birth_date, age, sibling_title, mark_safe(sibling_summary),
-                                              sibling.birth_location))
-
-            show_death_of_sibling = False
-            if sibling.death_date:
-                show_death_of_sibling = True
-
-            if self.death_date and sibling.death_date:
-                if sibling.death_date > self.death_date:
-                    show_death_of_sibling = False
-
-            if show_death_of_sibling:
-                age = calculate_age(self.birth_date, sibling.death_date)
-                sibling_death_date_str = nice_date(sibling.death_date, sibling.death_date_only_year)
-
-                if sibling.male():
-                    sibling_title = _('Death of brother')
-
-                    if self.death_location:
-                        if self.male():
-                            sibling_summary = _('His brother %s died at %s in %s, when %s was %d years old.') % (
-                                sibling.first_name_nice(), sibling_death_date_str, sibling.death_location,
-                                self.first_name_nice(), age)
-                        else:
-                            sibling_summary = _('Her brother %s died at %s in %s, when %s was %d years old.') % (
-                                sibling.first_name_nice(), sibling_death_date_str, sibling.death_location,
-                                self.first_name_nice(), age)
-                    else:
-                        if self.male():
-                            sibling_summary = _('His brother %s died at %s, when %s was %d years old.') % (
-                                sibling.first_name_nice(), sibling_death_date_str, self.first_name_nice(), age)
-                        else:
-                            sibling_summary = _('Her brother %s died at %s, when %s was %d years old.') % (
-                                sibling.first_name_nice(), sibling_death_date_str, self.first_name_nice(), age)
-
-                else:
-                    sibling_title = _('Death of sister')
-
-                    if self.death_location:
-                        if self.male():
-                            sibling_summary = _('His sister %s died at %s in %s, when %s was %d years old.') % (
-                                sibling.first_name_nice(), sibling_death_date_str, sibling.death_location,
-                                self.first_name_nice(), age)
-                        else:
-                            sibling_summary = _('Her sister %s died at %s in %s, when %s was %d years old.') % (
-                                sibling.first_name_nice(), sibling_death_date_str, sibling.death_location,
-                                self.first_name_nice(), age)
-                    else:
-                        if self.male():
-                            sibling_summary = _('His sister %s died at %s, when %s was %d years old.') % (
-                                sibling.first_name_nice(), sibling_death_date_str, self.first_name_nice(), age)
-                        else:
-                            sibling_summary = _('Her sister %s died at %s, when %s was %d years old.') % (
-                                sibling.first_name_nice(), sibling_death_date_str, self.first_name_nice(), age)
-
-                event_list.append(
-                    PersonEventInfo(sibling.death_date, age, sibling_title, mark_safe(sibling_summary),
-                                    sibling.death_location))
-
-        # marriage
-        for familyStatusRelation in FamilyStatusRelation.objects.filter(
-                Q(man=self) & Q(status='M') & (Q(ended=False) | Q(ended=None))):
-            if familyStatusRelation.date:
-                age = calculate_age(self.birth_date, familyStatusRelation.date)
-
-                marriage_title = _('marriage')
-                marriage_date_str = nice_date(familyStatusRelation.date, familyStatusRelation.date_only_year)
-
-                if familyStatusRelation.location:
-                    marriage_summary = _('%s married %s on %s at %s when he was %d years old.') % (
-                        self.full_name(), familyStatusRelation.woman.full_name(), marriage_date_str,
-                        familyStatusRelation.location, age)
-                else:
-                    marriage_summary = _('%s married %s on %s when he was %d years old.') % (
-                        self.full_name(), familyStatusRelation.woman.full_name(), marriage_date_str, age)
-
-                event_list.append(
-                    PersonEventInfo(familyStatusRelation.date, age, marriage_title, mark_safe(marriage_summary),
-                                    familyStatusRelation.location))
-
-        for familyStatusRelation in FamilyStatusRelation.objects.filter(
-                Q(woman=self) & Q(status='M') & (Q(ended=False) | Q(ended=None))):
-            if familyStatusRelation.date:
-                age = calculate_age(self.birth_date, familyStatusRelation.date)
-
-                marriage_title = _('marriage')
-                marriage_date_str = nice_date(familyStatusRelation.date, familyStatusRelation.date_only_year)
-
-                if familyStatusRelation.location:
-                    marriage_summary = _('%s married %s on %s at %s when she was %d years old.') % (
-                        self.full_name(), familyStatusRelation.man.full_name(), marriage_date_str,
-                        familyStatusRelation.location, age)
-                else:
-                    marriage_summary = _('%s married %s on %s when she was %d years old.') % (
-                        self.full_name(), familyStatusRelation.man.full_name(), marriage_date_str, age)
-
-                event_list.append(PersonEventInfo(familyStatusRelation.date, age, marriage_title,
-                                                  mark_safe(marriage_summary), familyStatusRelation.location))
-
-        # death of parents
-        if self.father:
-            show_death_of_father = False
-            if self.father.death_date:
-                show_death_of_father = True
-
-            if self.death_date and self.father.death_date:
-                if self.father.death_date > self.death_date:
-                    show_death_of_father = False
-
-            if show_death_of_father:
-                death_father_title = _('Death of father')
-                death_father_str = nice_date(self.father.death_date, self.father.death_date_only_year)
-                age = calculate_age(self.birth_date, self.father.death_date)
-
-                if self.father.death_location:
-                    if self.male():
-                        death_father_summary = _('His father %s died at %s in %s, when %s was %d years old.') % (
-                            self.father.first_name_nice(), death_father_str, self.father.death_location,
-                            self.first_name_nice(),
-                            age)
-                    else:
-                        death_father_summary = _('Her father %s died at %s in %s, when %s was %d years old.') % (
-                            self.father.first_name_nice(), death_father_str, self.father.death_location,
-                            self.first_name_nice(),
-                            age)
-                else:
-                    if self.male():
-                        death_father_summary = _('His father %s died at %s, when %s was %d years old.') % (
-                            self.father.first_name_nice(), death_father_str, self.first_name_nice(), age)
-                    else:
-                        death_father_summary = _('Her father %s died at %s, when %s was %d years old.') % (
-                            self.father.first_name_nice(), death_father_str, self.first_name_nice(), age)
-
-                event_list.append(
-                    PersonEventInfo(self.father.death_date, age, death_father_title, mark_safe(death_father_summary),
-                                    self.father.death_location))
-        if self.mother:
-            show_death_of_mother = False
-            if self.mother.death_date:
-                show_death_of_mother = True
-
-            if self.death_date and self.mother.death_date:
-                if self.mother.death_date > self.death_date:
-                    show_death_of_mother = False
-
-            if show_death_of_mother:
-                death_mother_title = _('Death of mother')
-                death_mother_str = nice_date(self.mother.death_date, self.mother.death_date_only_year)
-                age = calculate_age(self.birth_date, self.mother.death_date)
-
-                if self.mother.death_location:
-                    if self.male():
-                        death_mother_summary = _('His mother %s died at %s in %s, when %s was %d years old.') % (
-                            self.mother.first_name_nice(), death_mother_str, self.mother.death_location,
-                            self.first_name_nice(),
-                            age)
-                    else:
-                        death_mother_summary = _('Her mother %s died at %s in %s, when %s was %d years old.') % (
-                            self.mother.first_name_nice(), death_mother_str, self.mother.death_location,
-                            self.first_name_nice(),
-                            age)
-                else:
-                    if self.male():
-                        death_mother_summary = _('His mother %s died at %s, when %s was %d years old.') % (
-                            self.mother.first_name_nice(), death_mother_str, self.first_name_nice(), age)
-                    else:
-                        death_mother_summary = _('Her mother %s died at %s, when %s was %d years old.') % (
-                            self.mother.first_name_nice(), death_mother_str, self.first_name_nice(), age)
-
-                event_list.append(
-                    PersonEventInfo(self.mother.death_date, age, death_mother_title, mark_safe(death_mother_summary),
-                                    self.mother.death_location))
-
-        # death
-        if self.death_date:
-            age = calculate_age(self.birth_date, self.death_date)
-
-            death_title = _('Death')
-            death_date_str = nice_date(self.death_date, self.death_date_only_year)
-
-            if self.death_location:
-                death_summary = _('%s died at %s in %s at the age of %d years.') % (
-                    self.full_name(), death_date_str, self.death_location, age)
-            else:
-                death_summary = _('%s died at %s at the age of %d years.') % (self.full_name(), death_date_str, age)
-
-            event_list.append(
-                PersonEventInfo(self.death_date, age, death_title, mark_safe(death_summary), self.death_location))
-
-        event_list = sorted(event_list, key=attrgetter('date'))
-
-        return event_list
-
-    def age(self):
-
-        if self.birth_date_unclear:
-            return None
-
-        if self.death_date is None and not self.already_died:
-            return calculate_age(self.birth_date, date.today())
-
-        if self.death_date is None and self.already_died:
-            return None
-
-        return calculate_age(self.birth_date, self.death_date)
-
-    def age_at_marriage(self):
-
-        date_married = self.married_at()
-
-        if date_married is None:
-            return None
-
-        return calculate_age(self.birth_date, date_married)
-
-    def partner_relations(self):
-        if self.sex == 'M':
-            try:
-                partners = []
-                for relation in FamilyStatusRelation.objects.filter(man=self):
-                    if relation.woman is not None:
-                        partners.append(
-                            PartnerInfo(relation.status_name, relation.woman, "", relation.location, relation.date,
-                                        relation.date_only_year, relation.status))
-                    else:
-                        partners.append(PartnerInfo(relation.status_name, None, relation.wife_extern, relation.location,
-                                                    relation.date, relation.date_only_year, relation.status))
-                return partners
-            except FamilyStatusRelation.DoesNotExist:
-                pass
-
-        if self.sex == 'F':
-            try:
-                partners = []
-                for relation in FamilyStatusRelation.objects.filter(woman=self):
-                    if relation.man is not None:
-                        partners.append(
-                            PartnerInfo(relation.status_name, relation.man, "", relation.location, relation.date,
-                                        relation.date_only_year, relation.status))
-                    else:
-                        partners.append(
-                            PartnerInfo(relation.status_name, None, relation.husband_extern, relation.location,
-                                        relation.date, relation.date_only_year, relation.status))
-                return partners
-            except FamilyStatusRelation.DoesNotExist:
-                pass
-
-        return None
-
-    def partner_names_linked(self):
-        result = ''
-
-        for partner_info in self.partner_relations():
-            date_str = ''
-            location_str = ''
-
-            if partner_info.date:
-                date_str = ' - ' + nice_date(partner_info.date, partner_info.date_year_only)
-
-            if partner_info.partner is not None:
-                name_str = mark_safe(
-                    '<a href="/admin/data/person/%s/">%s</a>' % (partner_info.partner.id, str(partner_info.partner)))
-            else:
-                name_str = partner_info.partner_name
-
-            if partner_info.location:
-                location_str = ' - ' + str(partner_info.location)
-
-            result = result + name_str + date_str + location_str + ", "
-
-        return result
-
-    partner_names_linked.allow_tags = True
-
-    def siblings(self):
-        if self.mother is None and self.father is None:
-            return []
-
-        if self.mother is None:
-            return Person.objects.filter(father=self.father).exclude(id=self.id)
-
-        if self.father is None:
-            return Person.objects.filter(mother=self.mother).exclude(id=self.id)
-
-        siblings_list = []
-        siblings_list_mother = list(Person.objects.filter(mother=self.mother))
-        siblings_list_father = list(Person.objects.filter(father=self.father))
-
-        for sibling in chain(siblings_list_mother, siblings_list_father):
-            if sibling not in siblings_list and sibling.id != self.id:
-                siblings_list.append(sibling)
-
-        siblings_list = sorted(siblings_list, key=attrgetter('birth_date'), reverse=False)
-
-        return siblings_list
-
-    def siblings_extern_list(self):
-        if self.siblings_extern is not None and self.siblings_extern != '':
-            return self.siblings_extern.split(',')
-
-        return None
-
-    def siblings_text(self):
-        siblings_text_var = ''
-
-        for sibling_item in self.siblings():
-            siblings_text_var = "%s, %s" % (siblings_text_var, sibling_item.get_admin_url())
-
-        if self.siblings_extern is not None:
-            siblings_text_var = "%s, %s" % (siblings_text_var, self.siblings_extern)
-
-        siblings_text_var = "$%s$" % siblings_text_var
-        siblings_text_var = siblings_text_var.replace("$, ", "")
-        siblings_text_var = siblings_text_var.replace(", $", "")
-        siblings_text_var = siblings_text_var.replace("$", "")
-
-        return mark_safe(siblings_text_var)
-
-    siblings_text.allow_tags = True
-
-    def children(self):
-        children_list = Person.objects.filter(Q(father=self) | Q(mother=self))
-        children_list = sorted(children_list, key=attrgetter('birth_date'), reverse=False)
-        return children_list
-
-    def children_extern_list(self):
-        if self.children_extern == '-':
-            return None
-
-        if self.children_extern is not None and self.children_extern != '':
-            return self.children_extern.split(',')
-
-        return None
-
-    def children_text(self):
-        children_str = ''
-
-        for children_item in self.children():
-            children_str = "%s, %s" % (children_str, children_item.get_admin_url())
-
-        if self.children_extern is not None:
-            children_str = "%s, %s" % (children_str, self.children_extern)
-
-        children_str = "$%s$" % children_str
-        children_str = children_str.replace("$, ", "")
-        children_str = children_str.replace(", $", "")
-        children_str = children_str.replace("$", "")
-
-        return mark_safe(children_str)
-
-    children_text.allow_tags = True
-
-    def children_count(self):
-        count = len(self.children())
-
-        if self.children_extern_list() is not None:
-            count = count + len(self.children_extern_list())
-
-        return count
-
-    def ancestries(self):
-        return AncestryRelation.objects.filter(person=self)
-
-    def ancestry_names(self):
-        ancestry_names_var = ''
-
-        for item in map(name_of_ancestry, AncestryRelation.objects.filter(person=self)):
-            ancestry_names_var = '%s, %s' % (ancestry_names_var, item)
-
-        ancestry_names_var = "$%s$" % ancestry_names_var
-        ancestry_names_var = ancestry_names_var.replace("$, ", "")
-        ancestry_names_var = ancestry_names_var.replace(", $", "")
-        ancestry_names_var = ancestry_names_var.replace("$", "")
-
-        if ancestry_names_var == '':
-            ancestry_names_var = '<span style="color: red;">%s</span>' % _("no ancestry")
-
-        return mark_safe(ancestry_names_var)
-
-    def has_ancestry(self, ancestry_id):
-        for ancestryRelation in AncestryRelation.objects.filter(person=self):
-            if ancestryRelation.id == ancestry_id:
-                return True
-
-        return False
-
-    def married_to(self):
-        """
+	first_name = models.CharField(max_length=50)
+	last_name = models.CharField(max_length=50)
+	birth_name = models.CharField(max_length=50, blank=True, null=True)
+	sex = models.CharField(max_length=1, choices=(('M', _('Male')), ('F', _('Female'))), verbose_name=_('Gender'))
+	birth_date = models.DateField(_('date of birth'))
+	birth_date_only_year = models.BooleanField(default=False)
+	birth_date_unclear = models.BooleanField(default=False)
+	birth_location = models.ForeignKey(Location, on_delete=models.DO_NOTHING, blank=True, null=True,
+	                                   related_name='birth_location')  # type: Location
+	death_date = models.DateField(_('date of death'), null=True, blank=True)
+	death_date_only_year = models.BooleanField(default=False)
+	death_location = models.ForeignKey(Location, on_delete=models.DO_NOTHING, blank=True, null=True,
+	                                   related_name='death_location')  # type: Location
+	cause_of_death = models.CharField(max_length=100, blank=True, null=True)
+	already_died = models.BooleanField(default=False, blank=True, null=True)
+	profession = models.CharField(max_length=50, blank=True, null=True)
+	father = models.ForeignKey('self', on_delete=models.DO_NOTHING, blank=True, null=True,
+	                           related_name='children_father')  # type: Person
+	father_extern = models.CharField(max_length=200, blank=True, null=True)
+	mother = models.ForeignKey('self', on_delete=models.DO_NOTHING, blank=True, null=True,
+	                           related_name='children_mother')  # type: Person
+	mother_extern = models.CharField(max_length=200, blank=True, null=True)  # type: CharField
+	children_extern = models.CharField(max_length=600, blank=True, null=True)  # type: CharField
+	siblings_extern = models.CharField(max_length=600, blank=True, null=True)  # type: CharField
+	notes = models.CharField(max_length=500, blank=True, null=True)
+	external_identifier = models.CharField(max_length=50, blank=True, null=True)
+	image = models.ImageField(upload_to='media/persons', blank=True, null=True)
+
+	def user_name(self):
+		return str(self)
+
+	user_name.short_description = _('Name')
+
+	def first_name_short(self):
+		if ' ' not in self.first_name:
+			return self.first_name
+
+		result_list = self.first_name.split(' ')
+
+		for x in range(0, len(result_list)):
+			if '_' not in result_list[x] and len(result_list[x]) > 0:
+				result_list[x] = result_list[x][0] + '.'
+
+		return ' '.join(result_list)
+
+	def first_name_nice(self):
+		first = self.first_name_short()
+		first = first.replace(u'\xfc', '&uuml;')
+		first = first.replace(u'\xf6', '&ouml;')
+		first = first.replace(u'\xe4', '&auml;')
+		first = first.replace('0xc3', 'A')
+		return ('%s' % (' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> ")).strip()
+
+	def full_name(self):
+		first = self.first_name_short()
+		first = first.replace(u'\xfc', '&uuml;')
+		first = first.replace(u'\xf6', '&ouml;')
+		first = first.replace(u'\xe4', '&auml;')
+		first = first.replace('0xc3', 'A')
+		return ('%s %s' % (
+			(' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> "), self.last_name)).strip()
+
+	def female(self):
+		return self.sex == 'F'
+
+	def male(self):
+		return self.sex == 'M'
+
+	def gender_sign(self):
+		if self.sex == 'M':
+			return "♂"
+		else:
+			return "♀"
+
+	def birth(self):
+		if self.birth_date_unclear:
+			birth_date_str = '???'
+		else:
+			birth_date_str = nice_date(self.birth_date, self.birth_date_only_year)
+
+		birth_str = self.birth_location
+		if birth_str is None:
+			birth_str = '---'
+		return mark_safe('%s<br>%s' % (birth_date_str, birth_str))
+
+	def birth_no_year(self):
+		if self.birth_date_unclear:
+			return ''
+		if self.birth_date is None:
+			return ''
+		return "%s.%s." % ('{0.day:02d}'.format(self.birth_date), '{0.month:02d}'.format(self.birth_date))
+
+	def birth_year(self):
+		if self.birth_date_unclear:
+			return '???'
+		if self.birth_date is None:
+			return '---'
+		return '{0.year:4d}'.format(self.birth_date)
+
+	def birth_summary(self):
+
+		birth_date_str = nice_date(self.birth_date, self.birth_date_only_year)
+
+		if self.birth_date_unclear:
+			birth_date_str = '???'
+
+		if self.father and self.mother:
+			age_father = calculate_age(self.father.birth_date, self.birth_date)
+			age_mother = calculate_age(self.mother.birth_date, self.birth_date)
+
+			if self.male():
+				if self.birth_location:
+					first_sentence = _(
+						'%s was born on %s in %s as son of %s (%s years old) and his mother %s (%s years old).') % (
+						                 self.full_name(), birth_date_str, self.birth_location,
+						                 self.father.first_name_nice(),
+						                 age_father, self.mother.first_name_nice(), age_mother)
+				else:
+					first_sentence = _(
+						'%s was born on %s as son of %s (%s years old) and his mother %s (%s years old).') % (
+						                 self.full_name(), birth_date_str, self.father.first_name_nice(), age_father,
+						                 self.mother.first_name_nice(), age_mother)
+			else:
+				if self.birth_location:
+					first_sentence = _(
+						'%s was born on %s in %s as daughter of %s (%s years old) and her mother %s (%s years old).') % (
+						                 self.full_name(), birth_date_str, self.birth_location,
+						                 self.father.first_name_nice(),
+						                 age_father, self.mother.first_name_nice(), age_mother)
+				else:
+					first_sentence = _(
+						'%s was born on %s as daughter of %s (%s years old) and her mother %s (%s years old).') % (
+						                 self.full_name(), birth_date_str, self.father.first_name_nice(), age_father,
+						                 self.mother.first_name_nice(), age_mother)
+		else:
+			father_name_str = self.father_name()
+			mother_name_str = self.mother_name()
+
+			if father_name_str and mother_name_str:
+				if self.male():
+					if self.birth_location:
+						first_sentence = _('%s was born as son of %s and %s on %s in %s.') % (
+							self.full_name(), father_name_str, mother_name_str, birth_date_str, self.birth_location)
+					else:
+						first_sentence = _('%s was born as son of %s and %s on %s.') % (
+							self.full_name(), father_name_str, mother_name_str, birth_date_str)
+				else:
+					if self.birth_location:
+						first_sentence = _('%s was born as daughter of %s and %s on %s in %s.') % (
+							self.full_name(), father_name_str, mother_name_str, birth_date_str, self.birth_location)
+					else:
+						first_sentence = _('%s was born as daughter of %s and %s on %s.') % (
+							self.full_name(), father_name_str, mother_name_str, birth_date_str)
+			else:
+				if self.birth_location:
+					first_sentence = _('%s was born on %s in %s.') % (
+						self.full_name(), birth_date_str, self.birth_location)
+				else:
+					first_sentence = _('%s was born on %s.') % (self.full_name(), birth_date_str)
+
+		return mark_safe(first_sentence)
+
+	def death(self):
+
+		if self.death_date is None:
+			date_str = '-'
+		else:
+			date_str = nice_date(self.death_date, self.death_date_only_year)
+
+		death_str = self.death_location
+		if death_str is None:
+			death_str = '-'
+		age_str = self.age()
+		if age_str is None:
+			age_str = '-'
+		return mark_safe('%s<br />%s<br />%s %s' % (date_str, death_str, age_str, _('years')))
+
+	def death_no_year(self):
+		if self.death_date is None:
+			return ''
+		return "%s.%s." % ('{0.day:02d}'.format(self.death_date), '{0.month:02d}'.format(self.death_date))
+
+	def death_year(self):
+		if self.death_date is None and self.already_died:
+			return '???'
+
+		if self.death_date is None:
+			return ''
+
+		return '{0.year:4d}'.format(self.death_date)
+
+	def show_dead(self):
+		if self.already_died:
+			return True
+
+		if self.death_date is not None:
+			return True
+
+		return False
+
+	def father_name(self):
+		if self.father is not None:
+			return str(self.father)
+		else:
+			return self.father_extern
+
+	def father_name_linked(self):
+		if self.father is not None:
+			return self.father_link()
+		else:
+			return self.father_extern
+
+	def mother_name(self):
+		if self.mother is not None:
+			return str(self.mother)
+		else:
+			return self.mother_extern
+
+	def mother_name_linked(self):
+		if self.mother is not None:
+			return self.mother_link()
+		else:
+			return self.mother_extern
+
+	def thumbnail(self):
+		if self.image.name is not None and self.image.name != '':
+			return mark_safe('<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % (
+				(self.image.name, self.image.name)))
+		else:
+			return mark_safe('<img border="0" alt="" src="/static/data/images/Person-icon-grey.JPG" height="40" />')
+
+	thumbnail.allow_tags = True
+
+	def clean(self):
+		super(Person, self).clean()
+
+		if self.death_date and self.death_date < self.birth_date:
+			raise ValidationError(_('The date of death must be after the date of birth.'))
+
+		if self.death_date is None and self.death_date_only_year:
+			raise ValidationError(_('The date of death must be set, if only year is enabled.'))
+
+		if self.death_date is None and not self.already_died:
+			age = calculate_age(self.birth_date, datetime.now())
+
+			if age > 119:
+				raise ValidationError(_('The person has no date of death but seems to be too old to still live.'))
+
+		if self.death_date is not None:
+			age = calculate_age(self.birth_date, self.death_date)
+
+			if age > 119:
+				raise ValidationError(_('The person seems to be too old.'))
+
+		if len(self.ancestries()) == 0:
+			raise ValidationError(_('The person must be in one ancestry at least.'))
+
+		if self.father and self.birth_date < self.father.birth_date:
+			raise ValidationError(_('The person must be born after the father is born.'))
+
+		if self.mother and self.birth_date < self.mother.birth_date:
+			raise ValidationError(_('The person must be born after the mother is born.'))
+
+	def admin_url(self):
+		return mark_safe('<a href="%s">%s</a>' % (self.id, self.full_name))
+
+	admin_url.allow_tags = True
+
+	def father_link(self):
+		if self.father is not None:
+			return mark_safe('<a href="/admin/data/person/%s/">%s</a>' % (self.father.id, str(self.father)))
+		else:
+			return ''
+
+	father_link.allow_tags = True
+
+	def mother_link(self):
+		if self.mother is not None:
+			return mark_safe('<a href="/admin/data/person/%s/">%s</a>' % (self.mother.id, str(self.mother)))
+		else:
+			return ''
+
+	mother_link.allow_tags = True
+
+	def export_link(self):
+		person_export = '<a href="http://127.0.0.1:7000/data/export/person/%s/" target="_blank">Export</a>' % self.id
+		raw_export = '<a href="http://127.0.0.1:7000/data/person_export/%s/" target="_blank">Raw</a>' % self.id
+		return mark_safe('%s / %s' % (person_export, raw_export))
+
+	export_link.allow_tags = True
+
+	def tree_link(self):
+		short_tree_link = '<a href="/data/person/tree_image/%s/2/tree.png" target="_blank">Short Tree</a>' % self.id
+		full_tree_link = '<a href="/data/person/tree_image/%s/8/tree.png" target="_blank">Full Tree</a>' % self.id
+		raw_tree_link = '<a href="view-source:/data/person/dot_tree/%s/2/ancestry.dot" target="_blank">Raw Tree</a>' % self.id
+		return mark_safe('%s / %s / %s' % (short_tree_link, full_tree_link, raw_tree_link))
+
+	tree_link.allow_tags = True
+
+	def person_events(self):
+
+		return PersonEvent.objects.filter(person=self)
+
+	def events(self):
+
+		event_list = []
+
+		# birth
+		if not self.birth_date_unclear:
+			event_list.append(
+				PersonEventInfo(self.birth_date, -1, _("Birth"), self.birth_summary(), self.birth_location))
+
+		if self.father and self.mother:
+			relation = self.father.partnership(self.mother)
+			if relation:
+				if relation.status == 'M' and relation.date is not None:
+					age = calculate_age(self.birth_date, relation.date)
+					parent_marriage_title = _("Marriage of parents")
+					if self.male():
+						parent_marriage_summary = _("His parents %s and %s married." % (self.father, self.mother))
+					else:
+						parent_marriage_summary = _("Her parents %s and %s married." % (self.father, self.mother))
+
+					event_list.append(
+						PersonEventInfo(relation.date, age, parent_marriage_title, parent_marriage_summary,
+						                relation.location))
+
+		# birth/death of children
+		for child in self.children():
+			age = calculate_age(self.birth_date, child.birth_date)
+			if child.male():
+				birth_child_title = _('Birth of son')
+				if child.birth_location:
+					if self.male():
+						birth_child_summary = _('His son %s was born %s in %s.') % (
+							child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year),
+							child.birth_location)
+					else:
+						birth_child_summary = _('Her son %s was born %s in %s.') % (
+							child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year),
+							child.birth_location)
+				else:
+					if self.male():
+						birth_child_summary = _('His son %s was born %s.') % (
+							child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
+					else:
+						birth_child_summary = _('Her son %s was born %s.') % (
+							child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
+			else:
+				birth_child_title = _('Birth of daughter')
+				if child.birth_location:
+					if self.male():
+						birth_child_summary = _('His daughter %s was born %s in %s.') % (
+							child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year),
+							child.birth_location)
+					else:
+						birth_child_summary = _('Her daughter %s was born %s in %s.') % (
+							child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year),
+							child.birth_location)
+				else:
+					if self.male():
+						birth_child_summary = _('His daughter %s was born %s.') % (
+							child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
+					else:
+						birth_child_summary = _('Her daughter %s was born %s.') % (
+							child.first_name_nice(), nice_date(child.birth_date, child.birth_date_only_year))
+
+			event_list.append(
+				PersonEventInfo(child.birth_date, age, birth_child_title, mark_safe(birth_child_summary),
+				                child.birth_location))
+
+			show_death_of_child = False
+			if child.death_date:
+				show_death_of_child = True
+			age = -1
+			if self.death_date and child.death_date:
+				if child.death_date > self.death_date:
+					show_death_of_child = False
+				else:
+					age = calculate_age(self.birth_date, child.death_date)
+
+			if show_death_of_child:
+				if child.male():
+					death_child_title = _('Death of son')
+					death_date_str = nice_date(child.death_date, child.death_date_only_year)
+					if child.death_location:
+						if self.male():
+							death_child_summary = _('His son %s died at %s in %s.') % (
+								child.first_name_nice(), death_date_str, child.death_location)
+						else:
+							death_child_summary = _('Her son %s died at %s in %s.') % (
+								child.first_name_nice(), death_date_str, child.death_location)
+					else:
+						if self.male():
+							death_child_summary = _('His son %s died at %s.') % (
+								child.first_name_nice(), death_date_str)
+						else:
+							death_child_summary = _('Her son %s died at %s.') % (
+								child.first_name_nice(), death_date_str)
+				else:
+					death_child_title = _('Death of daughter')
+					death_date_str = nice_date(child.death_date, child.death_date_only_year)
+					if child.death_location:
+						if self.male():
+							death_child_summary = _('His daughter %s died at %s in %s.') % (
+								child.first_name_nice(), death_date_str, child.death_location)
+						else:
+							death_child_summary = _('Her daughter %s died at %s in %s.') % (
+								child.first_name_nice(), death_date_str, child.death_location)
+					else:
+						if self.male():
+							death_child_summary = _('His daughter %s died at %s.') % (
+								child.first_name_nice(), death_date_str)
+						else:
+							death_child_summary = _('Her daughter %s died at %s.') % (
+								child.first_name_nice(), death_date_str)
+
+				event_list.append(
+					PersonEventInfo(child.death_date, age, death_child_title, mark_safe(death_child_summary),
+					                child.death_location))
+
+		# birth/death of siblings
+		for sibling in self.siblings():
+			age = calculate_age(self.birth_date, sibling.birth_date)
+			sibling_birth_date_str = nice_date(sibling.birth_date, sibling.birth_date_only_year)
+
+			if sibling.male():
+				sibling_title = _('Birth of brother')
+
+				if self.birth_location:
+					if self.male():
+						sibling_summary = _("His brother %s was born at %s in %s, when %s was %d years old.") % (
+							sibling.first_name_nice(), sibling_birth_date_str, sibling.birth_location,
+							self.first_name_nice(), age)
+					else:
+						sibling_summary = _("Her brother %s was born at %s in %s, when %s was %d years old.") % (
+							sibling.first_name_nice(), sibling_birth_date_str, sibling.birth_location,
+							self.first_name_nice(), age)
+				else:
+					if self.male():
+						sibling_summary = _("His brother %s was born at %s, when %s was %d years old.") % (
+							sibling.first_name_nice(), sibling_birth_date_str, self.first_name_nice(), age)
+					else:
+						sibling_summary = _("Her brother %s was born at %s, when %s was %d years old.") % (
+							sibling.first_name_nice(), sibling_birth_date_str, self.first_name_nice(), age)
+			else:
+				sibling_title = _('Birth of sister')
+
+				if self.birth_location:
+					if self.male():
+						sibling_summary = _("His sister %s was born at %s in %s, when %s was %d years old.") % (
+							sibling.first_name_nice(), sibling_birth_date_str, sibling.birth_location,
+							self.first_name_nice(), age)
+					else:
+						sibling_summary = _("Her sister %s was born at %s in %s, when %s was %d years old.") % (
+							sibling.first_name_nice(), sibling_birth_date_str, sibling.birth_location,
+							self.first_name_nice(), age)
+				else:
+					if self.male():
+						sibling_summary = _("His sister %s was born at %s, when %s was %d years old.") % (
+							sibling.first_name_nice(), sibling_birth_date_str, sibling.first_name_nice(), age)
+					else:
+						sibling_summary = _("Her sister %s was born at %s, when %s was %d years old.") % (
+							sibling.first_name_nice(), sibling_birth_date_str, sibling.first_name_nice(), age)
+
+			event_list.append(PersonEventInfo(sibling.birth_date, age, sibling_title, mark_safe(sibling_summary),
+			                                  sibling.birth_location))
+
+			show_death_of_sibling = False
+			if sibling.death_date:
+				show_death_of_sibling = True
+
+			if self.death_date and sibling.death_date:
+				if sibling.death_date > self.death_date:
+					show_death_of_sibling = False
+
+			if show_death_of_sibling:
+				age = calculate_age(self.birth_date, sibling.death_date)
+				sibling_death_date_str = nice_date(sibling.death_date, sibling.death_date_only_year)
+
+				if sibling.male():
+					sibling_title = _('Death of brother')
+
+					if self.death_location:
+						if self.male():
+							sibling_summary = _('His brother %s died at %s in %s, when %s was %d years old.') % (
+								sibling.first_name_nice(), sibling_death_date_str, sibling.death_location,
+								self.first_name_nice(), age)
+						else:
+							sibling_summary = _('Her brother %s died at %s in %s, when %s was %d years old.') % (
+								sibling.first_name_nice(), sibling_death_date_str, sibling.death_location,
+								self.first_name_nice(), age)
+					else:
+						if self.male():
+							sibling_summary = _('His brother %s died at %s, when %s was %d years old.') % (
+								sibling.first_name_nice(), sibling_death_date_str, self.first_name_nice(), age)
+						else:
+							sibling_summary = _('Her brother %s died at %s, when %s was %d years old.') % (
+								sibling.first_name_nice(), sibling_death_date_str, self.first_name_nice(), age)
+
+				else:
+					sibling_title = _('Death of sister')
+
+					if self.death_location:
+						if self.male():
+							sibling_summary = _('His sister %s died at %s in %s, when %s was %d years old.') % (
+								sibling.first_name_nice(), sibling_death_date_str, sibling.death_location,
+								self.first_name_nice(), age)
+						else:
+							sibling_summary = _('Her sister %s died at %s in %s, when %s was %d years old.') % (
+								sibling.first_name_nice(), sibling_death_date_str, sibling.death_location,
+								self.first_name_nice(), age)
+					else:
+						if self.male():
+							sibling_summary = _('His sister %s died at %s, when %s was %d years old.') % (
+								sibling.first_name_nice(), sibling_death_date_str, self.first_name_nice(), age)
+						else:
+							sibling_summary = _('Her sister %s died at %s, when %s was %d years old.') % (
+								sibling.first_name_nice(), sibling_death_date_str, self.first_name_nice(), age)
+
+				event_list.append(
+					PersonEventInfo(sibling.death_date, age, sibling_title, mark_safe(sibling_summary),
+					                sibling.death_location))
+
+		# marriage
+		for familyStatusRelation in FamilyStatusRelation.objects.filter(
+			Q(man=self) & Q(status='M') & (Q(ended=False) | Q(ended=None))):
+			if familyStatusRelation.date:
+				age = calculate_age(self.birth_date, familyStatusRelation.date)
+
+				marriage_title = _('marriage')
+				marriage_date_str = nice_date(familyStatusRelation.date, familyStatusRelation.date_only_year)
+
+				if familyStatusRelation.location:
+					marriage_summary = _('%s married %s on %s at %s when he was %d years old.') % (
+						self.full_name(), familyStatusRelation.woman.full_name(), marriage_date_str,
+						familyStatusRelation.location, age)
+				else:
+					marriage_summary = _('%s married %s on %s when he was %d years old.') % (
+						self.full_name(), familyStatusRelation.woman.full_name(), marriage_date_str, age)
+
+				event_list.append(
+					PersonEventInfo(familyStatusRelation.date, age, marriage_title, mark_safe(marriage_summary),
+					                familyStatusRelation.location))
+
+		for familyStatusRelation in FamilyStatusRelation.objects.filter(
+			Q(woman=self) & Q(status='M') & (Q(ended=False) | Q(ended=None))):
+			if familyStatusRelation.date:
+				age = calculate_age(self.birth_date, familyStatusRelation.date)
+
+				marriage_title = _('marriage')
+				marriage_date_str = nice_date(familyStatusRelation.date, familyStatusRelation.date_only_year)
+
+				if familyStatusRelation.location:
+					marriage_summary = _('%s married %s on %s at %s when she was %d years old.') % (
+						self.full_name(), familyStatusRelation.man.full_name(), marriage_date_str,
+						familyStatusRelation.location, age)
+				else:
+					marriage_summary = _('%s married %s on %s when she was %d years old.') % (
+						self.full_name(), familyStatusRelation.man.full_name(), marriage_date_str, age)
+
+				event_list.append(PersonEventInfo(familyStatusRelation.date, age, marriage_title,
+				                                  mark_safe(marriage_summary), familyStatusRelation.location))
+
+		# death of parents
+		if self.father:
+			show_death_of_father = False
+			if self.father.death_date:
+				show_death_of_father = True
+
+			if self.death_date and self.father.death_date:
+				if self.father.death_date > self.death_date:
+					show_death_of_father = False
+
+			if show_death_of_father:
+				death_father_title = _('Death of father')
+				death_father_str = nice_date(self.father.death_date, self.father.death_date_only_year)
+				age = calculate_age(self.birth_date, self.father.death_date)
+
+				if self.father.death_location:
+					if self.male():
+						death_father_summary = _('His father %s died at %s in %s, when %s was %d years old.') % (
+							self.father.first_name_nice(), death_father_str, self.father.death_location,
+							self.first_name_nice(),
+							age)
+					else:
+						death_father_summary = _('Her father %s died at %s in %s, when %s was %d years old.') % (
+							self.father.first_name_nice(), death_father_str, self.father.death_location,
+							self.first_name_nice(),
+							age)
+				else:
+					if self.male():
+						death_father_summary = _('His father %s died at %s, when %s was %d years old.') % (
+							self.father.first_name_nice(), death_father_str, self.first_name_nice(), age)
+					else:
+						death_father_summary = _('Her father %s died at %s, when %s was %d years old.') % (
+							self.father.first_name_nice(), death_father_str, self.first_name_nice(), age)
+
+				event_list.append(
+					PersonEventInfo(self.father.death_date, age, death_father_title, mark_safe(death_father_summary),
+					                self.father.death_location))
+		if self.mother:
+			show_death_of_mother = False
+			if self.mother.death_date:
+				show_death_of_mother = True
+
+			if self.death_date and self.mother.death_date:
+				if self.mother.death_date > self.death_date:
+					show_death_of_mother = False
+
+			if show_death_of_mother:
+				death_mother_title = _('Death of mother')
+				death_mother_str = nice_date(self.mother.death_date, self.mother.death_date_only_year)
+				age = calculate_age(self.birth_date, self.mother.death_date)
+
+				if self.mother.death_location:
+					if self.male():
+						death_mother_summary = _('His mother %s died at %s in %s, when %s was %d years old.') % (
+							self.mother.first_name_nice(), death_mother_str, self.mother.death_location,
+							self.first_name_nice(),
+							age)
+					else:
+						death_mother_summary = _('Her mother %s died at %s in %s, when %s was %d years old.') % (
+							self.mother.first_name_nice(), death_mother_str, self.mother.death_location,
+							self.first_name_nice(),
+							age)
+				else:
+					if self.male():
+						death_mother_summary = _('His mother %s died at %s, when %s was %d years old.') % (
+							self.mother.first_name_nice(), death_mother_str, self.first_name_nice(), age)
+					else:
+						death_mother_summary = _('Her mother %s died at %s, when %s was %d years old.') % (
+							self.mother.first_name_nice(), death_mother_str, self.first_name_nice(), age)
+
+				event_list.append(
+					PersonEventInfo(self.mother.death_date, age, death_mother_title, mark_safe(death_mother_summary),
+					                self.mother.death_location))
+
+		# death
+		if self.death_date:
+			age = calculate_age(self.birth_date, self.death_date)
+
+			death_title = _('Death')
+			death_date_str = nice_date(self.death_date, self.death_date_only_year)
+
+			if self.death_location:
+				death_summary = _('%s died at %s in %s at the age of %d years.') % (
+					self.full_name(), death_date_str, self.death_location, age)
+			else:
+				death_summary = _('%s died at %s at the age of %d years.') % (self.full_name(), death_date_str, age)
+
+			event_list.append(
+				PersonEventInfo(self.death_date, age, death_title, mark_safe(death_summary), self.death_location))
+
+		event_list = sorted(event_list, key=attrgetter('date'))
+
+		return event_list
+
+	def age(self):
+
+		if self.birth_date_unclear:
+			return None
+
+		if self.death_date is None and not self.already_died:
+			return calculate_age(self.birth_date, date.today())
+
+		if self.death_date is None and self.already_died:
+			return None
+
+		return calculate_age(self.birth_date, self.death_date)
+
+	def age_at_marriage(self):
+
+		date_married = self.married_at()
+
+		if date_married is None:
+			return None
+
+		return calculate_age(self.birth_date, date_married)
+
+	def partner_relations(self):
+		if self.sex == 'M':
+			try:
+				partners = []
+				for relation in FamilyStatusRelation.objects.filter(man=self):
+					if relation.woman is not None:
+						partners.append(
+							PartnerInfo(relation.status_name, relation.woman, "", relation.location, relation.date,
+							            relation.date_only_year, relation.status))
+					else:
+						partners.append(PartnerInfo(relation.status_name, None, relation.wife_extern, relation.location,
+						                            relation.date, relation.date_only_year, relation.status))
+				return partners
+			except FamilyStatusRelation.DoesNotExist:
+				pass
+
+		if self.sex == 'F':
+			try:
+				partners = []
+				for relation in FamilyStatusRelation.objects.filter(woman=self):
+					if relation.man is not None:
+						partners.append(
+							PartnerInfo(relation.status_name, relation.man, "", relation.location, relation.date,
+							            relation.date_only_year, relation.status))
+					else:
+						partners.append(
+							PartnerInfo(relation.status_name, None, relation.husband_extern, relation.location,
+							            relation.date, relation.date_only_year, relation.status))
+				return partners
+			except FamilyStatusRelation.DoesNotExist:
+				pass
+
+		return None
+
+	def partner_names_linked(self):
+		result = ''
+
+		for partner_info in self.partner_relations():
+			date_str = ''
+			location_str = ''
+
+			if partner_info.date:
+				date_str = ' - ' + nice_date(partner_info.date, partner_info.date_year_only)
+
+			if partner_info.partner is not None:
+				name_str = mark_safe(
+					'<a href="/admin/data/person/%s/">%s</a>' % (partner_info.partner.id, str(partner_info.partner)))
+			else:
+				name_str = partner_info.partner_name
+
+			if partner_info.location:
+				location_str = ' - ' + str(partner_info.location)
+
+			result = result + name_str + date_str + location_str + ", "
+
+		return result
+
+	partner_names_linked.allow_tags = True
+
+	def siblings(self):
+		if self.mother is None and self.father is None:
+			return []
+
+		if self.mother is None:
+			return Person.objects.filter(father=self.father).exclude(id=self.id)
+
+		if self.father is None:
+			return Person.objects.filter(mother=self.mother).exclude(id=self.id)
+
+		siblings_list = []
+		siblings_list_mother = list(Person.objects.filter(mother=self.mother))
+		siblings_list_father = list(Person.objects.filter(father=self.father))
+
+		for sibling in chain(siblings_list_mother, siblings_list_father):
+			if sibling not in siblings_list and sibling.id != self.id:
+				siblings_list.append(sibling)
+
+		siblings_list = sorted(siblings_list, key=attrgetter('birth_date'), reverse=False)
+
+		return siblings_list
+
+	def siblings_extern_list(self):
+		if self.siblings_extern is not None and self.siblings_extern != '':
+			return self.siblings_extern.split(',')
+
+		return None
+
+	def siblings_text(self):
+		siblings_text_var = ''
+
+		for sibling_item in self.siblings():
+			siblings_text_var = "%s, %s" % (siblings_text_var, sibling_item.get_admin_url())
+
+		if self.siblings_extern is not None:
+			siblings_text_var = "%s, %s" % (siblings_text_var, self.siblings_extern)
+
+		siblings_text_var = "$%s$" % siblings_text_var
+		siblings_text_var = siblings_text_var.replace("$, ", "")
+		siblings_text_var = siblings_text_var.replace(", $", "")
+		siblings_text_var = siblings_text_var.replace("$", "")
+
+		return mark_safe(siblings_text_var)
+
+	siblings_text.allow_tags = True
+
+	def children(self):
+		children_list = Person.objects.filter(Q(father=self) | Q(mother=self))
+		children_list = sorted(children_list, key=attrgetter('birth_date'), reverse=False)
+		return children_list
+
+	def children_extern_list(self):
+		if self.children_extern == '-':
+			return None
+
+		if self.children_extern is not None and self.children_extern != '':
+			return self.children_extern.split(',')
+
+		return None
+
+	def children_text(self):
+		children_str = ''
+
+		for children_item in self.children():
+			children_str = "%s, %s" % (children_str, children_item.get_admin_url())
+
+		if self.children_extern is not None:
+			children_str = "%s, %s" % (children_str, self.children_extern)
+
+		children_str = "$%s$" % children_str
+		children_str = children_str.replace("$, ", "")
+		children_str = children_str.replace(", $", "")
+		children_str = children_str.replace("$", "")
+
+		return mark_safe(children_str)
+
+	children_text.allow_tags = True
+
+	def children_count(self):
+		count = len(self.children())
+
+		if self.children_extern_list() is not None:
+			count = count + len(self.children_extern_list())
+
+		return count
+
+	def ancestries(self):
+		return AncestryRelation.objects.filter(person=self)
+
+	def ancestry_names(self):
+		ancestry_names_var = ''
+
+		for item in map(name_of_ancestry, AncestryRelation.objects.filter(person=self)):
+			ancestry_names_var = '%s, %s' % (ancestry_names_var, item)
+
+		ancestry_names_var = "$%s$" % ancestry_names_var
+		ancestry_names_var = ancestry_names_var.replace("$, ", "")
+		ancestry_names_var = ancestry_names_var.replace(", $", "")
+		ancestry_names_var = ancestry_names_var.replace("$", "")
+
+		if ancestry_names_var == '':
+			ancestry_names_var = '<span style="color: red;">%s</span>' % _("no ancestry")
+
+		return mark_safe(ancestry_names_var)
+
+	def has_ancestry(self, ancestry_id):
+		for ancestryRelation in AncestryRelation.objects.filter(person=self):
+			if ancestryRelation.id == ancestry_id:
+				return True
+
+		return False
+
+	def married_to(self):
+		"""
 			Returns the current partner (wife or husband) or None
 		"""
-        if self.sex == 'M':
-            try:
-                for husbandRelation in FamilyStatusRelation.objects.get(
-                        Q(man=self) & Q(status='M') & (Q(ended=False) | Q(ended=None))):
-                    return husbandRelation.woman
-            except FamilyStatusRelation.DoesNotExist:
-                pass
+		if self.sex == 'M':
+			try:
+				for husbandRelation in FamilyStatusRelation.objects.get(
+					Q(man=self) & Q(status='M') & (Q(ended=False) | Q(ended=None))):
+					return husbandRelation.woman
+			except FamilyStatusRelation.DoesNotExist:
+				pass
 
-        if self.sex == 'F':
-            try:
-                for wifeRelation in FamilyStatusRelation.objects.get(
-                        Q(woman=self) & Q(status='M') & (Q(ended=False) | Q(ended=None))):
-                    return wifeRelation.man
-            except FamilyStatusRelation.DoesNotExist:
-                pass
+		if self.sex == 'F':
+			try:
+				for wifeRelation in FamilyStatusRelation.objects.get(
+					Q(woman=self) & Q(status='M') & (Q(ended=False) | Q(ended=None))):
+					return wifeRelation.man
+			except FamilyStatusRelation.DoesNotExist:
+				pass
 
-        return None
+		return None
 
-    def wife(self):
-        """
+	def wife(self):
+		"""
 			Returns the current wife of the person or None
 		"""
-        if self.sex == 'M':
-            for husbandRelation in FamilyStatusRelation.objects.filter(
-                    Q(man=self) & Q(status='M') & (Q(ended=False) | Q(ended=None))):
-                return husbandRelation.woman
+		if self.sex == 'M':
+			for husbandRelation in FamilyStatusRelation.objects.filter(
+				Q(man=self) & Q(status='M') & (Q(ended=False) | Q(ended=None))):
+				return husbandRelation.woman
 
-        return None
+		return None
 
-    def husband(self):
-        """
+	def husband(self):
+		"""
 			Returns the current husband of the person or None
 		"""
-        if self.sex == 'F':
-            for husbandRelation in FamilyStatusRelation.objects.filter(
-                    Q(woman=self) & Q(status='M') & (Q(ended=False) | Q(ended=None))):
-                return husbandRelation.man
+		if self.sex == 'F':
+			for husbandRelation in FamilyStatusRelation.objects.filter(
+				Q(woman=self) & Q(status='M') & (Q(ended=False) | Q(ended=None))):
+				return husbandRelation.man
 
-        return None
+		return None
 
-    def partnership(self, partner):
-        """
+	def partnership(self, partner):
+		"""
 			Returns the partnership to partner or None if none exists
 		"""
-        for partnerRelation in FamilyStatusRelation.objects.filter(Q(woman=self) & Q(man=partner)):
-            return partnerRelation
+		for partnerRelation in FamilyStatusRelation.objects.filter(Q(woman=self) & Q(man=partner)):
+			return partnerRelation
 
-        for partnerRelation in FamilyStatusRelation.objects.filter(Q(woman=partner) & Q(man=self)):
-            return partnerRelation
+		for partnerRelation in FamilyStatusRelation.objects.filter(Q(woman=partner) & Q(man=self)):
+			return partnerRelation
 
-        return None
+		return None
 
-    def married_at(self):
-        """
+	def married_at(self):
+		"""
 			Returns the date of the current partner relation
 		"""
-        relation = None
+		relation = None
 
-        if self.sex == 'M':
-            relation_list = FamilyStatusRelation.objects.filter(
-                Q(man=self) & Q(status='M') & (Q(ended=False) | Q(ended=None)))
-            if len(relation_list) > 0:
-                relation = relation_list[0]
+		if self.sex == 'M':
+			relation_list = FamilyStatusRelation.objects.filter(
+				Q(man=self) & Q(status='M') & (Q(ended=False) | Q(ended=None)))
+			if len(relation_list) > 0:
+				relation = relation_list[0]
 
-        if self.sex == 'F':
-            relation_list = FamilyStatusRelation.objects.filter(
-                Q(woman=self) & Q(status='M') & (Q(ended=False) | Q(ended=None)))
-            if len(relation_list) > 0:
-                relation = relation_list[0]
+		if self.sex == 'F':
+			relation_list = FamilyStatusRelation.objects.filter(
+				Q(woman=self) & Q(status='M') & (Q(ended=False) | Q(ended=None)))
+			if len(relation_list) > 0:
+				relation = relation_list[0]
 
-        if relation is not None:
-            return relation.date
+		if relation is not None:
+			return relation.date
 
-        return None
+		return None
 
-    def relatives_parents(self, level, relatives_list, relations_list, connection_list, max_level):
-        """
+	def relatives_parents(self, level, relatives_list, relations_list, connection_list, max_level):
+		"""
 			iterate (with recursion) through the parents
 		"""
-        if len(list(filter(lambda x: x.person.id == self.id, relatives_list))) == 0:
-            relatives_list.append(TreeInfo(level, self, 0))
+		if len(list(filter(lambda x: x.person.id == self.id, relatives_list))) == 0:
+			relatives_list.append(TreeInfo(level, self, 0))
 
-        for partner in self.partner_relations():
-            if partner.partner is not None and (
-                    len(list(filter(lambda x: x.person == partner.partner, relatives_list))) == 0):
-                partner.partner.relatives_parents(level, relatives_list, relations_list, connection_list, max_level)
+		for partner in self.partner_relations():
+			if partner.partner is not None and (
+				len(list(filter(lambda x: x.person == partner.partner, relatives_list))) == 0):
+				partner.partner.relatives_parents(level, relatives_list, relations_list, connection_list, max_level)
 
-                if self.sex == 'M':
-                    marriage_id = "marriage_%s_%s" % (self.id, partner.partner.id)
-                else:
-                    marriage_id = "marriage_%s_%s" % (partner.partner.id, self.id)
+				if self.sex == 'M':
+					marriage_id = "marriage_%s_%s" % (self.id, partner.partner.id)
+				else:
+					marriage_id = "marriage_%s_%s" % (partner.partner.id, self.id)
 
-                partnership = self.partnership(partner.partner)
+				partnership = self.partnership(partner.partner)
 
-                if partnership.date is not None:
-                    relations_list.append(
-                        MarriageInfo(level, marriage_id, "∞ %s" % partnership.date.strftime("%d.%m.%Y")))
-                else:
-                    relations_list.append(MarriageInfo(level, marriage_id, ""))
+				if partnership.date is not None:
+					relations_list.append(
+						MarriageInfo(level, marriage_id, "∞ %s" % partnership.date.strftime("%d.%m.%Y")))
+				else:
+					relations_list.append(MarriageInfo(level, marriage_id, ""))
 
-                if len(list(
-                        filter(lambda x: x.source == self.id and x.destination == marriage_id, connection_list))) == 0:
-                    connection_list.append(RelationsInfo(self.id, marriage_id))
+				if len(list(
+					filter(lambda x: x.source == self.id and x.destination == marriage_id, connection_list))) == 0:
+					connection_list.append(RelationsInfo(self.id, marriage_id))
 
-                if (len(list(filter(lambda x: x.source == partner.partner.id and x.destination == marriage_id,
-                                    connection_list))) == 0):
-                    connection_list.append(RelationsInfo(partner.partner.id, marriage_id))
+				if (len(list(filter(lambda x: x.source == partner.partner.id and x.destination == marriage_id,
+				                    connection_list))) == 0):
+					connection_list.append(RelationsInfo(partner.partner.id, marriage_id))
 
-        if self.father is not None and level < max_level:
-            self.father.relatives_parents(level + 1, relatives_list, relations_list, connection_list, max_level)
+		if self.father is not None and level < max_level:
+			self.father.relatives_parents(level + 1, relatives_list, relations_list, connection_list, max_level)
 
-        if self.mother is not None and level < max_level:
-            self.mother.relatives_parents(level + 1, relatives_list, relations_list, connection_list, max_level)
+		if self.mother is not None and level < max_level:
+			self.mother.relatives_parents(level + 1, relatives_list, relations_list, connection_list, max_level)
 
-        if self.mother is not None and self.father is not None and level < max_level:
-            marriage_id = "marriage_%s_%s" % (self.father.id, self.mother.id)
+		if self.mother is not None and self.father is not None and level < max_level:
+			marriage_id = "marriage_%s_%s" % (self.father.id, self.mother.id)
 
-            if len(list(filter(lambda x: x.source == marriage_id and x.destination == self.id, connection_list))) == 0:
-                connection_list.append(RelationsInfo(marriage_id, self.id))
+			if len(list(filter(lambda x: x.source == marriage_id and x.destination == self.id, connection_list))) == 0:
+				connection_list.append(RelationsInfo(marriage_id, self.id))
 
-        return RelativesInfo(relatives_list, relations_list, connection_list)
+		return RelativesInfo(relatives_list, relations_list, connection_list)
 
-    def relatives_children(self, level, relatives_list, relations_list, connection_list):
-        """
+	def relatives_children(self, level, relatives_list, relations_list, connection_list):
+		"""
 			iterate (with recursion) through the children
 		"""
-        if len(list(filter(lambda x: x.person.id == self.id, relatives_list))) == 0:
-            relatives_list.append(TreeInfo(level, self, 0))
+		if len(list(filter(lambda x: x.person.id == self.id, relatives_list))) == 0:
+			relatives_list.append(TreeInfo(level, self, 0))
 
-        for child in self.children():
-            child.relatives_children(level - 1, relatives_list, relations_list, connection_list)
+		for child in self.children():
+			child.relatives_children(level - 1, relatives_list, relations_list, connection_list)
 
-        for partner in self.partner_relations():
-            if partner.partner is not None and (
-                    len(list(filter(lambda x: x.person == partner.partner, relatives_list))) == 0):
+		for partner in self.partner_relations():
+			if partner.partner is not None and (
+				len(list(filter(lambda x: x.person == partner.partner, relatives_list))) == 0):
 
-                if len(list(filter(lambda x: x.person.id == partner.partner.id, relatives_list))) == 0:
-                    relatives_list.append(TreeInfo(level, partner.partner, 0))
+				if len(list(filter(lambda x: x.person.id == partner.partner.id, relatives_list))) == 0:
+					relatives_list.append(TreeInfo(level, partner.partner, 0))
 
-                if self.sex == 'M':
-                    marriage_id = "marriage_%s_%s" % (self.id, partner.partner.id)
-                else:
-                    marriage_id = "marriage_%s_%s" % (partner.partner.id, self.id)
+				if self.sex == 'M':
+					marriage_id = "marriage_%s_%s" % (self.id, partner.partner.id)
+				else:
+					marriage_id = "marriage_%s_%s" % (partner.partner.id, self.id)
 
-                partnership = self.partnership(partner.partner)
+				partnership = self.partnership(partner.partner)
 
-                if partnership.date is not None:
-                    relations_list.append(
-                        MarriageInfo(level, marriage_id, "∞ %s" % partnership.date.strftime("%d.%m.%Y")))
-                else:
-                    relations_list.append(MarriageInfo(level, marriage_id, ""))
+				if partnership.date is not None:
+					relations_list.append(
+						MarriageInfo(level, marriage_id, "∞ %s" % partnership.date.strftime("%d.%m.%Y")))
+				else:
+					relations_list.append(MarriageInfo(level, marriage_id, ""))
 
-                connection_list.append(RelationsInfo(self.id, marriage_id))
-                connection_list.append(RelationsInfo(partner.partner.id, marriage_id))
+				connection_list.append(RelationsInfo(self.id, marriage_id))
+				connection_list.append(RelationsInfo(partner.partner.id, marriage_id))
 
-        if self.father is not None and self.mother is not None:
-            marriage_id = "marriage_%s_%s" % (self.father.id, self.mother.id)
+		if self.father is not None and self.mother is not None:
+			marriage_id = "marriage_%s_%s" % (self.father.id, self.mother.id)
 
-            if len(list(filter(lambda x: x.source == marriage_id and x.destination == self.id, connection_list))) == 0:
-                connection_list.append(RelationsInfo(marriage_id, self.id))
+			if len(list(filter(lambda x: x.source == marriage_id and x.destination == self.id, connection_list))) == 0:
+				connection_list.append(RelationsInfo(marriage_id, self.id))
 
-        return RelativesInfo(relatives_list, relations_list, connection_list)
+		return RelativesInfo(relatives_list, relations_list, connection_list)
 
-    def relatives(self):
-        """
+	def relatives(self):
+		"""
 			provides a list of relative as well as links between them
 		"""
-        relatives_list = []  # persons
-        relations_list = []  # marriages
-        connection_list = []  # links
-        external_id = 1000
+		relatives_list = []  # persons
+		relations_list = []  # marriages
+		connection_list = []  # links
+		external_id = 1000
 
-        if self.father is not None:
-            if self.father.father is not None:
-                relatives_list.append(TreeInfo(0, self.father.father, 0))
-                connection_list.append(RelationsInfo(self.father.father.id, self.father.id))
-            if self.father.mother is not None:
-                relatives_list.append(TreeInfo(0, self.father.mother, 0))
-                connection_list.append(RelationsInfo(self.father.mother.id, self.father.id))
+		if self.father is not None:
+			if self.father.father is not None:
+				relatives_list.append(TreeInfo(0, self.father.father, 0))
+				connection_list.append(RelationsInfo(self.father.father.id, self.father.id))
+			if self.father.mother is not None:
+				relatives_list.append(TreeInfo(0, self.father.mother, 0))
+				connection_list.append(RelationsInfo(self.father.mother.id, self.father.id))
 
-            relatives_list.append(TreeInfo(1, self.father, 0))
-            connection_list.append(RelationsInfo(self.father.id, self.id))
+			relatives_list.append(TreeInfo(1, self.father, 0))
+			connection_list.append(RelationsInfo(self.father.id, self.id))
 
-        if self.mother is not None:
-            if self.mother.father is not None:
-                relatives_list.append(TreeInfo(0, self.mother.father, 0))
-                connection_list.append(RelationsInfo(self.mother.father.id, self.mother.id))
-            if self.mother.mother is not None:
-                relatives_list.append(TreeInfo(0, self.mother.mother, 0))
-                connection_list.append(RelationsInfo(self.mother.mother.id, self.mother.id))
+		if self.mother is not None:
+			if self.mother.father is not None:
+				relatives_list.append(TreeInfo(0, self.mother.father, 0))
+				connection_list.append(RelationsInfo(self.mother.father.id, self.mother.id))
+			if self.mother.mother is not None:
+				relatives_list.append(TreeInfo(0, self.mother.mother, 0))
+				connection_list.append(RelationsInfo(self.mother.mother.id, self.mother.id))
 
-            relatives_list.append(TreeInfo(1, self.mother, 0))
-            connection_list.append(RelationsInfo(self.mother.id, self.id))
+			relatives_list.append(TreeInfo(1, self.mother, 0))
+			connection_list.append(RelationsInfo(self.mother.id, self.id))
 
-        if self.mother_extern is not None and self.mother_extern != '':
-            relatives_list.append(TreeInfo(1, PersonInfo(external_id, self.mother_extern, 'F'), 0))
-            connection_list.append(RelationsInfo(external_id, self.id))
-            external_id = external_id + 1
+		if self.mother_extern is not None and self.mother_extern != '':
+			relatives_list.append(TreeInfo(1, PersonInfo(external_id, self.mother_extern, 'F'), 0))
+			connection_list.append(RelationsInfo(external_id, self.id))
+			external_id = external_id + 1
 
-        if self.father_extern is not None and self.father_extern != '':
-            relatives_list.append(TreeInfo(1, PersonInfo(external_id, self.father_extern, 'M'), 0))
-            connection_list.append(RelationsInfo(external_id, self.id))
-            external_id = external_id + 1
+		if self.father_extern is not None and self.father_extern != '':
+			relatives_list.append(TreeInfo(1, PersonInfo(external_id, self.father_extern, 'M'), 0))
+			connection_list.append(RelationsInfo(external_id, self.id))
+			external_id = external_id + 1
 
-        relatives_list.append(TreeInfo(2, self, 1))
+		relatives_list.append(TreeInfo(2, self, 1))
 
-        for partner in self.partner_relations():
+		for partner in self.partner_relations():
 
-            if partner.partner is None:
-                relatives_list.append(TreeInfo(2, PersonInfo(external_id, partner.partner_name, 'M'), 0))
-                external_id = external_id + 1
-            else:
-                relatives_list.append(TreeInfo(2, partner.partner, 0))
+			if partner.partner is None:
+				relatives_list.append(TreeInfo(2, PersonInfo(external_id, partner.partner_name, 'M'), 0))
+				external_id = external_id + 1
+			else:
+				relatives_list.append(TreeInfo(2, partner.partner, 0))
 
-                """ 
+				""" 
 					check if partner is mother / father of children of current person 
 				"""
-                for partner_child in partner.partner.children():
-                    for child in self.children():
-                        if partner_child.id == child.id:
-                            connection_list.append(RelationsInfo(partner.partner.id, child.id))
+				for partner_child in partner.partner.children():
+					for child in self.children():
+						if partner_child.id == child.id:
+							connection_list.append(RelationsInfo(partner.partner.id, child.id))
 
-                if partner.partner.mother is not None:
-                    if partner.partner.mother.father is not None:
-                        relatives_list.append(TreeInfo(0, partner.partner.mother.father, 0))
-                        connection_list.append(
-                            RelationsInfo(partner.partner.mother.father.id, partner.partner.mother.id))
-                    if partner.partner.mother.mother is not None:
-                        relatives_list.append(TreeInfo(0, partner.partner.mother.mother, 0))
-                        connection_list.append(
-                            RelationsInfo(partner.partner.mother.mother.id, partner.partner.mother.id))
+				if partner.partner.mother is not None:
+					if partner.partner.mother.father is not None:
+						relatives_list.append(TreeInfo(0, partner.partner.mother.father, 0))
+						connection_list.append(
+							RelationsInfo(partner.partner.mother.father.id, partner.partner.mother.id))
+					if partner.partner.mother.mother is not None:
+						relatives_list.append(TreeInfo(0, partner.partner.mother.mother, 0))
+						connection_list.append(
+							RelationsInfo(partner.partner.mother.mother.id, partner.partner.mother.id))
 
-                    relatives_list.append(TreeInfo(1, partner.partner.mother, 0))
-                    connection_list.append(RelationsInfo(partner.partner.mother.id, partner.partner.id))
+					relatives_list.append(TreeInfo(1, partner.partner.mother, 0))
+					connection_list.append(RelationsInfo(partner.partner.mother.id, partner.partner.id))
 
-                if partner.partner.father is not None:
-                    if partner.partner.father.father is not None:
-                        relatives_list.append(TreeInfo(0, partner.partner.father.father, 0))
-                        connection_list.append(
-                            RelationsInfo(partner.partner.father.father.id, partner.partner.father.id))
-                    if partner.partner.father.mother is not None:
-                        relatives_list.append(TreeInfo(0, partner.partner.father.mother, 0))
-                        connection_list.append(
-                            RelationsInfo(partner.partner.father.mother.id, partner.partner.father.id))
+				if partner.partner.father is not None:
+					if partner.partner.father.father is not None:
+						relatives_list.append(TreeInfo(0, partner.partner.father.father, 0))
+						connection_list.append(
+							RelationsInfo(partner.partner.father.father.id, partner.partner.father.id))
+					if partner.partner.father.mother is not None:
+						relatives_list.append(TreeInfo(0, partner.partner.father.mother, 0))
+						connection_list.append(
+							RelationsInfo(partner.partner.father.mother.id, partner.partner.father.id))
 
-                    relatives_list.append(TreeInfo(1, partner.partner.father, 0))
-                    connection_list.append(RelationsInfo(partner.partner.father.id, partner.partner.id))
+					relatives_list.append(TreeInfo(1, partner.partner.father, 0))
+					connection_list.append(RelationsInfo(partner.partner.father.id, partner.partner.id))
 
-        for child in self.children():
-            relatives_list.append(TreeInfo(3, child, 0))
-            connection_list.append(RelationsInfo(self.id, child.id))
+		for child in self.children():
+			relatives_list.append(TreeInfo(3, child, 0))
+			connection_list.append(RelationsInfo(self.id, child.id))
 
-            for grandchild in child.children():
-                relatives_list.append(TreeInfo(4, grandchild, 0))
-                connection_list.append(RelationsInfo(child.id, grandchild.id))
+			for grandchild in child.children():
+				relatives_list.append(TreeInfo(4, grandchild, 0))
+				connection_list.append(RelationsInfo(child.id, grandchild.id))
 
-        return RelativesInfo(relatives_list, relations_list, connection_list)
+		return RelativesInfo(relatives_list, relations_list, connection_list)
 
-    # create list of relations for tree
-    # [(1,2);(3,1)]
-    def relations_str(self):
-        result_list = []
-        for item in self.relatives().relations:
-            result_list.append('%d+%d' % (item.source, item.destination))
-        return str(result_list).replace(',', ';').replace('+', ',').replace(' ', '').replace('[\'', '[(').replace(
-            '\';\'', ');(').replace('\']', ')]')
+	# create list of relations for tree
+	# [(1,2);(3,1)]
+	def relations_str(self):
+		result_list = []
+		for item in self.relatives().relations:
+			result_list.append('%d+%d' % (item.source, item.destination))
+		return str(result_list).replace(',', ';').replace('+', ',').replace(' ', '').replace('[\'', '[(').replace(
+			'\';\'', ');(').replace('\']', ')]')
 
-    def relatives_str(self):
-        """
+	def relatives_str(self):
+		"""
         creates a list of relatives for tree
         :return:
         """
-        result_list = []
-        for item in self.relatives().relatives:
-            result_list.append(item.info())
-        return mark_safe(str(result_list).replace('"', '').replace('}, {', '};{').replace(' ', '%20'))
+		result_list = []
+		for item in self.relatives().relatives:
+			result_list.append(item.info())
+		return mark_safe(str(result_list).replace('"', '').replace('}, {', '};{').replace(' ', '%20'))
 
-    def relation_to_str(self, featured_person):
+	def relation_to_str(self, featured_person):
 
-        return mark_safe(
-            '%s %s %s' % (ancestry_relation(self, featured_person.person), _('of'), featured_person.person))
+		return mark_safe(
+			'%s %s %s' % (ancestry_relation(self, featured_person.person), _('of'), featured_person.person))
 
-    relation_to_str.allow_tags = True
+	relation_to_str.allow_tags = True
 
-    def relation_in_str(self, ancestry):
+	def relation_in_str(self, ancestry):
 
-        featured_person = ancestry.featured()[0]
-        relation = ancestry_relation(self, featured_person.person)
+		featured_person = ancestry.featured()[0]
+		relation = ancestry_relation(self, featured_person.person)
 
-        if relation is None:
-            return None
+		if relation is None:
+			return None
 
-        return mark_safe('%s %s %s' % (relation, _('of'), featured_person.person.full_name()))
+		return mark_safe('%s %s %s' % (relation, _('of'), featured_person.person.full_name()))
 
-    relation_in_str.allow_tags = True
+	relation_in_str.allow_tags = True
 
-    def relation_str(self):
+	def relation_str(self):
 
-        str_value = ''
+		str_value = ''
 
-        for ancestry in self.ancestries():
-            if ancestry.ancestry.featured:
-                featured_person = ancestry.ancestry.featured
-                str_value = '%s %s %s %s (%s %s)<br />' % (
-                    str_value, ancestry_relation(self, featured_person.person), _('of'),
-                    featured_person.person.get_admin_url(),
-                    _('ancestry'), ancestry.ancestry)
+		for ancestry in self.ancestries():
+			if ancestry.ancestry.featured:
+				featured_person = ancestry.ancestry.featured
+				str_value = '%s %s %s %s (%s %s)<br />' % (
+					str_value, ancestry_relation(self, featured_person.person), _('of'),
+					featured_person.person.get_admin_url(),
+					_('ancestry'), ancestry.ancestry)
 
-        return mark_safe(str_value)
+		return mark_safe(str_value)
 
-    relation_str.allow_tags = True
+	relation_str.allow_tags = True
 
-    # @models.permalink
-    def get_absolute_url(self):
-        return 'data.views.person', [str(self.id)]
+	# @models.permalink
+	def get_absolute_url(self):
+		return 'data.views.person', [str(self.id)]
 
-    def get_admin_url(self):
-        url = reverse('admin:%s_%s_change' % (self._meta.app_label, self._meta.model_name), args=[self.id])
-        return u'<a href="%s">%s</a>' % (url, self.__unicode__())
+	def get_admin_url(self):
+		url = reverse('admin:%s_%s_change' % (self._meta.app_label, self._meta.model_name), args=[self.id])
+		return u'<a href="%s">%s</a>' % (url, self.__unicode__())
 
-    def appendices(self):
-        return DocumentRelation.objects.filter(person=self)
+	def appendices(self):
+		return DocumentRelation.objects.filter(person=self)
 
-    def number_of_questions(self):
-        return '%d / %d' % (
-            len(Question.objects.filter(person=self).exclude(answer=None)), len(Question.objects.filter(person=self)))
+	def number_of_questions(self):
+		return '%d / %d' % (
+			len(Question.objects.filter(person=self).exclude(answer=None)), len(Question.objects.filter(person=self)))
 
-    def questions(self):
-        return Question.objects.filter(person=self)
+	def questions(self):
+		return Question.objects.filter(person=self)
 
-    def automatic_questions(self):
+	def automatic_questions(self):
 
-        question_list = []
+		question_list = []
 
-        if self.birth_date_only_year:
-            if self.male():
-                question_list.append(gettext(
-                    "The exact birth date of %s is missing day and month. It is only clear that he was born in %s.") % (
-                                         self.full_name(), self.birth_year()))
-            else:
-                question_list.append(gettext(
-                    "The exact birth date of %s is missing day and month. It is only clear that she was born in %s.") % (
-                                         self.full_name(), self.birth_year()))
+		if self.birth_date_only_year:
+			if self.male():
+				question_list.append(gettext(
+					"The exact birth date of %s is missing day and month. It is only clear that he was born in %s.") % (
+					                     self.full_name(), self.birth_year()))
+			else:
+				question_list.append(gettext(
+					"The exact birth date of %s is missing day and month. It is only clear that she was born in %s.") % (
+					                     self.full_name(), self.birth_year()))
 
-        if self.birth_date_unclear:
-            if self.birth_date is None:
-                year = '---'
-            else:
-                year = '{0.year:4d}'.format(self.birth_date)
+		if self.birth_date_unclear:
+			if self.birth_date is None:
+				year = '---'
+			else:
+				year = '{0.year:4d}'.format(self.birth_date)
 
-            question_list.append(
-                gettext("The birth date of %s is completely unclear. It is currently assumed ca. %s.") % (
-                    self.full_name(), year))
+			question_list.append(
+				gettext("The birth date of %s is completely unclear. It is currently assumed ca. %s.") % (
+					self.full_name(), year))
 
-        if self.birth_location is None:
-            question_list.append(gettext("The birth location of %s could not be determined.") % (self.full_name()))
+		if self.birth_location is None:
+			question_list.append(gettext("The birth location of %s could not be determined.") % (self.full_name()))
 
-        if self.father is None and self.father_extern == '':
-            question_list.append(gettext("The father of %s could not be determined.") % (self.full_name()))
+		if self.father is None and self.father_extern == '':
+			question_list.append(gettext("The father of %s could not be determined.") % (self.full_name()))
 
-        if self.mother is None and self.mother_extern == '':
-            question_list.append(gettext("The mother of %s could not be determined.") % (self.full_name()))
+		if self.mother is None and self.mother_extern == '':
+			question_list.append(gettext("The mother of %s could not be determined.") % (self.full_name()))
 
-        # check if parents are in a relation
-        if self.father is not None and self.mother is not None:
-            found_link = False
-            for _ in FamilyStatusRelation.objects.filter(Q(woman=self.mother) & Q(man=self.father)):
-                found_link = True
+		# check if parents are in a relation
+		if self.father is not None and self.mother is not None:
+			found_link = False
+			for _ in FamilyStatusRelation.objects.filter(Q(woman=self.mother) & Q(man=self.father)):
+				found_link = True
 
-            if not found_link:
-                question_list.append(gettext("The parents of %s (%s and %s) are not linked.") % (
-                    self.full_name(), self.father.full_name(), self.mother.full_name()))
+			if not found_link:
+				question_list.append(gettext("The parents of %s (%s and %s) are not linked.") % (
+					self.full_name(), self.father.full_name(), self.mother.full_name()))
 
-        if self.death_date is None and self.already_died:
-            question_list.append(gettext("The death date of %s is completely unclear.") % (self.full_name()))
+		if self.death_date is None and self.already_died:
+			question_list.append(gettext("The death date of %s is completely unclear.") % (self.full_name()))
 
-        if self.death_date is not None or self.already_died:
-            if self.death_location is None:
-                question_list.append(gettext("The death location of %s could not be determined.") % (self.full_name()))
+		if self.death_date is not None or self.already_died:
+			if self.death_location is None:
+				question_list.append(gettext("The death location of %s could not be determined.") % (self.full_name()))
 
-        if self.partner_relations():  # can be empty => None
-            for relation in self.partner_relations():
-                if relation.state == 'M':
-                    if relation.partner:
-                        partner_name = relation.partner.full_name()
-                    else:
-                        partner_name = relation.partner_name
+		if self.partner_relations():  # can be empty => None
+			for relation in self.partner_relations():
+				if relation.state == 'M':
+					if relation.partner:
+						partner_name = relation.partner.full_name()
+					else:
+						partner_name = relation.partner_name
 
-                    if relation.date_year_only:
-                        question_list.append(
-                            gettext("The exact date of the marriage of %s and %s is unclear. It happened in %d.") % (
-                                self.full_name(), partner_name, relation.date.year))
+					if relation.date_year_only:
+						question_list.append(
+							gettext("The exact date of the marriage of %s and %s is unclear. It happened in %d.") % (
+								self.full_name(), partner_name, relation.date.year))
 
-                    if relation.location is None:
-                        question_list.append(
-                            gettext("The location of the marriage of %s and %s is unclear.") % (
-                                self.full_name(), partner_name))
+					if relation.location is None:
+						question_list.append(
+							gettext("The location of the marriage of %s and %s is unclear.") % (
+								self.full_name(), partner_name))
 
-        return question_list
+		return question_list
 
-    def automatic_questions_list(self):
-        value = '<ul>'
+	def automatic_questions_list(self):
+		value = '<ul>'
 
-        for automatic_question in self.automatic_questions():
-            value = value + '<li>' + automatic_question + '</li>'
+		for automatic_question in self.automatic_questions():
+			value = value + '<li>' + automatic_question + '</li>'
 
-        value = value + '</ul>'
+		value = value + '</ul>'
 
-        return mark_safe(value)
+		return mark_safe(value)
 
-    automatic_questions_list.allow_tags = True
+	automatic_questions_list.allow_tags = True
 
-    def is_alive(self):
-        if self.already_died:
-            return False
+	def is_alive(self):
+		if self.already_died:
+			return False
 
-        if self.death_date is not None:
-            return False
+		if self.death_date is not None:
+			return False
 
-        return True
+		return True
 
-    def svg_box(self, x, y):
-        background_str = '<rect x="%d" y="%d" width="140" height="52" fill="#f2f1d2" stroke="black" stroke-width="1" />' % (
-            int(x), int(y))
-        name_str = '<text x="%d" y="%d" fill="gray" font-size="12" font-family="Roboto">%s %s</text>' % (
-            int(x) + 5, int(y) + 17, self.first_name_nice(), self.last_name)
+	def svg_box(self, x, y):
+		background_str = '<rect x="%d" y="%d" width="140" height="52" fill="#f2f1d2" stroke="black" stroke-width="1" />' % (
+			int(x), int(y))
+		name_str = '<text x="%d" y="%d" fill="gray" font-size="12" font-family="Roboto">%s %s</text>' % (
+			int(x) + 5, int(y) + 17, self.first_name_nice(), self.last_name)
 
-        birth_text = self.birth_year()
-        if self.birth_location:
-            birth_text = '%s %s' % (birth_text, self.birth_location.city)
+		birth_text = self.birth_year()
+		if self.birth_location:
+			birth_text = '%s %s' % (birth_text, self.birth_location.city)
 
-        birth_str = '<text x="%d" y="%d" fill="gray" font-size="9" font-family="Roboto">%s</text>' % (
-            int(x) + 5, int(y) + 31, birth_text)
+		birth_str = '<text x="%d" y="%d" fill="gray" font-size="9" font-family="Roboto">%s</text>' % (
+			int(x) + 5, int(y) + 31, birth_text)
 
-        death_text = self.death_year()
-        if self.death_location:
-            death_text = '%s %s' % (death_text, self.death_location.city)
+		death_text = self.death_year()
+		if self.death_location:
+			death_text = '%s %s' % (death_text, self.death_location.city)
 
-        death_str = '<text x="%d" y="%d" fill="gray" font-size="9" font-family="Roboto">%s</text>' % (
-            int(x) + 5, int(y) + 45, death_text)
+		death_str = '<text x="%d" y="%d" fill="gray" font-size="9" font-family="Roboto">%s</text>' % (
+			int(x) + 5, int(y) + 45, death_text)
 
-        return mark_safe('%s%s%s%s' % (background_str, name_str, birth_str, death_str))
+		return mark_safe('%s%s%s%s' % (background_str, name_str, birth_str, death_str))
 
-    def __unicode__(self):
-        first = self.first_name
-        first = first.replace(u'\xfc', '&uuml;')
-        first = first.replace(u'\xf6', '&ouml;')
-        first = first.replace(u'\xe4', '&auml;')
+	def __unicode__(self):
+		first = self.first_name
+		first = first.replace(u'\xfc', '&uuml;')
+		first = first.replace(u'\xf6', '&ouml;')
+		first = first.replace(u'\xe4', '&auml;')
 
-        if self.is_alive():
-            date_str = '(geb. %s)' % self.birth_year()
-        else:
-            date_str = '(%s-%s)' % (self.birth_year(), self.death_year())
+		if self.is_alive():
+			date_str = '(geb. %s)' % self.birth_year()
+		else:
+			date_str = '(%s-%s)' % (self.birth_year(), self.death_year())
 
-        return mark_safe('%s %s %s' % (
-            (' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip(), self.last_name, date_str))
+		return mark_safe('%s %s %s' % (
+			(' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip(), self.last_name, date_str))
 
-    def __str__(self):
-        first = self.first_name
-        first = first.replace(u'\xfc', '&uuml;')
-        first = first.replace(u'\xf6', '&ouml;')
-        first = first.replace(u'\xe4', '&auml;')
+	def __str__(self):
+		first = self.first_name
+		first = first.replace(u'\xfc', '&uuml;')
+		first = first.replace(u'\xf6', '&ouml;')
+		first = first.replace(u'\xe4', '&auml;')
 
-        if self.is_alive():
-            date_str = '(geb. %s)' % self.birth_year()
-        else:
-            date_str = '(%s-%s)' % (self.birth_year(), self.death_year())
+		if self.is_alive():
+			date_str = '(geb. %s)' % self.birth_year()
+		else:
+			date_str = '(%s-%s)' % (self.birth_year(), self.death_year())
 
-        return mark_safe('%s %s %s' % (
-            (' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip(), self.last_name, date_str))
+		return mark_safe('%s %s %s' % (
+			(' ' + str(first) + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip(), self.last_name, date_str))
 
 
 class Ancestry(models.Model):
-    name = models.CharField(max_length=50)
-    image = models.ImageField(upload_to='media/ancestries', blank=True, null=True)
-    map = models.ImageField(upload_to='media/maps', blank=True, null=True)
-    featured = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
+	name = models.CharField(max_length=50)
+	image = models.ImageField(upload_to='media/ancestries', blank=True, null=True)
+	map = models.ImageField(upload_to='media/maps', blank=True, null=True)
+	featured = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
 
-    def thumbnail(self):
-        return mark_safe('<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % (
-            (self.image.name, self.image.name)))
+	def thumbnail(self):
+		return mark_safe('<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % (
+			(self.image.name, self.image.name)))
 
-    thumbnail.allow_tags = True
+	thumbnail.allow_tags = True
 
-    def number_of_members(self):
-        return '%d persons' % len(AncestryRelation.objects.filter(ancestry=self))
+	def number_of_members(self):
+		return '%d persons' % len(AncestryRelation.objects.filter(ancestry=self))
 
-    def exports(self):
-        export_link = self.export()
-        export_no_documents_link = self.export_no_documents()
-        export_questions_link = self.export_questions()
-        export_raw_link = self.export_raw()
-        export_gedcom_link = self.export_gedcom()
-        return mark_safe('%s&nbsp;|&nbsp;%s&nbsp;|&nbsp;%s&nbsp;|&nbsp;%s&nbsp;|&nbsp;%s' %
-                         (export_link, export_no_documents_link, export_questions_link, export_raw_link,
-                          export_gedcom_link))
+	def exports(self):
+		export_link = self.export()
+		export_no_documents_link = self.export_no_documents()
+		export_questions_link = self.export_questions()
+		export_raw_link = self.export_raw()
+		export_gedcom_link = self.export_gedcom()
+		return mark_safe('%s&nbsp;|&nbsp;%s&nbsp;|&nbsp;%s&nbsp;|&nbsp;%s&nbsp;|&nbsp;%s' %
+		                 (export_link, export_no_documents_link, export_questions_link, export_raw_link,
+		                  export_gedcom_link))
 
-    exports.allow_tags = True
+	exports.allow_tags = True
 
-    def export(self):
-        return mark_safe(
-            '<a href="/data/export/ancestry/%d/%s.pdf" target="_blank">PDF</a>' % (self.id, self.name))
+	def export(self):
+		return mark_safe(
+			'<a href="/data/export/ancestry/%d/%s.pdf" target="_blank">PDF</a>' % (self.id, self.name))
 
-    export.allow_tags = True
+	export.allow_tags = True
 
-    def export_questions(self):
-        return mark_safe(
-            '<a href="/data/export/ancestry_questions/%d/%s_questions.pdf" target="_blank">Questions</a>' % (
-                self.id, self.name))
+	def export_questions(self):
+		return mark_safe(
+			'<a href="/data/export/ancestry_questions/%d/%s_questions.pdf" target="_blank">Questions</a>' % (
+				self.id, self.name))
 
-    export_questions.allow_tags = True
+	export_questions.allow_tags = True
 
-    def export_no_documents(self):
-        return mark_safe(
-            '<a href="/data/export/ancestry/%d/%s_no_doc.pdf?documents=0" target="_blank">PDF (no doc)</a>' % (
-                self.id, self.name))
+	def export_no_documents(self):
+		return mark_safe(
+			'<a href="/data/export/ancestry/%d/%s_no_doc.pdf?documents=0" target="_blank">PDF (no doc)</a>' % (
+				self.id, self.name))
 
-    export_no_documents.allow_tags = True
+	export_no_documents.allow_tags = True
 
-    def export_raw(self):
-        return mark_safe('<a href="/data/ancestry_export/%d/%s.html?with=style&documents=1" target="_blank">Raw</a>' % (
-            self.id, self.name))
+	def export_raw(self):
+		return mark_safe('<a href="/data/ancestry_export/%d/%s.html?with=style&documents=1" target="_blank">Raw</a>' % (
+			self.id, self.name))
 
-    export_raw.allow_tags = True
+	export_raw.allow_tags = True
 
-    def export_gedcom(self):
-        return mark_safe('<a href="/data/ancestry_gedcom/%d/%s.ged" target="_blank">GEDCOM</a>' % (
-            self.id, self.name))
+	def export_gedcom(self):
+		return mark_safe('<a href="/data/ancestry_gedcom/%d/%s.ged" target="_blank">GEDCOM</a>' % (
+			self.id, self.name))
 
-    export_gedcom.allow_tags = True
+	export_gedcom.allow_tags = True
 
-    def monthly_birth_death_statistic_link(self):
-        return mark_safe('<a href="/data/statistics/%s/monthly_birth_death.png" '
-                         'target="_blank">birth/death</a>' % self.id)
+	def monthly_birth_death_statistic_link(self):
+		return mark_safe('<a href="/data/statistics/%s/monthly_birth_death.png" '
+		                 'target="_blank">birth/death</a>' % self.id)
 
-    monthly_birth_death_statistic_link.allow_tags = True
+	monthly_birth_death_statistic_link.allow_tags = True
 
-    def gender_statistic_link(self):
-        return mark_safe('<a href="/data/statistics/%s/gender.png" '
-                         'target="_blank">gender</a>' % self.id)
+	def gender_statistic_link(self):
+		return mark_safe('<a href="/data/statistics/%s/gender.png" '
+		                 'target="_blank">gender</a>' % self.id)
 
-    gender_statistic_link.allow_tags = True
+	gender_statistic_link.allow_tags = True
 
-    def birth_locations_statistic_link(self):
-        return mark_safe('<a href="/data/statistics/%s/birth_locations.png" '
-                         'target="_blank">birth locations</a>' % self.id)
+	def birth_locations_statistic_link(self):
+		return mark_safe('<a href="/data/statistics/%s/birth_locations.png" '
+		                 'target="_blank">birth locations</a>' % self.id)
 
-    birth_locations_statistic_link.allow_tags = True
+	birth_locations_statistic_link.allow_tags = True
 
-    def children_statistic_link(self):
-        return mark_safe('<a href="/data/statistics/%s/children.png" '
-                         'target="_blank">number of children</a>' % self.id)
+	def children_statistic_link(self):
+		return mark_safe('<a href="/data/statistics/%s/children.png" '
+		                 'target="_blank">number of children</a>' % self.id)
 
-    children_statistic_link.allow_tags = True
+	children_statistic_link.allow_tags = True
 
-    def statistic_links(self):
-        monthly_birth_death_link = self.monthly_birth_death_statistic_link()
-        gender_link = self.gender_statistic_link()
-        birth_locations_link = self.birth_locations_statistic_link()
-        children_link = self.children_statistic_link()
-        return '%s / %s / %s / %s' % (monthly_birth_death_link, gender_link, birth_locations_link, children_link)
+	def statistic_links(self):
+		monthly_birth_death_link = self.monthly_birth_death_statistic_link()
+		gender_link = self.gender_statistic_link()
+		birth_locations_link = self.birth_locations_statistic_link()
+		children_link = self.children_statistic_link()
+		return '%s / %s / %s / %s' % (monthly_birth_death_link, gender_link, birth_locations_link, children_link)
 
-    statistic_links.allow_tags = True
+	statistic_links.allow_tags = True
 
-    def members(self):
-        """
+	def members(self):
+		"""
 			Returns a list of persons in order of birth desc
 		"""
-        result_list = AncestryRelation.objects.filter(ancestry=self)
-        result_list = sorted(result_list, key=attrgetter('person.birth_date'), reverse=True)
-        return result_list
+		result_list = AncestryRelation.objects.filter(ancestry=self)
+		result_list = sorted(result_list, key=attrgetter('person.birth_date'), reverse=True)
+		return result_list
 
-    def no_image(self):
-        """
+	def no_image(self):
+		"""
 			Returns a list of persons without an image assigned in order of birth desc
 		"""
-        tmp_list = AncestryRelation.objects.filter(ancestry=self)
-        tmp_list = sorted(tmp_list, key=attrgetter('person.birth_date'), reverse=True)
+		tmp_list = AncestryRelation.objects.filter(ancestry=self)
+		tmp_list = sorted(tmp_list, key=attrgetter('person.birth_date'), reverse=True)
 
-        result_list = []
+		result_list = []
 
-        for ancestryPerson in tmp_list:
-            person = ancestryPerson.person
+		for ancestryPerson in tmp_list:
+			person = ancestryPerson.person
 
-            if person.image.name is None or person.image.name == '':
-                result_list.append(person)
+			if person.image.name is None or person.image.name == '':
+				result_list.append(person)
 
-        return result_list
+		return result_list
 
-    def person_trees(self):
-        """
+	def person_trees(self):
+		"""
         	Returns the list of persons that should have trees
         """
-        return AncestryTreeRelation.objects.filter(ancestry=self)
+		return AncestryTreeRelation.objects.filter(ancestry=self)
 
-    def featured_str(self):
-        """
+	def featured_str(self):
+		"""
 			Returns featured person
 		"""
-        str_value = '<ul>'
-        if self.featured:
-            str_value = '<li>%s</li>' % self.featured
-        str_value = '%s</ul>' % str_value
+		str_value = '<ul>'
+		if self.featured:
+			str_value = '<li>%s</li>' % self.featured
+		str_value = '%s</ul>' % str_value
 
-        return mark_safe(str_value)
+		return mark_safe(str_value)
 
-    def locations(self):
-        """
+	def locations(self):
+		"""
 			Returns the locations of this ancestry (with duplicates)
 		"""
-        result_list = []
+		result_list = []
 
-        for ancestryPerson in AncestryRelation.objects.filter(ancestry=self):
-            person = ancestryPerson.person
+		for ancestryPerson in AncestryRelation.objects.filter(ancestry=self):
+			person = ancestryPerson.person
 
-            if person.birth_location is not None:
-                result_list.append(LocationInfo(person.birth_location.lon, person.birth_location.lat))
+			if person.birth_location is not None:
+				result_list.append(LocationInfo(person.birth_location.lon, person.birth_location.lat))
 
-            if person.death_location is not None:
-                result_list.append(LocationInfo(person.death_location.lon, person.death_location.lat))
+			if person.death_location is not None:
+				result_list.append(LocationInfo(person.death_location.lon, person.death_location.lat))
 
-            for family_relation in person.partner_relations():
-                result_list.append(LocationInfo(family_relation.location.lon, family_relation.location.lat))
+			for family_relation in person.partner_relations():
+				result_list.append(LocationInfo(family_relation.location.lon, family_relation.location.lat))
 
-            for event in person.events():
-                result_list.append(LocationInfo(event.location.lon, event.location.lat))
+			for event in person.events():
+				result_list.append(LocationInfo(event.location.lon, event.location.lat))
 
-        return result_list
+		return result_list
 
-    def statistics(self):
-        """
+	def statistics(self):
+		"""
 			Returns the statistics of this ancestry
 		"""
-        birth_per_month = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        death_per_month = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        gender = StatisticsListInfo()
-        birth_locations = StatisticsListInfo()
-        children = StatisticsListInfo()
-        for i in range(0, 10):
-            children.add('%d' % i, 0)
+		birth_per_month = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+		death_per_month = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+		gender = StatisticsListInfo()
+		birth_locations = StatisticsListInfo()
+		children = StatisticsListInfo()
+		for i in range(0, 10):
+			children.add('%d' % i, 0)
 
-        specials = StatisticsListInfo()
-        oldest_person = None
-        oldest_age = 0
-        youngest_person = None
-        youngest_age = 100
-        latest_marriage_age = 0
-        latest_marriage_person = None
-        youngest_marriage_age = 100
-        youngest_marriage_person = None
-        most_children_count = 0
-        most_children_person = None
+		specials = StatisticsListInfo()
+		oldest_person = None
+		oldest_age = 0
+		youngest_person = None
+		youngest_age = 100
+		latest_marriage_age = 0
+		latest_marriage_person = None
+		youngest_marriage_age = 100
+		youngest_marriage_person = None
+		most_children_count = 0
+		most_children_person = None
 
-        for ancestryPerson in AncestryRelation.objects.filter(ancestry=self):
-            person = ancestryPerson.person
+		for ancestryPerson in AncestryRelation.objects.filter(ancestry=self):
+			person = ancestryPerson.person
 
-            if person.birth_date is not None and not person.birth_date_unclear and not person.birth_date_only_year:
-                birth_per_month[person.birth_date.month - 1] = birth_per_month[person.birth_date.month - 1] + 1
+			if person.birth_date is not None and not person.birth_date_unclear and not person.birth_date_only_year:
+				birth_per_month[person.birth_date.month - 1] = birth_per_month[person.birth_date.month - 1] + 1
 
-            if person.death_date is not None:
-                death_per_month[person.death_date.month - 1] = death_per_month[person.death_date.month - 1] + 1
+			if person.death_date is not None:
+				death_per_month[person.death_date.month - 1] = death_per_month[person.death_date.month - 1] + 1
 
-            if person.birth_location is not None:
-                birth_locations.increment(person.birth_location.city)
+			if person.birth_location is not None:
+				birth_locations.increment(person.birth_location.city)
 
-            if person.sex == 'F':
-                gender.increment(_("Women"))
-            else:
-                gender.increment(_("Men"))
+			if person.sex == 'F':
+				gender.increment(_("Women"))
+			else:
+				gender.increment(_("Men"))
 
-            if person.age() is not None and person.age() < youngest_age:
-                youngest_age = person.age()
-                youngest_person = person
+			if person.age() is not None and person.age() < youngest_age:
+				youngest_age = person.age()
+				youngest_person = person
 
-            if person.age() is not None and person.age() > oldest_age:
-                oldest_age = person.age()
-                oldest_person = person
+			if person.age() is not None and person.age() > oldest_age:
+				oldest_age = person.age()
+				oldest_person = person
 
-            if person.age_at_marriage() is not None and person.age_at_marriage() > latest_marriage_age:
-                latest_marriage_age = person.age_at_marriage()
-                latest_marriage_person = person
+			if person.age_at_marriage() is not None and person.age_at_marriage() > latest_marriage_age:
+				latest_marriage_age = person.age_at_marriage()
+				latest_marriage_person = person
 
-            if person.age_at_marriage() is not None and person.age_at_marriage() < youngest_marriage_age:
-                youngest_marriage_age = person.age_at_marriage()
-                youngest_marriage_person = person
+			if person.age_at_marriage() is not None and person.age_at_marriage() < youngest_marriage_age:
+				youngest_marriage_age = person.age_at_marriage()
+				youngest_marriage_person = person
 
-            if person.children_count() > most_children_count:
-                most_children_count = person.children_count()
-                most_children_person = person
+			if person.children_count() > most_children_count:
+				most_children_count = person.children_count()
+				most_children_person = person
 
-            children.increment('%d' % person.children_count())
+			children.increment('%d' % person.children_count())
 
-        # sort & limit birth location to 10 (+rest)
-        birth_locations.limit(10)
+		# sort & limit birth location to 10 (+rest)
+		birth_locations.limit(10)
 
-        specials.add("%s:,%s" % (_("Youngest person"), youngest_person), "%s %s" % (youngest_age, _("Years")))
-        specials.add("%s:,%s" % (_("Oldest person"), oldest_person), "%s %s" % (oldest_age, _("Years")))
-        specials.add("%s:,%s" % (_("Latest marriage"), latest_marriage_person),
-                     "%s %s" % (latest_marriage_age, _("Years")))
-        specials.add("%s:,%s" % (_("Youngest marriage"), youngest_marriage_person),
-                     "%s %s" % (youngest_marriage_age, _("Years")))
-        specials.add("%s:,%s" % (_("Most Children"), most_children_person),
-                     "%s %s" % (most_children_count, _("Children")))
+		specials.add("%s:,%s" % (_("Youngest person"), youngest_person), "%s %s" % (youngest_age, _("Years")))
+		specials.add("%s:,%s" % (_("Oldest person"), oldest_person), "%s %s" % (oldest_age, _("Years")))
+		specials.add("%s:,%s" % (_("Latest marriage"), latest_marriage_person),
+		             "%s %s" % (latest_marriage_age, _("Years")))
+		specials.add("%s:,%s" % (_("Youngest marriage"), youngest_marriage_person),
+		             "%s %s" % (youngest_marriage_age, _("Years")))
+		specials.add("%s:,%s" % (_("Most Children"), most_children_person),
+		             "%s %s" % (most_children_count, _("Children")))
 
-        return StatisticsInfo(birth_per_month, death_per_month, gender, birth_locations, children, specials)
+		return StatisticsInfo(birth_per_month, death_per_month, gender, birth_locations, children, specials)
 
-    def timeline(self):
-        """
+	def timeline(self):
+		"""
 			Returns timeline events of this ancestry
 		"""
-        result_list = []
+		result_list = []
 
-        for historyEvent in HistoryEvent.objects.all():
-            result_list.append(TimelineInfo(historyEvent.date, False, historyEvent.title, historyEvent.description,
-                                            historyEvent.image.url))
+		for historyEvent in HistoryEvent.objects.all():
+			result_list.append(TimelineInfo(historyEvent.date, False, historyEvent.title, historyEvent.description,
+			                                historyEvent.image.url))
 
-        for ancestryPerson in AncestryRelation.objects.filter(ancestry=self):
-            person = ancestryPerson.person
-            if person.birth_date is not None:
-                if person.birth_location is not None:
-                    if person.birth_name is not None and person.birth_name != '':
-                        result_list.append(TimelineInfo(person.birth_date, person.birth_date_unclear,
-                                                        _('%s %s (born %s) was born in %s') % (
-                                                            person.first_name, person.last_name, person.birth_name,
-                                                            person.birth_location), None, None))
-                    else:
-                        result_list.append(TimelineInfo(person.birth_date, person.birth_date_unclear,
-                                                        _('%s %s was born in %s') % (
-                                                            person.first_name, person.last_name,
-                                                            person.birth_location), None, None))
-                else:
-                    result_list.append(TimelineInfo(person.birth_date, person.birth_date_unclear,
-                                                    _('%s %s was born') % (person.first_name, person.last_name), None,
-                                                    None))
+		for ancestryPerson in AncestryRelation.objects.filter(ancestry=self):
+			person = ancestryPerson.person
+			if person.birth_date is not None:
+				if person.birth_location is not None:
+					if person.birth_name is not None and person.birth_name != '':
+						result_list.append(TimelineInfo(person.birth_date, person.birth_date_unclear,
+						                                _('%s %s (born %s) was born in %s') % (
+							                                person.first_name, person.last_name, person.birth_name,
+							                                person.birth_location), None, None))
+					else:
+						result_list.append(TimelineInfo(person.birth_date, person.birth_date_unclear,
+						                                _('%s %s was born in %s') % (
+							                                person.first_name, person.last_name,
+							                                person.birth_location), None, None))
+				else:
+					result_list.append(TimelineInfo(person.birth_date, person.birth_date_unclear,
+					                                _('%s %s was born') % (person.first_name, person.last_name), None,
+					                                None))
 
-            if ancestryPerson.person.death_date is not None:
-                if person.death_location is not None:
-                    result_list.append(TimelineInfo(person.death_date, False, _('%s %s has died in %s') % (
-                        person.first_name, person.last_name, person.death_location), None, None))
-                else:
-                    result_list.append(TimelineInfo(person.death_date, False,
-                                                    _('%s %s has died') % (person.first_name, person.last_name), None,
-                                                    None))
+			if ancestryPerson.person.death_date is not None:
+				if person.death_location is not None:
+					result_list.append(TimelineInfo(person.death_date, False, _('%s %s has died in %s') % (
+						person.first_name, person.last_name, person.death_location), None, None))
+				else:
+					result_list.append(TimelineInfo(person.death_date, False,
+					                                _('%s %s has died') % (person.first_name, person.last_name), None,
+					                                None))
 
-            for familyStatusRelation in FamilyStatusRelation.objects.filter(woman=person):
-                if familyStatusRelation.date is not None:
-                    if familyStatusRelation.status == 'M':
-                        if familyStatusRelation.location is not None:
-                            result_list.append(TimelineInfo(familyStatusRelation.date, False,
-                                                            _('marriage of %s and %s in %s') % (
-                                                                familyStatusRelation.husband_name(),
-                                                                familyStatusRelation.wife_name(),
-                                                                familyStatusRelation.location), None, None))
-                        else:
-                            result_list.append(TimelineInfo(familyStatusRelation.date, False,
-                                                            _('marriage of %s and %s') % (
-                                                                familyStatusRelation.husband_name(),
-                                                                familyStatusRelation.wife_name()), None, None))
-                    else:
-                        result_list.append(TimelineInfo(familyStatusRelation.date, False, _('divorce of %s and %s') % (
-                            familyStatusRelation.husband_name(), familyStatusRelation.wife_name()), None, None))
+			for familyStatusRelation in FamilyStatusRelation.objects.filter(woman=person):
+				if familyStatusRelation.date is not None:
+					if familyStatusRelation.status == 'M':
+						if familyStatusRelation.location is not None:
+							result_list.append(TimelineInfo(familyStatusRelation.date, False,
+							                                _('marriage of %s and %s in %s') % (
+								                                familyStatusRelation.husband_name(),
+								                                familyStatusRelation.wife_name(),
+								                                familyStatusRelation.location), None, None))
+						else:
+							result_list.append(TimelineInfo(familyStatusRelation.date, False,
+							                                _('marriage of %s and %s') % (
+								                                familyStatusRelation.husband_name(),
+								                                familyStatusRelation.wife_name()), None, None))
+					else:
+						result_list.append(TimelineInfo(familyStatusRelation.date, False, _('divorce of %s and %s') % (
+							familyStatusRelation.husband_name(), familyStatusRelation.wife_name()), None, None))
 
-        result_list = sorted(result_list, key=attrgetter('date'), reverse=True)
-        grouped_list = [list(g) for k, g in groupby(result_list, key=lambda x: x.date.year)]
+		result_list = sorted(result_list, key=attrgetter('date'), reverse=True)
+		grouped_list = [list(g) for k, g in groupby(result_list, key=lambda x: x.date.year)]
 
-        final_list = []
-        for grouped_item in grouped_list:
-            final_list.append(GroupedTimelineInfo(grouped_item[0].date.year, grouped_item))
+		final_list = []
+		for grouped_item in grouped_list:
+			final_list.append(GroupedTimelineInfo(grouped_item[0].date.year, grouped_item))
 
-        return final_list
+		return final_list
 
-    def documents(self):
-        """
+	def documents(self):
+		"""
 			Returns appendices (documents that are related to persons) of this ancestry
 			- newest documents first
 		"""
 
-        document_list = []
-        for documentRelation in DocumentRelation.objects.all():
-            # check if document belongs to a person this ancestry
-            if not is_empty(AncestryRelation.objects.filter(ancestry=self, person=documentRelation.person)):
-                if documentRelation.document not in document_list:
-                    document_list.append(documentRelation.document)
+		document_list = []
+		for documentRelation in DocumentRelation.objects.all():
+			# check if document belongs to a person this ancestry
+			if not is_empty(AncestryRelation.objects.filter(ancestry=self, person=documentRelation.person)):
+				if documentRelation.document not in document_list:
+					document_list.append(documentRelation.document)
 
-        document_list = sorted(document_list, key=attrgetter('date'), reverse=True)
+		document_list = sorted(document_list, key=attrgetter('date'), reverse=True)
 
-        return document_list
+		return document_list
 
-    def ancestry_documents(self):
-        """
+	def ancestry_documents(self):
+		"""
 			Returns appendices (documents that are related to this ancestry) of this ancestry
 			- newest documents first
 		"""
-        document_list = []
-        for documentRelation in DocumentAncestryRelation.objects.filter(ancestry=self):
-            # check if document belongs to a person this ancestry
-            if documentRelation.document not in document_list:
-                document_list.append(documentRelation.document)
+		document_list = []
+		for documentRelation in DocumentAncestryRelation.objects.filter(ancestry=self):
+			# check if document belongs to a person this ancestry
+			if documentRelation.document not in document_list:
+				document_list.append(documentRelation.document)
 
-        document_list = sorted(document_list, key=attrgetter('date'), reverse=True)
+		document_list = sorted(document_list, key=attrgetter('date'), reverse=True)
 
-        return document_list
+		return document_list
 
-    def distributions(self):
-        """
+	def distributions(self):
+		"""
 			Returns the list of distributions of this ancestry
 			- basically images of distributions
 		"""
-        return DistributionRelation.objects.filter(ancestry=self)
+		return DistributionRelation.objects.filter(ancestry=self)
 
-    def __unicode__(self):
-        return self.name
+	def __unicode__(self):
+		return self.name
 
-    def __str__(self):
-        return self.name
+	def __str__(self):
+		return self.name
 
 
 class DistributionRelation(models.Model):
-    """
+	"""
 		class that links ancestry with distribution
 	"""
-    distribution = models.ForeignKey(Distribution, on_delete=models.CASCADE)
-    ancestry = models.ForeignKey(Ancestry, on_delete=models.CASCADE)
+	distribution = models.ForeignKey(Distribution, on_delete=models.CASCADE)
+	ancestry = models.ForeignKey(Ancestry, on_delete=models.CASCADE)
 
-    def __unicode__(self):
-        return '%s - %s' % (self.ancestry.name, self.distribution.family_name)
+	def __unicode__(self):
+		return '%s - %s' % (self.ancestry.name, self.distribution.family_name)
 
-    def __str__(self):
-        return '%s - %s' % (self.ancestry.name, self.distribution.family_name)
+	def __str__(self):
+		return '%s - %s' % (self.ancestry.name, self.distribution.family_name)
 
 
 ORIENTATION_TYPES = (
-    ('P', _('Portrait')),
-    ('L', _('Landscape')),
+	('P', _('Portrait')),
+	('L', _('Landscape')),
 )
 
 
 class Document(models.Model):
-    """
+	"""
 		class that holds a document (as image) along with a date and a description
 		- persons can be linked via DocumentRelation
 	"""
-    name = models.CharField(max_length=200)
-    description = models.CharField(max_length=200, null=True, blank=True)
-    date = models.DateField(_('date of creation'))
-    image = models.ImageField(upload_to='media/documents', blank=True, null=True)
-    type = models.CharField(max_length=1, choices=ORIENTATION_TYPES, default='L')
-    table = models.BooleanField(default=False)
+	name = models.CharField(max_length=200)
+	description = models.CharField(max_length=200, null=True, blank=True)
+	date = models.DateField(_('date of creation'))
+	image = models.ImageField(upload_to='media/documents', blank=True, null=True)
+	type = models.CharField(max_length=1, choices=ORIENTATION_TYPES, default='L')
+	table = models.BooleanField(default=False)
 
-    def persons(self):
-        """
+	def persons(self):
+		"""
 			Returns a list of person linked to this document
 		"""
-        person_arr = []
+		person_arr = []
 
-        for documentRelation in DocumentRelation.objects.filter(document=self):
-            person_arr.append(documentRelation.person)
+		for documentRelation in DocumentRelation.objects.filter(document=self):
+			person_arr.append(documentRelation.person)
 
-        return person_arr
+		return person_arr
 
-    def person_names(self):
-        """
+	def person_names(self):
+		"""
 			Returns a comma separated list of person related to this document
 		"""
-        return mark_safe(', '.join(map(str, self.persons())))
+		return mark_safe(', '.join(map(str, self.persons())))
 
-    def person_relations(self):
-        """
+	def person_relations(self):
+		"""
             Returns a list of person relations linked to this document
         """
-        person_arr = []
+		person_arr = []
 
-        for documentRelation in DocumentRelation.objects.filter(document=self):
-            person_arr.append(documentRelation)
+		for documentRelation in DocumentRelation.objects.filter(document=self):
+			person_arr.append(documentRelation)
 
-        return person_arr
+		return person_arr
 
-    def ancestries(self):
-        """
+	def ancestries(self):
+		"""
 			Returns a list of ancestries linked to this document
 		"""
-        ancestry_arr = []
+		ancestry_arr = []
 
-        for ancestryRelation in DocumentAncestryRelation.objects.filter(document=self):
-            ancestry_arr.append(ancestryRelation.ancestry)
+		for ancestryRelation in DocumentAncestryRelation.objects.filter(document=self):
+			ancestry_arr.append(ancestryRelation.ancestry)
 
-        for person in self.persons():
-            for ancestryRel in person.ancestries():
-                # add only if not already in
-                if len(list(filter(lambda x: x.id == ancestryRel.ancestry.id, ancestry_arr))) == 0:
-                    ancestry_arr.append(ancestryRel.ancestry)
+		for person in self.persons():
+			for ancestryRel in person.ancestries():
+				# add only if not already in
+				if len(list(filter(lambda x: x.id == ancestryRel.ancestry.id, ancestry_arr))) == 0:
+					ancestry_arr.append(ancestryRel.ancestry)
 
-        return ancestry_arr
+		return ancestry_arr
 
-    def ancestry_names(self):
-        """
+	def ancestry_names(self):
+		"""
             Returns a comma separated list of ancestries related to this document
         """
-        return mark_safe(', '.join(map(str, self.ancestries())))
+		return mark_safe(', '.join(map(str, self.ancestries())))
 
-    def css_class(self):
-        """
+	def css_class(self):
+		"""
 			Returns the appropriate css class for portrait or landscape mode
 		"""
-        if self.type == 'L':
-            return 'landscape'
-        else:
-            return 'portrait'
+		if self.type == 'L':
+			return 'landscape'
+		else:
+			return 'portrait'
 
-    def thumbnail(self):
-        """
+	def thumbnail(self):
+		"""
 			Returns a clickable thumbnail of the document for the admin area
 		"""
-        return mark_safe('<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % (
-            (self.image.name, self.image.name)))
+		return mark_safe('<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % (
+			(self.image.name, self.image.name)))
 
-    thumbnail.allow_tags = True
+	thumbnail.allow_tags = True
 
-    def thumbnail_large(self):
-        """
+	def thumbnail_large(self):
+		"""
 			Returns a clickable large thumbnail of the document for the admin area
 		"""
-        return mark_safe('<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="250" /></a>' % (
-            (self.image.name, self.image.name)))
+		return mark_safe('<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="250" /></a>' % (
+			(self.image.name, self.image.name)))
 
-    thumbnail_large.allow_tags = True
+	thumbnail_large.allow_tags = True
 
-    def __unicode__(self):
-        return '%s - %s - %s' % (self.date, self.name, self.person_names())
+	def __unicode__(self):
+		return '%s - %s - %s' % (self.date, self.name, self.person_names())
 
-    def __str__(self):
-        return '%s - %s - %s' % (self.date, self.name, self.person_names())
+	def __str__(self):
+		return '%s - %s - %s' % (self.date, self.name, self.person_names())
 
 
 class DocumentRelation(models.Model):
-    """
+	"""
 		class that links a Document to a person
 		can be used to identify a person in a family image (when the image contains numbers)
 	"""
-    index = models.IntegerField(null=True, blank=True,
-                                help_text='number of person in image, when document is a table')  # type: int
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)  # type: Person
-    document = models.ForeignKey(Document, on_delete=models.CASCADE)  # type: Document
+	index = models.IntegerField(null=True, blank=True,
+	                            help_text='number of person in image, when document is a table')  # type: int
+	person = models.ForeignKey(Person, on_delete=models.CASCADE)  # type: Person
+	document = models.ForeignKey(Document, on_delete=models.CASCADE)  # type: Document
 
-    class Meta:
-        ordering = ('document__date',)
+	class Meta:
+		ordering = ('document__date',)
 
-    def __unicode__(self):
-        if self.index:
-            return mark_safe(u'%s - %s - (%d) %s' % (self.document.date, self.document.name, self.index, self.person))
+	def __unicode__(self):
+		if self.index:
+			return mark_safe(u'%s - %s - (%d) %s' % (self.document.date, self.document.name, self.index, self.person))
 
-        return mark_safe(u'%s - %s - %s' % (self.document.date, self.document.name, self.person))
+		return mark_safe(u'%s - %s - %s' % (self.document.date, self.document.name, self.person))
 
-    def __str__(self):
-        if self.index:
-            return mark_safe(u'%s - %s - (%d) %s' % (self.document.date, self.document.name, self.index, self.person))
+	def __str__(self):
+		if self.index:
+			return mark_safe(u'%s - %s - (%d) %s' % (self.document.date, self.document.name, self.index, self.person))
 
-        return mark_safe(u'%s - %s - %s' % (self.document.date, self.document.name, self.person))
+		return mark_safe(u'%s - %s - %s' % (self.document.date, self.document.name, self.person))
 
 
 class DocumentAncestryRelation(models.Model):
-    """
+	"""
 		class that links a Document with an ancestry
 	"""
-    ancestry = models.ForeignKey(Ancestry, on_delete=models.CASCADE)
-    document = models.ForeignKey(Document, on_delete=models.CASCADE)
+	ancestry = models.ForeignKey(Ancestry, on_delete=models.CASCADE)
+	document = models.ForeignKey(Document, on_delete=models.CASCADE)
 
-    def __unicode__(self):
-        return mark_safe(u'%s - %s' % (self.ancestry, self.document.name))
+	def __unicode__(self):
+		return mark_safe(u'%s - %s' % (self.ancestry, self.document.name))
 
-    def __str__(self):
-        return mark_safe(u'%s - %s' % (self.ancestry, self.document.name))
+	def __str__(self):
+		return mark_safe(u'%s - %s' % (self.ancestry, self.document.name))
 
 
 class Question(models.Model):
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    question = models.CharField(max_length=100)
-    answer = models.CharField(max_length=100, null=True, blank=True)  # type: str
-    date = models.DateField(_('date of answer'), null=True, blank=True)
-    source = models.CharField(max_length=30, null=True, blank=True)
+	person = models.ForeignKey(Person, on_delete=models.CASCADE)
+	question = models.CharField(max_length=100)
+	answer = models.CharField(max_length=100, null=True, blank=True)  # type: str
+	date = models.DateField(_('date of answer'), null=True, blank=True)
+	source = models.CharField(max_length=30, null=True, blank=True)
 
-    def open(self):
-        if len(self.answer) == 0:
-            return True
-        else:
-            return False
+	def open(self):
+		if len(self.answer) == 0:
+			return True
+		else:
+			return False
 
-    def __unicode__(self):
-        first = mark_safe(u' %s ' % self.person.first_name)
-        first = mark_safe(first.replace(" _", " <u>").replace("_ ", "</u> "))
-        return mark_safe((u' %s %s - %s' % (first, self.person.last_name, self.question)).strip())
+	def __unicode__(self):
+		first = mark_safe(u' %s ' % self.person.first_name)
+		first = mark_safe(first.replace(" _", " <u>").replace("_ ", "</u> "))
+		return mark_safe((u' %s %s - %s' % (first, self.person.last_name, self.question)).strip())
 
-    def __str__(self):
-        first = mark_safe(u' %s ' % self.person.first_name)
-        first = mark_safe(first.replace(" _", " <u>").replace("_ ", "</u> "))
-        return mark_safe((u' %s %s - %s' % (first, self.person.last_name, self.question)).strip())
+	def __str__(self):
+		first = mark_safe(u' %s ' % self.person.first_name)
+		first = mark_safe(first.replace(" _", " <u>").replace("_ ", "</u> "))
+		return mark_safe((u' %s %s - %s' % (first, self.person.last_name, self.question)).strip())
 
 
 class AncestryRelation(models.Model):
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    ancestry = models.ForeignKey(Ancestry, on_delete=models.CASCADE)
+	person = models.ForeignKey(Person, on_delete=models.CASCADE)
+	ancestry = models.ForeignKey(Ancestry, on_delete=models.CASCADE)
 
-    def __unicode__(self):
-        return u'%s' % self.ancestry.name
+	def __unicode__(self):
+		return u'%s' % self.ancestry.name
 
-    def __str__(self):
-        return u'%s' % self.ancestry.name
+	def __str__(self):
+		return u'%s' % self.ancestry.name
 
 
 class AncestryTreeRelation(models.Model):
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    ancestry = models.ForeignKey(Ancestry, on_delete=models.CASCADE)
+	person = models.ForeignKey(Person, on_delete=models.CASCADE)
+	ancestry = models.ForeignKey(Ancestry, on_delete=models.CASCADE)
 
-    def __unicode__(self):
-        return u'%s - %s' % (self.ancestry.name, self.person)
+	def __unicode__(self):
+		return u'%s - %s' % (self.ancestry.name, self.person)
 
-    def __str__(self):
-        return '%s - %s' % (self.ancestry.name, self.person)
+	def __str__(self):
+		return '%s - %s' % (self.ancestry.name, self.person)
 
 
 class FamilyStatusRelation(models.Model):
-    """
+	"""
         class that models the family relation of two persons
     """
-    status = models.CharField(max_length=1,
-                              choices=(
-                                  ('M', _('Marriage')), ('P', _('Partnership')),
-                                  ('A', _('Adoption'))))  # type: str
-    date = models.DateField(_('date of marriage'), null=True, blank=True)
-    date_only_year = models.BooleanField(default=False)
-    man = models.ForeignKey(Person, on_delete=models.CASCADE, related_name=_('husband'), blank=True, null=True)
-    woman = models.ForeignKey(Person, on_delete=models.CASCADE, related_name=_('wife'), blank=True, null=True)
-    husband_extern = models.CharField(max_length=50, blank=True, null=True)
-    wife_extern = models.CharField(max_length=50, blank=True, null=True)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
-    ended = models.NullBooleanField(default=False, blank=True, null=True)
+	status = models.CharField(max_length=1,
+	                          choices=(
+		                          ('M', _('Marriage')), ('P', _('Partnership')),
+		                          ('A', _('Adoption'))))  # type: str
+	date = models.DateField(_('date of marriage'), null=True, blank=True)
+	date_only_year = models.BooleanField(default=False)
+	man = models.ForeignKey(Person, on_delete=models.CASCADE, related_name=_('husband'), blank=True, null=True)
+	woman = models.ForeignKey(Person, on_delete=models.CASCADE, related_name=_('wife'), blank=True, null=True)
+	husband_extern = models.CharField(max_length=50, blank=True, null=True)
+	wife_extern = models.CharField(max_length=50, blank=True, null=True)
+	location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
+	ended = models.BooleanField(default=False, blank=True, null=True)
 
-    def husband_name(self):
-        if self.man is not None:
-            return '%s %s' % (self.man.first_name, self.man.last_name)
-        else:
-            return self.husband_extern
+	def husband_name(self):
+		if self.man is not None:
+			return '%s %s' % (self.man.first_name, self.man.last_name)
+		else:
+			return self.husband_extern
 
-    def husband_link(self):
-        if self.man is not None:
-            return mark_safe('<a href="/admin/data/person/%s/">%s</a>' % (self.man.id, str(self.man)))
+	def husband_link(self):
+		if self.man is not None:
+			return mark_safe('<a href="/admin/data/person/%s/">%s</a>' % (self.man.id, str(self.man)))
 
-        return self.husband_extern
+		return self.husband_extern
 
-    husband_link.allow_tags = True
+	husband_link.allow_tags = True
 
-    def wife_name(self):
-        if self.woman is not None:
-            return '%s %s' % (self.woman.first_name, self.woman.last_name)
-        else:
-            return self.wife_extern
+	def wife_name(self):
+		if self.woman is not None:
+			return '%s %s' % (self.woman.first_name, self.woman.last_name)
+		else:
+			return self.wife_extern
 
-    def wife_link(self):
-        if self.woman is not None:
-            return mark_safe('<a href="/admin/data/person/%s/">%s</a>' % (self.woman.id, str(self.woman)))
+	def wife_link(self):
+		if self.woman is not None:
+			return mark_safe('<a href="/admin/data/person/%s/">%s</a>' % (self.woman.id, str(self.woman)))
 
-        return self.wife_extern
+		return self.wife_extern
 
-    wife_link.allow_tags = True
+	wife_link.allow_tags = True
 
-    def status_name(self):
-        """
+	def status_name(self):
+		"""
 			Returns the family relation as adjective
 		"""
-        switcher = {
-            'M': _("married"),
-            'P': _("partnership"),
-            'A': _("adopted"),
-        }
+		switcher = {
+			'M': _("married"),
+			'P': _("partnership"),
+			'A': _("adopted"),
+		}
 
-        return switcher.get(self.status, '---')
+		return switcher.get(self.status, '---')
 
-    def __unicode__(self):
-        husband_str = self.husband_name()
-        wife_str = self.wife_name()
+	def __unicode__(self):
+		husband_str = self.husband_name()
+		wife_str = self.wife_name()
 
-        switcher = {
-            'M': _('Marriage %s and %s') % (husband_str, wife_str),
-            'P': _('Partnership %s and %s') % (husband_str, wife_str),
-            'A': _('Adoption of %s and %s') % (husband_str, wife_str),
-        }
+		switcher = {
+			'M': _('Marriage %s and %s') % (husband_str, wife_str),
+			'P': _('Partnership %s and %s') % (husband_str, wife_str),
+			'A': _('Adoption of %s and %s') % (husband_str, wife_str),
+		}
 
-        return mark_safe(
-            (' ' + switcher.get(self.status, '') + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip())
+		return mark_safe(
+			(' ' + switcher.get(self.status, '') + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip())
 
-    def __str__(self):
-        husband_str = self.husband_name()
-        wife_str = self.wife_name()
+	def __str__(self):
+		husband_str = self.husband_name()
+		wife_str = self.wife_name()
 
-        switcher = {
-            'M': _('Marriage %s and %s') % (husband_str, wife_str),
-            'P': _('Partnership %s and %s') % (husband_str, wife_str),
-            'A': _('Adoption of %s and %s') % (husband_str, wife_str),
-        }
+		switcher = {
+			'M': _('Marriage %s and %s') % (husband_str, wife_str),
+			'P': _('Partnership %s and %s') % (husband_str, wife_str),
+			'A': _('Adoption of %s and %s') % (husband_str, wife_str),
+		}
 
-        return mark_safe(
-            (' ' + switcher.get(self.status, '') + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip())
+		return mark_safe(
+			(' ' + switcher.get(self.status, '') + ' ').replace(" _", " <u>").replace("_ ", "</u> ").strip())
 
 
 EVENT_TYPES = (
-    ('T', _('Baptism')),
-    ('B', _('Funeral')),
-    ('C', _('Confirmation')),
-    ('S', _('Settlement')),
-    ('E', _('Enrollment')),
-    ('R', _('Relocation')),
+	('T', _('Baptism')),
+	('B', _('Funeral')),
+	('C', _('Confirmation')),
+	('S', _('Settlement')),
+	('E', _('Enrollment')),
+	('R', _('Relocation')),
 )
 
 
 class PersonEvent(models.Model):
-    """
+	"""
 		additional events for persons
 	"""
-    type = models.CharField(max_length=1, choices=EVENT_TYPES)  # type: str
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
-    date = models.DateField(_('date of marriage or divorce'), null=True, blank=True)
-    date_only_year = models.BooleanField(default=False)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
-    description = models.CharField(max_length=200, null=True, blank=True)
+	type = models.CharField(max_length=1, choices=EVENT_TYPES)  # type: str
+	person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
+	date = models.DateField(_('date of marriage or divorce'), null=True, blank=True)
+	date_only_year = models.BooleanField(default=False)
+	location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
+	description = models.CharField(max_length=200, null=True, blank=True)
 
-    def event_type(self):
-        switcher = {
-            'T': _('Baptism'),
-            'B': _('Funeral'),
-            'C': _('Confirmation'),
-            'S': _('Settlement'),
-            'E': _('Enrollment'),
-            'R': _('Relocation'),
-        }
+	def event_type(self):
+		switcher = {
+			'T': _('Baptism'),
+			'B': _('Funeral'),
+			'C': _('Confirmation'),
+			'S': _('Settlement'),
+			'E': _('Enrollment'),
+			'R': _('Relocation'),
+		}
 
-        return switcher.get(self.type, '')
+		return switcher.get(self.type, '')
 
-    def first_name(self):
-        return self.person.first_name
+	def first_name(self):
+		return self.person.first_name
 
-    def last_name(self):
-        return self.person.last_name
+	def last_name(self):
+		return self.person.last_name
 
-    def __unicode__(self):
-        return u'%s - %s - %s' % (self.date, self.type, self.person)
+	def __unicode__(self):
+		return u'%s - %s - %s' % (self.date, self.type, self.person)
 
-    def __str__(self):
-        return u'%s - %s - %s' % (self.date, self.type, self.person)
+	def __str__(self):
+		return u'%s - %s - %s' % (self.date, self.type, self.person)
 
 
 class HistoryEvent(models.Model):
-    """
+	"""
 		additional history events for the timeline
 	"""
-    date = models.DateField(_('date of the event'), null=True, blank=True)
-    title = models.CharField(max_length=50, null=True, blank=True)
-    description = models.CharField(max_length=200, null=True, blank=True)
-    image = models.ImageField(upload_to='media/history', blank=True, null=True)
+	date = models.DateField(_('date of the event'), null=True, blank=True)
+	title = models.CharField(max_length=50, null=True, blank=True)
+	description = models.CharField(max_length=200, null=True, blank=True)
+	image = models.ImageField(upload_to='media/history', blank=True, null=True)
 
-    def thumbnail(self):
-        """
+	def thumbnail(self):
+		"""
             Returns a clickable thumbnail of the event for the admin area
         """
-        return mark_safe('<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % (
-            (self.image.name, self.image.name)))
+		return mark_safe('<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>' % (
+			(self.image.name, self.image.name)))
 
-    def __unicode__(self):
-        return u'%s - %s' % (self.date, self.title)
+	def __unicode__(self):
+		return u'%s - %s' % (self.date, self.title)
 
-    def __str__(self):
-        return u'%s - %s' % (self.date, self.title)
+	def __str__(self):
+		return u'%s - %s' % (self.date, self.title)

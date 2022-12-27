@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.core.exceptions import ValidationError
 from django.forms import BaseInlineFormSet
 from django.http import HttpResponseRedirect
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from .models import Ancestry, FamilyStatusRelation, Person, DocumentRelation, Question, \
     DocumentAncestryRelation, PersonEvent, AncestryRelation, AncestryTreeRelation, Document
