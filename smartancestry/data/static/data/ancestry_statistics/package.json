@@ -4,7 +4,7 @@
   "description": "",
   "main": "pie.js",
   "dependencies": {
-    "canvas": "^2.6.1",
+    "canvas": "^2.11.2",
     "chart.js": "^2.9.4",
     "chartjs-node-canvas": "^3.1.0",
     "chartjs-plugin-labels": "^1.1.0"
