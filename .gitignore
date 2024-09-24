@@ -86,3 +86,6 @@ smartancestry/data/media/persons
 smartancestry/data/media/ancestries
 .idea
 smartancestry/data/__pycache__
+smartancestry/data/templatetags/__pycache__
+smartancestry/data/migrations/__pycache__
+smartancestry/smartancestry/__pycache__
