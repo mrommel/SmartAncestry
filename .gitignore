@@ -85,3 +85,4 @@ smartancestry/data/static/data/js/node_modules
 smartancestry/data/media/persons
 smartancestry/data/media/ancestries
 .idea
+smartancestry/data/__pycache__
