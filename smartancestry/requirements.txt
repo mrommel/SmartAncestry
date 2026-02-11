@@ -1,4 +1,4 @@
 django==5.1.14
 django-extensions==3.2.3
-pillow==10.4.0
+pillow==12.1.1
 pip==26.0
